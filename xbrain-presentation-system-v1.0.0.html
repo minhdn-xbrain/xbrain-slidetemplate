@@ -2,19 +2,26 @@
 <!--
   XBrain Presentation System — Release Notes
   v1.0.0: Bản phát hành đầu tiên của XBrain Presentation as Code.
-           70 slide mẫu, 98 biến thể visualization, JSON-driven Composer,
+           89 slide mẫu, 98 biến thể visualization, JSON-driven Composer,
            shared datasets (JSON/CSV/TSV), diagram và component lồng nhau,
            chỉnh sửa nhanh, Gallery, trình chiếu fullscreen và xuất HTML/JSON/PDF.
   Release version: 1.0.0
   Internal JSON schema version: 1.0.
   Brand reference: XBrain Brand Guidelines, December 2025.
+  Tích hợp thêm (từ XBrain Presentation System, template as code):
+    - Slide panel kiểu PowerPoint/Canva: kéo-thả, Ctrl+kéo để sao chép, chọn nhiều,
+      Ctrl+C/X/V qua clipboard hệ thống (dán được sang tệp khác), Ctrl+D, Delete,
+      Alt+↑/↓, menu chuột phải, thả tệp .json vào panel.
+    - 17 diagram/biểu đồ Group D mới + layout Custom HTML / Custom SVG Diagram.
+    - Template as code: "layouts"/"helpers" viết bằng JS trong JSON (pack), slide tự mang
+      render/template, API window.XB cho agent, trang báo lỗi khi layout hỏng.
 -->
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>XBrain Presentation System v1.0.0 — Presentation as Code</title>
-  <meta name="description" content="v1.0.0: Bản phát hành đầu tiên của XBrain Presentation as Code — JSON-first, 70 slide mẫu, 98 biến thể visualization, diagram/component lồng nhau, chỉnh sửa nhanh và xuất HTML/JSON/PDF." />
+  <meta name="description" content="v1.0.0: Bản phát hành đầu tiên của XBrain Presentation as Code — JSON-first, 89 slide mẫu, 98 biến thể visualization, diagram/component lồng nhau, chỉnh sửa nhanh và xuất HTML/JSON/PDF." />
   <meta name="application-version" content="1.0.0" />
   <!-- Google Fonts: Manrope (Main Headline Font) & Nunito (Secondary Body Font) per PDF Pages 22-23 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2995,6 +3002,30 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
 .v1-slide .v1-callout,.v1-slide .v1-quote{border-left-color:var(--v1-primary,#F97C00)}
 .v1-slide .v1-kpi small{color:var(--v1-teal,#25AC9D)}
 
+    /* Slide panel kéo-thả, chọn nhiều, cắt/dán, menu chuột phải, toast */
+    #sidebar-slide-list, #gallery-grid-container { position: relative; }
+    #sidebar-slide-list:focus, #gallery-grid-container:focus { outline: none; }
+    #sidebar-slide-list [data-slide-index], #gallery-grid-container [data-slide-index] { -webkit-user-drag: element; }
+    .v1-selected { border-color: rgba(249,124,0,.8) !important; box-shadow: inset 0 0 0 1px rgba(249,124,0,.55); background-color: #1F2B2B; }
+    .v1-dragging { opacity: .38; }
+    .v1-drop-line { position: absolute; z-index: 30; background: #F97C00; border-radius: 3px; pointer-events: none; box-shadow: 0 0 0 3px rgba(249,124,0,.2); }
+    .v1-drop-line::after { content: attr(data-label); position: absolute; right: 0; top: -9px; padding: 2px 8px; border-radius: 999px; background: #F97C00; color: #fff; font: 800 10px/1.4 Manrope, Arial, sans-serif; white-space: nowrap; }
+    .v1-drop-line.v1-vertical::after { right: auto; left: 50%; top: -24px; transform: translateX(-50%); }
+    .v1-drag-ghost { position: fixed; top: -200px; left: -200px; padding: 8px 14px; border-radius: 10px; background: #F97C00; color: #fff; font: 800 12px Manrope, Arial, sans-serif; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
+    .v1-menu { position: fixed; z-index: 80; min-width: 236px; padding: 6px; border-radius: 12px; background: #1C2525; border: 1px solid #344444; box-shadow: 0 18px 40px rgba(0,0,0,.45); color: #E8F0ED; font: 600 12.5px Manrope, Arial, sans-serif; user-select: none; }
+    .v1-menu button { display: flex; justify-content: space-between; align-items: center; gap: 18px; width: 100%; padding: 7px 10px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+    .v1-menu button:hover:not(:disabled), .v1-menu button:focus-visible { background: #263333; color: #fff; outline: none; }
+    .v1-menu button:disabled { opacity: .38; cursor: default; }
+    .v1-menu kbd { font: 600 11px Manrope, Arial, sans-serif; color: #8FA3A0; }
+    .v1-menu .v1-danger { color: #FCA5A5; }
+    .v1-menu-sep { height: 1px; margin: 5px 4px; background: #2D3B3B; }
+    .v1-menu-head { padding: 6px 10px 4px; color: #FF991D; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+    .v1-toast { position: fixed; left: 50%; bottom: 84px; z-index: 90; transform: translateX(-50%); padding: 9px 16px; border-radius: 999px; background: #1E2727; border: 1px solid #374746; color: #E8F0ED; font: 700 12.5px Manrope, Arial, sans-serif; box-shadow: 0 12px 30px rgba(0,0,0,.4); opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+    .v1-toast.show { opacity: 1; }
+    @media print { .v1-menu, .v1-toast, .v1-drag-ghost { display: none !important; } }
+    .v1-cut { border-style: dashed !important; border-color: #F97C00 !important; position: relative; overflow: visible !important; }
+    .v1-cut > * { opacity: .38; filter: grayscale(.7); }
+    .v1-cut::after { content: 'Đã cắt'; position: absolute; top: -9px; right: 12px; z-index: 5; padding: 1px 9px; border-radius: 999px; background: #F97C00; color: #fff; font: 800 10px/1.6 Manrope, Arial, sans-serif; letter-spacing: .04em; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col">
@@ -3116,7 +3147,7 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
             <span class="font-heading font-bold text-white text-sm tracking-tight">Presentation as Code v1.0.0</span>
             <span class="text-[11px] font-heading font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F97C00]/20 text-[#FF991D] border border-[#F97C00]/30">Dec 2025 Brand Guidelines</span>
           </div>
-          <p class="text-xs text-slate-400">v1.0.0: Bản phát hành đầu tiên · JSON-first · 70 slides · 98 visual variants</p>
+          <p class="text-xs text-slate-400">v1.0.0: Bản phát hành đầu tiên · JSON-first · 89 slides · 98 visual variants</p>
         </div>
       </div>
 
@@ -3261,15 +3292,15 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
               <i data-lucide="layers" class="w-3.5 h-3.5"></i>
               <span>Phase 3 & 4.5 — Slide Template Library</span>
             </div>
-            <h2 class="text-3xl font-heading font-extrabold text-white">Thư Viện 28 Layout Chuẩn Nhận Diện Xbrain</h2>
+            <h2 class="text-3xl font-heading font-extrabold text-white">Thư Viện 48 Layout Chuẩn Nhận Diện Xbrain</h2>
             <p class="text-slate-400 text-sm mt-1">Nhấp vào bất kỳ slide nào để mở trong Slide Studio (1920×1080), chỉnh sửa nội dung hoặc trình chiếu trực tiếp.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button data-click-action="filterGallery" data-click-arg="'ALL'" id="gal-filter-ALL" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#F97C00] text-white">Tất cả (70)</button>
+            <button data-click-action="filterGallery" data-click-arg="'ALL'" id="gal-filter-ALL" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#F97C00] text-white">Tất cả (89)</button>
             <button data-click-action="filterGallery" data-click-arg="'A'" id="gal-filter-A" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white">Group A — Structure (4)</button>
-            <button data-click-action="filterGallery" data-click-arg="'B'" id="gal-filter-B" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white">Group B — Content (6)</button>
+            <button data-click-action="filterGallery" data-click-arg="'B'" id="gal-filter-B" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white">Group B — Content (7)</button>
             <button data-click-action="filterGallery" data-click-arg="'C'" id="gal-filter-C" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white">Group C — Business & Data (6)</button>
-            <button data-click-action="filterGallery" data-click-arg="'D'" id="gal-filter-D" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white">Group D — Diagrams (12)</button>
+            <button data-click-action="filterGallery" data-click-arg="'D'" id="gal-filter-D" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white">Group D — Diagrams (30)</button>
           <button data-click-action="filterGallery" data-click-arg="'E'" id="gal-filter-E" class="px-4 py-2 rounded-lg text-xs font-heading font-semibold bg-[#222C2C] text-slate-300 hover:text-white">E · Composer</button>
           </div>
         </div>
@@ -3571,7 +3602,26 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
       {"type": "learner-journey", "group": "D", "name": "25. Learner Journey", "desc": "Diagram đề xuất (Proposed) • Stage-by-stage audience experience"},
       {"type": "layered-architecture", "group": "D", "name": "26. Layered Architecture", "desc": "Diagram đề xuất (Proposed) • Technical architecture stacked layers"},
       {"type": "sankey-flow", "group": "D", "name": "27. Sankey / Allocation Flow", "desc": "Diagram đề xuất (Proposed) • Conceptual flows between sources and targets"},
-      {"type": "heatmap", "group": "D", "name": "28. Capability Heatmap", "desc": "Diagram đề xuất (Proposed) • Competency scoring by team and capability"}
+      {"type": "heatmap", "group": "D", "name": "28. Capability Heatmap", "desc": "Diagram đề xuất (Proposed) • Competency scoring by team and capability"},
+      {"type": "venn-diagram", "group": "D", "name": "29. Venn Diagram", "desc": "Diagram đề xuất (Proposed) • 2–3 vòng giao nhau, giá trị cốt lõi ở giữa", "limits": {"sets": 3}},
+      {"type": "swot-analysis", "group": "D", "name": "30. SWOT Analysis", "desc": "Diagram đề xuất (Proposed) • 4 ô S/W/O/T, tối đa 4 ý mỗi ô", "limits": {"quadrants": 4, "quadrants.items": 4}},
+      {"type": "priority-matrix", "group": "D", "name": "31. Priority Matrix", "desc": "Diagram đề xuất (Proposed) • Trục tác động × công sức, chấm điểm từng hạng mục", "limits": {"quadrantLabels": 4, "items": 8}},
+      {"type": "mind-map", "group": "D", "name": "32. Mind Map", "desc": "Diagram đề xuất (Proposed) • Ý tưởng trung tâm, 6 nhánh, 3 lá mỗi nhánh", "limits": {"branches": 6, "branches.leaves": 3}},
+      {"type": "fishbone", "group": "D", "name": "33. Fishbone / Root Cause", "desc": "Diagram đề xuất (Proposed) • Xương cá Ishikawa: 6 nhóm nguyên nhân", "limits": {"categories": 6, "categories.causes": 3}},
+      {"type": "staircase", "group": "D", "name": "34. Maturity Staircase", "desc": "Diagram đề xuất (Proposed) • 5 bậc tăng dần, mô tả trên mỗi bậc", "limits": {"levels": 5}},
+      {"type": "concentric-circles", "group": "D", "name": "35. Concentric Circles", "desc": "Diagram đề xuất (Proposed) • Lõi → lớp ngoài, chú giải đánh số", "limits": {"layers": 5}},
+      {"type": "value-chain", "group": "D", "name": "36. Value Chain (Chevron)", "desc": "Diagram đề xuất (Proposed) • Mũi tên chevron + thẻ nội dung dưới mỗi chặng", "limits": {"stages": 6, "stages.items": 3}},
+      {"type": "decision-tree", "group": "D", "name": "37. Decision Tree", "desc": "Diagram đề xuất (Proposed) • Câu hỏi gốc → nhánh → kết quả, có nhãn cạnh", "limits": {"branches": 3, "branches.children": 2}},
+      {"type": "system-architecture", "group": "D", "name": "38. System Architecture", "desc": "Diagram đề xuất (Proposed) • Vùng (zone) theo cột, thành phần, luồng dữ liệu", "limits": {"zones": 5, "zones.items": 4}},
+      {"type": "kanban-board", "group": "D", "name": "39. Kanban Board", "desc": "Diagram đề xuất (Proposed) • Cột trạng thái, thẻ việc có nhãn và người phụ trách", "limits": {"columns": 5, "columns.cards": 4}},
+      {"type": "gantt-roadmap", "group": "D", "name": "40. Gantt Roadmap", "desc": "Diagram đề xuất (Proposed) • Thanh công việc theo kỳ, mốc và vạch hôm nay", "limits": {"periods": 12, "tasks": 8, "milestones": 4}},
+      {"type": "line-chart", "group": "D", "name": "41. Line Trend Chart", "desc": "Biểu đồ đề xuất (Proposed) • Tối đa 3 chuỗi, thẻ insight bên phải", "limits": {"labels": 12, "series": 3, "series.values": 12}},
+      {"type": "waterfall-chart", "group": "D", "name": "42. Waterfall Chart", "desc": "Biểu đồ đề xuất (Proposed) • Đầu kỳ, tăng/giảm, tổng cuối kỳ", "limits": {"items": 8}},
+      {"type": "bar-ranking", "group": "D", "name": "43. Bar Ranking", "desc": "Biểu đồ đề xuất (Proposed) • Thanh ngang có vạch mục tiêu, nhấn mạnh 1 mục", "limits": {"items": 8}},
+      {"type": "radar-chart", "group": "D", "name": "44. Radar Chart", "desc": "Biểu đồ đề xuất (Proposed) • 3–8 trục, 2 chuỗi so sánh + bảng điểm", "limits": {"axes": 8, "series": 2, "series.values": 8}},
+      {"type": "progress-rings", "group": "D", "name": "45. Progress Rings", "desc": "Biểu đồ đề xuất (Proposed) • 3–5 vòng phần trăm có tiêu đề", "limits": {"rings": 5}},
+      {"type": "custom-html", "group": "B", "name": "46. Custom HTML", "desc": "Khung chuẩn (header/footer) + vùng HTML tự do trong content.html", "limits": {}},
+      {"type": "custom-diagram", "group": "D", "name": "47. Custom SVG Diagram", "desc": "Khung diagram chuẩn + SVG tự do (viewBox 1728×600) trong content.svg", "limits": {}}
 
     ];
 
@@ -4009,8 +4059,30 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
       {"type":"learner-journey","content":{"sectionTag":"EXPERIENCE DESIGN","kicker":"PROPOSED DIAGRAM · JOURNEY","title":"Learner Journey: hành trình từ khám phá đến nghề nghiệp","subtitle":"5 giai đoạn để thiết kế trải nghiệm học viên nhất quán và có thể đo lường.","stages":[{"channel":"AWARENESS","title":"Discover","action":"Tìm hiểu chương trình, track và điều kiện đầu vào","metric":"Reach / Interest"},{"channel":"ADMISSION","title":"Apply","action":"Nộp hồ sơ, kiểm tra nền tảng và chọn track","metric":"Applications"},{"channel":"LEARNING","title":"Practice","action":"Labs, mentor check-in và học qua tình huống thực tế","metric":"Lab completion"},{"channel":"CAPSTONE","title":"Demonstrate","action":"Project review, demo và bảo vệ kiến trúc","metric":"Portfolio quality"},{"channel":"CAREER","title":"Launch","action":"Phỏng vấn, hỗ trợ nghề nghiệp và alumni learning","metric":"Career outcomes"}]},"id":"slide-25","group":"D","layoutName":"Learner Journey"},
       {"type":"layered-architecture","content":{"sectionTag":"ARCHITECTURE FRAMEWORK","kicker":"PROPOSED DIAGRAM · TECH STACK","title":"Kiến trúc kỹ năng CloudOps / DevOps theo lớp","subtitle":"Cấu trúc kiến thức minh họa để kết nối công nghệ với vận hành thực tế.","tiers":[{"title":"User & Business Outcomes","desc":"Reliability, delivery speed, cost & customer experience","tag":"OUTCOMES"},{"title":"Observability & Security","desc":"Monitoring, identity, policy and incident response","tag":"CONTROL"},{"title":"Delivery Automation","desc":"CI/CD, infrastructure as code, containers & pipelines","tag":"AUTOMATE"},{"title":"Cloud Platform Services","desc":"Compute, storage, networking, managed services","tag":"PLATFORM"},{"title":"Foundational Skills","desc":"Linux, scripting, networking fundamentals","tag":"FOUNDATION"}]},"id":"slide-26","group":"D","layoutName":"Layered Architecture"},
       {"type":"sankey-flow","content":{"sectionTag":"ALLOCATION DESIGN","kicker":"PROPOSED DIAGRAM · CONCEPTUAL FLOW","title":"Dòng chảy năng lực: từ nguồn lực đến kết quả","subtitle":"Sankey minh họa tương quan; độ rộng chỉ mang tính trực quan, không phải báo cáo định lượng.","note":"Mô hình phân bổ khái niệm · số liệu là dữ liệu mẫu, chưa được kiểm chứng","sources":[{"label":"Hands-on Labs"},{"label":"Mentorship"},{"label":"Capstone"}],"targets":[{"label":"Technical Skills"},{"label":"Portfolio"},{"label":"Career Readiness"}],"links":[{"from":0,"to":0,"value":44},{"from":0,"to":1,"value":16},{"from":1,"to":0,"value":16},{"from":1,"to":2,"value":23},{"from":2,"to":1,"value":31},{"from":2,"to":2,"value":26}]},"id":"slide-27","group":"D","layoutName":"Sankey / Allocation Flow"},
-      {"type":"heatmap","content":{"sectionTag":"SKILL ANALYTICS","kicker":"PROPOSED DIAGRAM · ILLUSTRATIVE SCORING","title":"Heatmap năng lực theo công nghệ và nhóm","subtitle":"Thang điểm 0–5 minh họa cách theo dõi readiness theo từng nhóm kỹ năng.","note":"Điểm năng lực minh họa; thay bằng rubric và dữ liệu thực tế khi sử dụng.","columns":["Cloud","Linux","CI/CD","IaC","Security","Monitor"],"rows":[{"label":"Cohort A","values":[4,3,3,2,3,2]},{"label":"Cohort B","values":[4,4,3,4,2,3]},{"label":"Cohort C","values":[2,3,4,4,3,3]},{"label":"Cohort D","values":[3,4,4,3,4,3]},{"label":"Cohort E","values":[4,5,4,4,3,5]}]},"id":"slide-28","group":"D","layoutName":"Capability Heatmap"}
+      {"type":"heatmap","content":{"sectionTag":"SKILL ANALYTICS","kicker":"PROPOSED DIAGRAM · ILLUSTRATIVE SCORING","title":"Heatmap năng lực theo công nghệ và nhóm","subtitle":"Thang điểm 0–5 minh họa cách theo dõi readiness theo từng nhóm kỹ năng.","note":"Điểm năng lực minh họa; thay bằng rubric và dữ liệu thực tế khi sử dụng.","columns":["Cloud","Linux","CI/CD","IaC","Security","Monitor"],"rows":[{"label":"Cohort A","values":[4,3,3,2,3,2]},{"label":"Cohort B","values":[4,4,3,4,2,3]},{"label":"Cohort C","values":[2,3,4,4,3,3]},{"label":"Cohort D","values":[3,4,4,3,4,3]},{"label":"Cohort E","values":[4,5,4,4,3,5]}]},"id":"slide-28","group":"D","layoutName":"Capability Heatmap"},
+      {"id": "slide-venn-diagram", "type": "venn-diagram", "group": "D", "layoutName": "Venn Diagram", "content": {"sectionTag": "VALUE PROPOSITION", "kicker": "PROPOSED DIAGRAM · VENN", "title": "Điểm giao thoa tạo nên năng lực thực chiến", "subtitle": "Ba nguồn lực gặp nhau ở trung tâm: học viên sẵn sàng làm việc trong môi trường production.", "center": "Job-ready", "centerSub": "Talent", "sets": [{"title": "Nhà trường", "desc": "Nền tảng học thuật, sinh viên có định hướng và lịch học ổn định."}, {"title": "Doanh nghiệp", "desc": "Bài toán thật, mentor thực chiến và nhu cầu tuyển dụng."}, {"title": "XBrain", "desc": "Chương trình, lab hands-on và phương pháp đánh giá năng lực."}]}},
+      {"id": "slide-swot-analysis", "type": "swot-analysis", "group": "D", "layoutName": "SWOT Analysis", "content": {"sectionTag": "STRATEGIC ANALYSIS", "kicker": "PROPOSED DIAGRAM · SWOT", "title": "Phân tích SWOT chương trình đào tạo CloudOps", "subtitle": "Bức tranh nội lực và bối cảnh thị trường để chọn ưu tiên cho cohort tiếp theo.", "quadrants": [{"letter": "S", "title": "Strengths · Điểm mạnh", "items": ["Mentor đến từ AWS, Synaptix, TechX", "Lab mô phỏng môi trường production", "Lộ trình rõ theo track", "Đánh giá bằng sản phẩm thật"]}, {"letter": "W", "title": "Weaknesses · Điểm yếu", "items": ["Quy mô cohort còn nhỏ", "Phụ thuộc lịch mentor", "Nội dung GenAI mới hình thành"]}, {"letter": "O", "title": "Opportunities · Cơ hội", "items": ["Nhu cầu kỹ sư cloud tăng", "Hợp tác nhiều trường đại học", "Chuyển đổi số tại doanh nghiệp", "Chứng chỉ quốc tế được ưa chuộng"]}, {"letter": "T", "title": "Threats · Thách thức", "items": ["Cạnh tranh từ khóa học online", "Công nghệ thay đổi nhanh", "Học viên bỏ giữa chừng"]}]}},
+      {"id": "slide-priority-matrix", "type": "priority-matrix", "group": "D", "layoutName": "Priority Matrix", "content": {"sectionTag": "DECISION SUPPORT", "kicker": "PROPOSED DIAGRAM · IMPACT × EFFORT", "title": "Ma trận ưu tiên sáng kiến", "subtitle": "Mỗi hạng mục được chấm theo tác động (0–100) và công sức (0–100) để chọn việc làm trước.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "xLabel": "Công sức thực hiện →", "yLabel": "Tác động →", "quadrantLabels": ["Làm ngay", "Dự án lớn", "Làm khi rảnh", "Cân nhắc bỏ"], "items": [{"label": "Bộ lab CI/CD mẫu", "x": 25, "y": 82}, {"label": "Ngân hàng câu hỏi đánh giá", "x": 35, "y": 68}, {"label": "Nền tảng học trực tuyến riêng", "x": 85, "y": 78}, {"label": "Chương trình mentor 1-1", "x": 62, "y": 88}, {"label": "Video giới thiệu track", "x": 20, "y": 30}, {"label": "Tự viết công cụ chấm bài", "x": 80, "y": 28}]}},
+      {"id": "slide-mind-map", "type": "mind-map", "group": "D", "layoutName": "Mind Map", "content": {"sectionTag": "IDEATION", "kicker": "PROPOSED DIAGRAM · MIND MAP", "title": "Sơ đồ tư duy: thiết kế một cohort đào tạo", "subtitle": "Ý tưởng trung tâm và các nhánh cần quyết định trước khi khởi động.", "center": "Cohort 2026", "centerSub": "CloudOps & DevOps", "branches": [{"title": "Học viên", "leaves": ["Tiêu chí đầu vào", "Bài test năng lực", "Phân nhóm theo track"]}, {"title": "Nội dung", "leaves": ["Syllabus 16 tuần", "Lab hands-on", "Capstone project"]}, {"title": "Mentor", "leaves": ["Lịch check-in", "Rubric đánh giá", "Playbook"]}, {"title": "Đối tác", "leaves": ["Trường đại học", "Doanh nghiệp tuyển dụng"]}, {"title": "Vận hành", "leaves": ["Lịch học", "Hạ tầng lab", "Hỗ trợ học viên"]}, {"title": "Đo lường", "leaves": ["Tỉ lệ hoàn thành", "Điểm capstone", "Tỉ lệ có việc"]}]}},
+      {"id": "slide-fishbone", "type": "fishbone", "group": "D", "layoutName": "Fishbone / Root Cause", "content": {"sectionTag": "ROOT CAUSE ANALYSIS", "kicker": "PROPOSED DIAGRAM · FISHBONE", "title": "Vì sao học viên chưa hoàn thành lab đúng hạn?", "subtitle": "Phân tích nguyên nhân theo 6 nhóm để chọn biện pháp khắc phục có trọng tâm.", "problem": "Tỉ lệ hoàn thành lab thấp", "problemSub": "Vấn đề cần giải quyết", "categories": [{"title": "Học viên", "causes": ["Thiếu nền tảng Linux", "Quỹ thời gian hạn chế", "Ngại hỏi mentor"]}, {"title": "Nội dung", "causes": ["Lab quá dài", "Hướng dẫn thiếu bước", "Ví dụ chưa sát thực tế"]}, {"title": "Mentor", "causes": ["Check-in thưa", "Phản hồi chậm"]}, {"title": "Hạ tầng", "causes": ["Tài khoản lab cấp muộn", "Giới hạn quota", "Môi trường không ổn định"]}, {"title": "Quy trình", "causes": ["Hạn nộp dồn cuối tuần", "Chưa có nhắc việc"]}, {"title": "Đo lường", "causes": ["Không theo dõi theo ngày", "Thiếu cảnh báo sớm"]}]}},
+      {"id": "slide-staircase", "type": "staircase", "group": "D", "layoutName": "Maturity Staircase", "content": {"sectionTag": "MATURITY MODEL", "kicker": "PROPOSED DIAGRAM · STAIRCASE", "title": "Bậc thang trưởng thành của kỹ sư CloudOps", "subtitle": "Mỗi bậc là một mức năng lực có tiêu chí quan sát được.", "levels": [{"tag": "LEVEL 01", "title": "Nền tảng", "desc": "Linux, mạng, khái niệm cloud cơ bản."}, {"tag": "LEVEL 02", "title": "Thực hành có hướng dẫn", "desc": "Dựng hạ tầng theo lab, đọc log và sửa lỗi đơn giản."}, {"tag": "LEVEL 03", "title": "Vận hành độc lập", "desc": "Tự động hoá, giám sát, xử lý sự cố thường gặp."}, {"tag": "LEVEL 04", "title": "Thiết kế giải pháp", "desc": "Chọn kiến trúc, tối ưu chi phí và bảo mật."}, {"tag": "LEVEL 05", "title": "Dẫn dắt", "desc": "Mentor người khác, chuẩn hoá quy trình cho đội."}]}},
+      {"id": "slide-concentric-circles", "type": "concentric-circles", "group": "D", "layoutName": "Concentric Circles", "content": {"sectionTag": "CORE MODEL", "kicker": "PROPOSED DIAGRAM · CONCENTRIC", "title": "Mô hình năng lực theo vòng đồng tâm", "subtitle": "Từ giá trị cốt lõi ở trung tâm lan ra kỹ năng, công cụ và hệ sinh thái.", "layers": [{"title": "Tư duy", "desc": "Học qua thực hành, chịu trách nhiệm với kết quả."}, {"title": "Kỹ năng lõi", "desc": "Linux, mạng, lập trình script, bảo mật cơ bản."}, {"title": "Công cụ", "desc": "Cloud services, CI/CD, IaC, giám sát."}, {"title": "Hệ sinh thái", "desc": "Mentor, cộng đồng alumni, đối tác tuyển dụng."}]}},
+      {"id": "slide-value-chain", "type": "value-chain", "group": "D", "layoutName": "Value Chain (Chevron)", "content": {"sectionTag": "VALUE CHAIN", "kicker": "PROPOSED DIAGRAM · CHEVRON", "title": "Chuỗi giá trị đào tạo nhân lực công nghệ", "subtitle": "Mỗi chặng tạo ra một đầu ra cụ thể cho chặng tiếp theo.", "stages": [{"title": "Thu hút", "items": ["Roadshow tại trường", "Cộng đồng công nghệ"]}, {"title": "Tuyển chọn", "items": ["Bài test năng lực", "Phỏng vấn định hướng"]}, {"title": "Đào tạo", "items": ["Lab hands-on", "Mentor check-in", "Đánh giá theo rubric"]}, {"title": "Dự án", "items": ["Capstone theo nhóm", "Bảo vệ kiến trúc"]}, {"title": "Việc làm", "items": ["Phỏng vấn doanh nghiệp", "Cộng đồng alumni"]}]}},
+      {"id": "slide-decision-tree", "type": "decision-tree", "group": "D", "layoutName": "Decision Tree", "content": {"sectionTag": "DECISION GUIDE", "kicker": "PROPOSED DIAGRAM · DECISION TREE", "title": "Chọn track phù hợp cho học viên", "subtitle": "Hai câu hỏi định hướng giúp xếp học viên vào lộ trình phù hợp nhất.", "root": {"title": "Đã có nền tảng lập trình?", "desc": "Câu hỏi đầu vào"}, "branches": [{"label": "Có", "title": "Thích tự động hoá quy trình?", "children": [{"label": "Có", "title": "DevOps Track", "desc": "CI/CD, container, IaC"}, {"label": "Chưa", "title": "CloudOps Track", "desc": "Vận hành, giám sát, chi phí"}]}, {"label": "Chưa", "title": "Sẵn sàng học bổ trợ 4 tuần?", "children": [{"label": "Có", "title": "Foundation + CloudOps", "desc": "Bổ trợ Linux & mạng trước"}, {"label": "Chưa", "title": "Khóa nhập môn", "desc": "Đăng ký cohort kế tiếp"}]}]}},
+      {"id": "slide-system-architecture", "type": "system-architecture", "group": "D", "layoutName": "System Architecture", "content": {"sectionTag": "SOLUTION ARCHITECTURE", "kicker": "PROPOSED DIAGRAM · SYSTEM CONTEXT", "title": "Kiến trúc nền tảng lab cho học viên", "subtitle": "Luồng từ người dùng đến dữ liệu, chia theo vùng trách nhiệm.", "zones": [{"title": "Người dùng", "items": [{"title": "Học viên", "desc": "Trình duyệt, IDE"}, {"title": "Mentor", "desc": "Chấm bài, phản hồi"}]}, {"title": "Truy cập", "items": [{"title": "CDN & WAF", "desc": "Bảo vệ biên"}, {"title": "Đăng nhập SSO", "desc": "Phân quyền theo vai"}]}, {"title": "Ứng dụng", "items": [{"title": "Cổng học tập", "desc": "Bài học, tiến độ"}, {"title": "Dịch vụ lab", "desc": "Cấp môi trường"}, {"title": "Chấm tự động", "desc": "Kiểm tra kết quả"}]}, {"title": "Dữ liệu", "items": [{"title": "Cơ sở dữ liệu", "desc": "Hồ sơ, điểm số"}, {"title": "Kho lưu trữ", "desc": "Bài nộp, log"}]}, {"title": "Vận hành", "items": [{"title": "Giám sát", "desc": "Metrics, cảnh báo"}, {"title": "Chi phí", "desc": "Ngân sách theo cohort"}]}]}},
+      {"id": "slide-kanban-board", "type": "kanban-board", "group": "D", "layoutName": "Kanban Board", "content": {"sectionTag": "DELIVERY TRACKING", "kicker": "PROPOSED DIAGRAM · KANBAN", "title": "Bảng công việc chuẩn bị cohort", "subtitle": "Trạng thái từng hạng mục và người phụ trách tại thời điểm báo cáo.", "note": "Trạng thái minh họa · cập nhật từ công cụ quản lý công việc trước khi trình bày", "columns": [{"title": "Backlog", "cards": [{"title": "Video giới thiệu track", "tag": "Marketing", "owner": "Comms"}, {"title": "Khảo sát kỳ vọng học viên", "tag": "Research", "owner": "Ops"}]}, {"title": "Cần làm", "cards": [{"title": "Rubric capstone", "tag": "Academic", "owner": "Curriculum"}, {"title": "Lịch mentor tháng 1", "tag": "Ops", "owner": "Program"}]}, {"title": "Đang làm", "cards": [{"title": "Lab CI/CD tuần 5–6", "tag": "Lab", "owner": "Engineering"}, {"title": "Hạ tầng tài khoản lab", "tag": "Infra", "owner": "CloudOps"}, {"title": "Bài test đầu vào", "tag": "Academic", "owner": "Curriculum"}]}, {"title": "Rà soát", "cards": [{"title": "Syllabus 16 tuần", "tag": "Academic", "owner": "Steering"}]}, {"title": "Hoàn thành", "cards": [{"title": "MoU với trường", "tag": "Partner", "owner": "Partnerships"}, {"title": "Landing page tuyển sinh", "tag": "Marketing", "owner": "Comms"}]}]}},
+      {"id": "slide-gantt-roadmap", "type": "gantt-roadmap", "group": "D", "layoutName": "Gantt Roadmap", "content": {"sectionTag": "EXECUTION PLAN", "kicker": "PROPOSED DIAGRAM · GANTT", "title": "Kế hoạch triển khai cohort theo tháng", "subtitle": "Thanh thể hiện khoảng thời gian; hình thoi là mốc cần phê duyệt.", "periods": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"], "today": 2.4, "tasks": [{"title": "Truyền thông & tuyển sinh", "owner": "Comms", "start": 0, "end": 2}, {"title": "Đánh giá đầu vào", "owner": "Academic", "start": 1.5, "end": 3}, {"title": "Foundation", "owner": "Mentors", "start": 2.5, "end": 4.5}, {"title": "Track CloudOps / DevOps", "owner": "Mentors", "start": 4.5, "end": 6.5}, {"title": "Capstone", "owner": "Engineering", "start": 6, "end": 7.2}, {"title": "Phỏng vấn & tuyển dụng", "owner": "Partners", "start": 6.8, "end": 8}], "milestones": [{"label": "Chốt danh sách", "at": 3}, {"label": "Gate review", "at": 4.5}, {"label": "Demo day", "at": 7.2}]}},
+      {"id": "slide-line-chart", "type": "line-chart", "group": "D", "layoutName": "Line Trend Chart", "content": {"sectionTag": "PERFORMANCE TREND", "kicker": "PROPOSED CHART · TREND LINE", "title": "Điểm sẵn sàng kỹ thuật tăng theo tuần", "subtitle": "Điểm trung bình (thang 100) của hai track qua 8 tuần đào tạo.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "unit": "điểm", "labels": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"], "series": [{"name": "CloudOps", "values": [32, 41, 49, 58, 64, 71, 79, 86]}, {"name": "DevOps", "values": [28, 35, 44, 51, 60, 69, 76, 84]}], "insightLabel": "Mức tăng sau 8 tuần", "insightValue": "+54", "insightText": "Điểm CloudOps tăng từ 32 lên 86. Tuần 4–5 là giai đoạn bứt tốc khi bắt đầu lab tự động hoá."}},
+      {"id": "slide-waterfall-chart", "type": "waterfall-chart", "group": "D", "layoutName": "Waterfall Chart", "content": {"sectionTag": "BUDGET BRIDGE", "kicker": "PROPOSED CHART · WATERFALL", "title": "Cầu ngân sách cohort: từ kế hoạch đến thực tế", "subtitle": "Các khoản tăng/giảm giải thích chênh lệch giữa ngân sách đầu kỳ và cuối kỳ (triệu đồng).", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "unit": "tr", "items": [{"label": "Ngân sách đầu kỳ", "value": 500, "kind": "start"}, {"label": "Hạ tầng lab", "value": 80, "kind": "delta"}, {"label": "Mentor bổ sung", "value": 45, "kind": "delta"}, {"label": "Tài trợ đối tác", "value": -120, "kind": "delta"}, {"label": "Tối ưu chi phí cloud", "value": -15, "kind": "delta"}, {"label": "Sự kiện Demo day", "value": 30, "kind": "delta"}, {"label": "Cuối kỳ", "value": 0, "kind": "total"}]}},
+      {"id": "slide-bar-ranking", "type": "bar-ranking", "group": "D", "layoutName": "Bar Ranking", "content": {"sectionTag": "SKILL DEMAND", "kicker": "PROPOSED CHART · RANKING", "title": "Kỹ năng được doanh nghiệp yêu cầu nhiều nhất", "subtitle": "Số tin tuyển dụng nhắc đến kỹ năng trong mẫu khảo sát.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "unit": "tin", "highlight": 0, "target": 60, "targetLabel": "Ngưỡng ưu tiên", "items": [{"label": "Cloud (AWS/Azure/GCP)", "value": 86}, {"label": "CI/CD", "value": 74}, {"label": "Container & Kubernetes", "value": 69}, {"label": "Infrastructure as Code", "value": 57}, {"label": "Monitoring & Observability", "value": 48}, {"label": "Security cơ bản", "value": 41}]}},
+      {"id": "slide-radar-chart", "type": "radar-chart", "group": "D", "layoutName": "Radar Chart", "content": {"sectionTag": "CAPABILITY PROFILE", "kicker": "PROPOSED CHART · RADAR", "title": "Hồ sơ năng lực trước và sau chương trình", "subtitle": "Thang 0–5 cho từng nhóm kỹ năng của một cohort.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "max": 5, "axes": ["Cloud", "Linux", "CI/CD", "IaC", "Security", "Monitoring"], "series": [{"name": "Sau chương trình", "values": [4.5, 4.2, 4, 3.8, 3.5, 4.1]}, {"name": "Đầu vào", "values": [1.8, 2.6, 1.5, 1.2, 1.6, 1.4]}]}},
+      {"id": "slide-progress-rings", "type": "progress-rings", "group": "D", "layoutName": "Progress Rings", "content": {"sectionTag": "PROGRAM HEALTH", "kicker": "PROPOSED CHART · PROGRESS", "title": "Tiến độ các hạng mục chuẩn bị", "subtitle": "Phần trăm hoàn thành tại thời điểm báo cáo.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "rings": [{"value": 92, "title": "Syllabus", "desc": "16 tuần nội dung đã duyệt"}, {"value": 75, "title": "Lab hands-on", "desc": "24/32 bài lab sẵn sàng"}, {"value": 60, "title": "Mentor", "desc": "9/15 mentor xác nhận lịch"}, {"value": 40, "title": "Tuyển sinh", "desc": "200/500 hồ sơ mục tiêu"}]}},
+      {"id": "slide-custom-html", "type": "custom-html", "group": "B", "layoutName": "Custom HTML", "content": {"sectionTag": "CUSTOM LAYOUT", "title": "Slide HTML tự do trong khung chuẩn", "html": "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:8px\"><div style=\"padding:44px;border-radius:24px;background:#FFF5ED;border:1px solid #FBCAAB\"><div style=\"font:800 30px Manrope;color:#F97C00;margin-bottom:14px\">content.html</div><div style=\"font:500 24px/1.55 Nunito;color:#425453\">Nhận HTML bất kỳ: bảng, danh sách, iframe, ảnh. Inline edit sẽ giữ nguyên thẻ HTML.</div></div><div style=\"padding:44px;border-radius:24px;background:#E5F4EF;border:1px solid #7FD7BB\"><div style=\"font:800 30px Manrope;color:#25AC9D;margin-bottom:14px\">Khung thương hiệu</div><div style=\"font:500 24px/1.55 Nunito;color:#425453\">Header có logo, đường kẻ cam và footer chuẩn thương hiệu. Phần ở giữa là của bạn.</div></div></div>"}},
+      {"id": "slide-custom-diagram", "type": "custom-diagram", "group": "D", "layoutName": "Custom SVG Diagram", "content": {"sectionTag": "CUSTOM DIAGRAM", "kicker": "PROPOSED DIAGRAM · CUSTOM SVG", "title": "Diagram tự vẽ bằng SVG", "subtitle": "content.svg được đặt nguyên văn vào vùng vẽ 1728 × 600 của khung diagram chuẩn.", "svg": "<rect x=\"0\" y=\"180\" width=\"480\" height=\"240\" rx=\"28\" fill=\"#F97C00\"/><text x=\"240\" y=\"312\" text-anchor=\"middle\" fill=\"#fff\" font-family=\"Manrope\" font-size=\"40\" font-weight=\"800\">Input</text><path d=\"M500 300H600\" stroke=\"#425453\" stroke-width=\"6\"/><path d=\"M596 284L624 300L596 316Z\" fill=\"#425453\"/><rect x=\"624\" y=\"180\" width=\"480\" height=\"240\" rx=\"28\" fill=\"#FFFFFF\" stroke=\"#FBCAAB\" stroke-width=\"4\"/><text x=\"864\" y=\"312\" text-anchor=\"middle\" fill=\"#425453\" font-family=\"Manrope\" font-size=\"40\" font-weight=\"800\">Process</text><path d=\"M1124 300H1224\" stroke=\"#425453\" stroke-width=\"6\"/><path d=\"M1220 284L1248 300L1220 316Z\" fill=\"#425453\"/><rect x=\"1248\" y=\"180\" width=\"480\" height=\"240\" rx=\"28\" fill=\"#25AC9D\"/><text x=\"1488\" y=\"312\" text-anchor=\"middle\" fill=\"#fff\" font-family=\"Manrope\" font-size=\"40\" font-weight=\"800\">Output</text>"}}
     ];
+
+    /* Nội dung mặc định khi chèn layout mới (Add Slide / window.XB.addSlide). */
+    const XB_LAYOUT_SAMPLES = {"venn-diagram": {"sectionTag": "VALUE PROPOSITION", "kicker": "PROPOSED DIAGRAM · VENN", "title": "Điểm giao thoa tạo nên năng lực thực chiến", "subtitle": "Ba nguồn lực gặp nhau ở trung tâm: học viên sẵn sàng làm việc trong môi trường production.", "center": "Job-ready", "centerSub": "Talent", "sets": [{"title": "Nhà trường", "desc": "Nền tảng học thuật, sinh viên có định hướng và lịch học ổn định."}, {"title": "Doanh nghiệp", "desc": "Bài toán thật, mentor thực chiến và nhu cầu tuyển dụng."}, {"title": "XBrain", "desc": "Chương trình, lab hands-on và phương pháp đánh giá năng lực."}]}, "swot-analysis": {"sectionTag": "STRATEGIC ANALYSIS", "kicker": "PROPOSED DIAGRAM · SWOT", "title": "Phân tích SWOT chương trình đào tạo CloudOps", "subtitle": "Bức tranh nội lực và bối cảnh thị trường để chọn ưu tiên cho cohort tiếp theo.", "quadrants": [{"letter": "S", "title": "Strengths · Điểm mạnh", "items": ["Mentor đến từ AWS, Synaptix, TechX", "Lab mô phỏng môi trường production", "Lộ trình rõ theo track", "Đánh giá bằng sản phẩm thật"]}, {"letter": "W", "title": "Weaknesses · Điểm yếu", "items": ["Quy mô cohort còn nhỏ", "Phụ thuộc lịch mentor", "Nội dung GenAI mới hình thành"]}, {"letter": "O", "title": "Opportunities · Cơ hội", "items": ["Nhu cầu kỹ sư cloud tăng", "Hợp tác nhiều trường đại học", "Chuyển đổi số tại doanh nghiệp", "Chứng chỉ quốc tế được ưa chuộng"]}, {"letter": "T", "title": "Threats · Thách thức", "items": ["Cạnh tranh từ khóa học online", "Công nghệ thay đổi nhanh", "Học viên bỏ giữa chừng"]}]}, "priority-matrix": {"sectionTag": "DECISION SUPPORT", "kicker": "PROPOSED DIAGRAM · IMPACT × EFFORT", "title": "Ma trận ưu tiên sáng kiến", "subtitle": "Mỗi hạng mục được chấm theo tác động (0–100) và công sức (0–100) để chọn việc làm trước.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "xLabel": "Công sức thực hiện →", "yLabel": "Tác động →", "quadrantLabels": ["Làm ngay", "Dự án lớn", "Làm khi rảnh", "Cân nhắc bỏ"], "items": [{"label": "Bộ lab CI/CD mẫu", "x": 25, "y": 82}, {"label": "Ngân hàng câu hỏi đánh giá", "x": 35, "y": 68}, {"label": "Nền tảng học trực tuyến riêng", "x": 85, "y": 78}, {"label": "Chương trình mentor 1-1", "x": 62, "y": 88}, {"label": "Video giới thiệu track", "x": 20, "y": 30}, {"label": "Tự viết công cụ chấm bài", "x": 80, "y": 28}]}, "mind-map": {"sectionTag": "IDEATION", "kicker": "PROPOSED DIAGRAM · MIND MAP", "title": "Sơ đồ tư duy: thiết kế một cohort đào tạo", "subtitle": "Ý tưởng trung tâm và các nhánh cần quyết định trước khi khởi động.", "center": "Cohort 2026", "centerSub": "CloudOps & DevOps", "branches": [{"title": "Học viên", "leaves": ["Tiêu chí đầu vào", "Bài test năng lực", "Phân nhóm theo track"]}, {"title": "Nội dung", "leaves": ["Syllabus 16 tuần", "Lab hands-on", "Capstone project"]}, {"title": "Mentor", "leaves": ["Lịch check-in", "Rubric đánh giá", "Playbook"]}, {"title": "Đối tác", "leaves": ["Trường đại học", "Doanh nghiệp tuyển dụng"]}, {"title": "Vận hành", "leaves": ["Lịch học", "Hạ tầng lab", "Hỗ trợ học viên"]}, {"title": "Đo lường", "leaves": ["Tỉ lệ hoàn thành", "Điểm capstone", "Tỉ lệ có việc"]}]}, "fishbone": {"sectionTag": "ROOT CAUSE ANALYSIS", "kicker": "PROPOSED DIAGRAM · FISHBONE", "title": "Vì sao học viên chưa hoàn thành lab đúng hạn?", "subtitle": "Phân tích nguyên nhân theo 6 nhóm để chọn biện pháp khắc phục có trọng tâm.", "problem": "Tỉ lệ hoàn thành lab thấp", "problemSub": "Vấn đề cần giải quyết", "categories": [{"title": "Học viên", "causes": ["Thiếu nền tảng Linux", "Quỹ thời gian hạn chế", "Ngại hỏi mentor"]}, {"title": "Nội dung", "causes": ["Lab quá dài", "Hướng dẫn thiếu bước", "Ví dụ chưa sát thực tế"]}, {"title": "Mentor", "causes": ["Check-in thưa", "Phản hồi chậm"]}, {"title": "Hạ tầng", "causes": ["Tài khoản lab cấp muộn", "Giới hạn quota", "Môi trường không ổn định"]}, {"title": "Quy trình", "causes": ["Hạn nộp dồn cuối tuần", "Chưa có nhắc việc"]}, {"title": "Đo lường", "causes": ["Không theo dõi theo ngày", "Thiếu cảnh báo sớm"]}]}, "staircase": {"sectionTag": "MATURITY MODEL", "kicker": "PROPOSED DIAGRAM · STAIRCASE", "title": "Bậc thang trưởng thành của kỹ sư CloudOps", "subtitle": "Mỗi bậc là một mức năng lực có tiêu chí quan sát được.", "levels": [{"tag": "LEVEL 01", "title": "Nền tảng", "desc": "Linux, mạng, khái niệm cloud cơ bản."}, {"tag": "LEVEL 02", "title": "Thực hành có hướng dẫn", "desc": "Dựng hạ tầng theo lab, đọc log và sửa lỗi đơn giản."}, {"tag": "LEVEL 03", "title": "Vận hành độc lập", "desc": "Tự động hoá, giám sát, xử lý sự cố thường gặp."}, {"tag": "LEVEL 04", "title": "Thiết kế giải pháp", "desc": "Chọn kiến trúc, tối ưu chi phí và bảo mật."}, {"tag": "LEVEL 05", "title": "Dẫn dắt", "desc": "Mentor người khác, chuẩn hoá quy trình cho đội."}]}, "concentric-circles": {"sectionTag": "CORE MODEL", "kicker": "PROPOSED DIAGRAM · CONCENTRIC", "title": "Mô hình năng lực theo vòng đồng tâm", "subtitle": "Từ giá trị cốt lõi ở trung tâm lan ra kỹ năng, công cụ và hệ sinh thái.", "layers": [{"title": "Tư duy", "desc": "Học qua thực hành, chịu trách nhiệm với kết quả."}, {"title": "Kỹ năng lõi", "desc": "Linux, mạng, lập trình script, bảo mật cơ bản."}, {"title": "Công cụ", "desc": "Cloud services, CI/CD, IaC, giám sát."}, {"title": "Hệ sinh thái", "desc": "Mentor, cộng đồng alumni, đối tác tuyển dụng."}]}, "value-chain": {"sectionTag": "VALUE CHAIN", "kicker": "PROPOSED DIAGRAM · CHEVRON", "title": "Chuỗi giá trị đào tạo nhân lực công nghệ", "subtitle": "Mỗi chặng tạo ra một đầu ra cụ thể cho chặng tiếp theo.", "stages": [{"title": "Thu hút", "items": ["Roadshow tại trường", "Cộng đồng công nghệ"]}, {"title": "Tuyển chọn", "items": ["Bài test năng lực", "Phỏng vấn định hướng"]}, {"title": "Đào tạo", "items": ["Lab hands-on", "Mentor check-in", "Đánh giá theo rubric"]}, {"title": "Dự án", "items": ["Capstone theo nhóm", "Bảo vệ kiến trúc"]}, {"title": "Việc làm", "items": ["Phỏng vấn doanh nghiệp", "Cộng đồng alumni"]}]}, "decision-tree": {"sectionTag": "DECISION GUIDE", "kicker": "PROPOSED DIAGRAM · DECISION TREE", "title": "Chọn track phù hợp cho học viên", "subtitle": "Hai câu hỏi định hướng giúp xếp học viên vào lộ trình phù hợp nhất.", "root": {"title": "Đã có nền tảng lập trình?", "desc": "Câu hỏi đầu vào"}, "branches": [{"label": "Có", "title": "Thích tự động hoá quy trình?", "children": [{"label": "Có", "title": "DevOps Track", "desc": "CI/CD, container, IaC"}, {"label": "Chưa", "title": "CloudOps Track", "desc": "Vận hành, giám sát, chi phí"}]}, {"label": "Chưa", "title": "Sẵn sàng học bổ trợ 4 tuần?", "children": [{"label": "Có", "title": "Foundation + CloudOps", "desc": "Bổ trợ Linux & mạng trước"}, {"label": "Chưa", "title": "Khóa nhập môn", "desc": "Đăng ký cohort kế tiếp"}]}]}, "system-architecture": {"sectionTag": "SOLUTION ARCHITECTURE", "kicker": "PROPOSED DIAGRAM · SYSTEM CONTEXT", "title": "Kiến trúc nền tảng lab cho học viên", "subtitle": "Luồng từ người dùng đến dữ liệu, chia theo vùng trách nhiệm.", "zones": [{"title": "Người dùng", "items": [{"title": "Học viên", "desc": "Trình duyệt, IDE"}, {"title": "Mentor", "desc": "Chấm bài, phản hồi"}]}, {"title": "Truy cập", "items": [{"title": "CDN & WAF", "desc": "Bảo vệ biên"}, {"title": "Đăng nhập SSO", "desc": "Phân quyền theo vai"}]}, {"title": "Ứng dụng", "items": [{"title": "Cổng học tập", "desc": "Bài học, tiến độ"}, {"title": "Dịch vụ lab", "desc": "Cấp môi trường"}, {"title": "Chấm tự động", "desc": "Kiểm tra kết quả"}]}, {"title": "Dữ liệu", "items": [{"title": "Cơ sở dữ liệu", "desc": "Hồ sơ, điểm số"}, {"title": "Kho lưu trữ", "desc": "Bài nộp, log"}]}, {"title": "Vận hành", "items": [{"title": "Giám sát", "desc": "Metrics, cảnh báo"}, {"title": "Chi phí", "desc": "Ngân sách theo cohort"}]}]}, "kanban-board": {"sectionTag": "DELIVERY TRACKING", "kicker": "PROPOSED DIAGRAM · KANBAN", "title": "Bảng công việc chuẩn bị cohort", "subtitle": "Trạng thái từng hạng mục và người phụ trách tại thời điểm báo cáo.", "note": "Trạng thái minh họa · cập nhật từ công cụ quản lý công việc trước khi trình bày", "columns": [{"title": "Backlog", "cards": [{"title": "Video giới thiệu track", "tag": "Marketing", "owner": "Comms"}, {"title": "Khảo sát kỳ vọng học viên", "tag": "Research", "owner": "Ops"}]}, {"title": "Cần làm", "cards": [{"title": "Rubric capstone", "tag": "Academic", "owner": "Curriculum"}, {"title": "Lịch mentor tháng 1", "tag": "Ops", "owner": "Program"}]}, {"title": "Đang làm", "cards": [{"title": "Lab CI/CD tuần 5–6", "tag": "Lab", "owner": "Engineering"}, {"title": "Hạ tầng tài khoản lab", "tag": "Infra", "owner": "CloudOps"}, {"title": "Bài test đầu vào", "tag": "Academic", "owner": "Curriculum"}]}, {"title": "Rà soát", "cards": [{"title": "Syllabus 16 tuần", "tag": "Academic", "owner": "Steering"}]}, {"title": "Hoàn thành", "cards": [{"title": "MoU với trường", "tag": "Partner", "owner": "Partnerships"}, {"title": "Landing page tuyển sinh", "tag": "Marketing", "owner": "Comms"}]}]}, "gantt-roadmap": {"sectionTag": "EXECUTION PLAN", "kicker": "PROPOSED DIAGRAM · GANTT", "title": "Kế hoạch triển khai cohort theo tháng", "subtitle": "Thanh thể hiện khoảng thời gian; hình thoi là mốc cần phê duyệt.", "periods": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"], "today": 2.4, "tasks": [{"title": "Truyền thông & tuyển sinh", "owner": "Comms", "start": 0, "end": 2}, {"title": "Đánh giá đầu vào", "owner": "Academic", "start": 1.5, "end": 3}, {"title": "Foundation", "owner": "Mentors", "start": 2.5, "end": 4.5}, {"title": "Track CloudOps / DevOps", "owner": "Mentors", "start": 4.5, "end": 6.5}, {"title": "Capstone", "owner": "Engineering", "start": 6, "end": 7.2}, {"title": "Phỏng vấn & tuyển dụng", "owner": "Partners", "start": 6.8, "end": 8}], "milestones": [{"label": "Chốt danh sách", "at": 3}, {"label": "Gate review", "at": 4.5}, {"label": "Demo day", "at": 7.2}]}, "line-chart": {"sectionTag": "PERFORMANCE TREND", "kicker": "PROPOSED CHART · TREND LINE", "title": "Điểm sẵn sàng kỹ thuật tăng theo tuần", "subtitle": "Điểm trung bình (thang 100) của hai track qua 8 tuần đào tạo.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "unit": "điểm", "labels": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"], "series": [{"name": "CloudOps", "values": [32, 41, 49, 58, 64, 71, 79, 86]}, {"name": "DevOps", "values": [28, 35, 44, 51, 60, 69, 76, 84]}], "insightLabel": "Mức tăng sau 8 tuần", "insightValue": "+54", "insightText": "Điểm CloudOps tăng từ 32 lên 86. Tuần 4–5 là giai đoạn bứt tốc khi bắt đầu lab tự động hoá."}, "waterfall-chart": {"sectionTag": "BUDGET BRIDGE", "kicker": "PROPOSED CHART · WATERFALL", "title": "Cầu ngân sách cohort: từ kế hoạch đến thực tế", "subtitle": "Các khoản tăng/giảm giải thích chênh lệch giữa ngân sách đầu kỳ và cuối kỳ (triệu đồng).", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "unit": "tr", "items": [{"label": "Ngân sách đầu kỳ", "value": 500, "kind": "start"}, {"label": "Hạ tầng lab", "value": 80, "kind": "delta"}, {"label": "Mentor bổ sung", "value": 45, "kind": "delta"}, {"label": "Tài trợ đối tác", "value": -120, "kind": "delta"}, {"label": "Tối ưu chi phí cloud", "value": -15, "kind": "delta"}, {"label": "Sự kiện Demo day", "value": 30, "kind": "delta"}, {"label": "Cuối kỳ", "value": 0, "kind": "total"}]}, "bar-ranking": {"sectionTag": "SKILL DEMAND", "kicker": "PROPOSED CHART · RANKING", "title": "Kỹ năng được doanh nghiệp yêu cầu nhiều nhất", "subtitle": "Số tin tuyển dụng nhắc đến kỹ năng trong mẫu khảo sát.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "unit": "tin", "highlight": 0, "target": 60, "targetLabel": "Ngưỡng ưu tiên", "items": [{"label": "Cloud (AWS/Azure/GCP)", "value": 86}, {"label": "CI/CD", "value": 74}, {"label": "Container & Kubernetes", "value": 69}, {"label": "Infrastructure as Code", "value": 57}, {"label": "Monitoring & Observability", "value": 48}, {"label": "Security cơ bản", "value": 41}]}, "radar-chart": {"sectionTag": "CAPABILITY PROFILE", "kicker": "PROPOSED CHART · RADAR", "title": "Hồ sơ năng lực trước và sau chương trình", "subtitle": "Thang 0–5 cho từng nhóm kỹ năng của một cohort.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "max": 5, "axes": ["Cloud", "Linux", "CI/CD", "IaC", "Security", "Monitoring"], "series": [{"name": "Sau chương trình", "values": [4.5, 4.2, 4, 3.8, 3.5, 4.1]}, {"name": "Đầu vào", "values": [1.8, 2.6, 1.5, 1.2, 1.6, 1.4]}]}, "progress-rings": {"sectionTag": "PROGRAM HEALTH", "kicker": "PROPOSED CHART · PROGRESS", "title": "Tiến độ các hạng mục chuẩn bị", "subtitle": "Phần trăm hoàn thành tại thời điểm báo cáo.", "note": "Dữ liệu minh họa · thay bằng số liệu đã kiểm chứng trước khi dùng chính thức", "rings": [{"value": 92, "title": "Syllabus", "desc": "16 tuần nội dung đã duyệt"}, {"value": 75, "title": "Lab hands-on", "desc": "24/32 bài lab sẵn sàng"}, {"value": 60, "title": "Mentor", "desc": "9/15 mentor xác nhận lịch"}, {"value": 40, "title": "Tuyển sinh", "desc": "200/500 hồ sơ mục tiêu"}]}, "custom-html": {"sectionTag": "CUSTOM LAYOUT", "title": "Slide HTML tự do trong khung chuẩn", "html": "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:8px\"><div style=\"padding:44px;border-radius:24px;background:#FFF5ED;border:1px solid #FBCAAB\"><div style=\"font:800 30px Manrope;color:#F97C00;margin-bottom:14px\">content.html</div><div style=\"font:500 24px/1.55 Nunito;color:#425453\">Nhận HTML bất kỳ: bảng, danh sách, iframe, ảnh. Inline edit sẽ giữ nguyên thẻ HTML.</div></div><div style=\"padding:44px;border-radius:24px;background:#E5F4EF;border:1px solid #7FD7BB\"><div style=\"font:800 30px Manrope;color:#25AC9D;margin-bottom:14px\">Khung thương hiệu</div><div style=\"font:500 24px/1.55 Nunito;color:#425453\">Header có logo, đường kẻ cam và footer chuẩn thương hiệu. Phần ở giữa là của bạn.</div></div></div>"}, "custom-diagram": {"sectionTag": "CUSTOM DIAGRAM", "kicker": "PROPOSED DIAGRAM · CUSTOM SVG", "title": "Diagram tự vẽ bằng SVG", "subtitle": "content.svg được đặt nguyên văn vào vùng vẽ 1728 × 600 của khung diagram chuẩn.", "svg": "<rect x=\"0\" y=\"180\" width=\"480\" height=\"240\" rx=\"28\" fill=\"#F97C00\"/><text x=\"240\" y=\"312\" text-anchor=\"middle\" fill=\"#fff\" font-family=\"Manrope\" font-size=\"40\" font-weight=\"800\">Input</text><path d=\"M500 300H600\" stroke=\"#425453\" stroke-width=\"6\"/><path d=\"M596 284L624 300L596 316Z\" fill=\"#425453\"/><rect x=\"624\" y=\"180\" width=\"480\" height=\"240\" rx=\"28\" fill=\"#FFFFFF\" stroke=\"#FBCAAB\" stroke-width=\"4\"/><text x=\"864\" y=\"312\" text-anchor=\"middle\" fill=\"#425453\" font-family=\"Manrope\" font-size=\"40\" font-weight=\"800\">Process</text><path d=\"M1124 300H1224\" stroke=\"#425453\" stroke-width=\"6\"/><path d=\"M1220 284L1248 300L1220 316Z\" fill=\"#425453\"/><rect x=\"1248\" y=\"180\" width=\"480\" height=\"240\" rx=\"28\" fill=\"#25AC9D\"/><text x=\"1488\" y=\"312\" text-anchor=\"middle\" fill=\"#fff\" font-family=\"Manrope\" font-size=\"40\" font-weight=\"800\">Output</text>"}};
 
     /* ==========================================================================
        REUSABLE BRAND CHROME HELPERS (Header, Co-branding, AWS Partner Badge, Footer)
@@ -4119,10 +4191,396 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
     function dgLayers(c){let a=(c.tiers||[]).slice(0,5),o='';a.forEach((t,i)=>{let y=30+i*112,k=DG_COLORS[i%5];o+=dgR(110,y,1500,103,i%2?'#F8FAF9':'#FFF8F1','#DEE8E2',18)+`<rect x="110" y="${y}" width="15" height="103" rx="7" fill="${k}"/>`+dgT(177,y+44,t.title,27,'#425453','start',46,1)+dgT(179,y+78,t.desc,20,'#667875','start',89,1,500)+dgR(1370,y+28,201,46,k,'none',23)+dgT(1470,y+59,t.tag,19,'white','middle',16,1);});return o;}
     function dgSankey(c){let left=(c.sources||[]).slice(0,4),right=(c.targets||[]).slice(0,4),links=(c.links||[]).slice(0,15),o='',Y=(i,n)=>56+i*(474/Math.max(1,n-1));links.forEach((l,i)=>{let a=Math.trunc(dgN(l.from,-1)),b=Math.trunc(dgN(l.to,-1));if(a<0||b<0||a>=left.length||b>=right.length)return;let y1=Y(a,left.length),y2=Y(b,right.length),width=Math.max(10,dgClamp(l.value,2,70)*1.4);o+=`<path d="M330 ${y1} C650 ${y1},1050 ${y2},1370 ${y2}" stroke="${DG_COLORS[a%5]}" stroke-width="${width}" stroke-opacity=".27" stroke-linecap="round" fill="none"/>`;});left.forEach((t,i)=>{let y=Y(i,left.length),k=DG_COLORS[i%5];o+=dgR(24,y-47,306,95,k,'none',16)+dgT(177,y+7,t.label,23,'white','middle',24,2);});right.forEach((t,i)=>{let y=Y(i,right.length);o+=dgR(1370,y-47,326,95,'white','#D6E3DC',16)+dgT(1533,y+7,t.label,22,'#425453','middle',26,2);});return o;}
     function dgHeat(c){let cols=(c.columns||[]).slice(0,7),rows=(c.rows||[]).slice(0,6),x0=318,y0=102,cw=182,ch=72,colors=['#F1F4F2','#DFEEE8','#B4E6D5','#7FD7BB','#25AC9D','#166C62'],o='';cols.forEach((t,j)=>{o+=dgT(x0+j*cw+cw/2,y0-26,t,20,'#566B65','middle',14,1);});rows.forEach((t,i)=>{let y=y0+i*84;o+=dgT(56,y+46,t.label,23,'#425453','start',20,1);(t.values||[]).slice(0,cols.length).forEach((v,j)=>{let n=Math.round(dgClamp(v,0,5)),x=x0+j*cw;o+=dgR(x+4,y,cw-11,ch,colors[n],'none',12)+dgT(x+cw/2,y+46,n,24,n>3?'white':'#425453','middle');});});o+=dgT(1180,577,'0 = Not ready      5 = Advanced',20,'#70827D','start',43,1,500);return o;}
-    const DIAGRAM_RENDERERS = Object.freeze({'process-flow':dgProcess, 'conversion-funnel':dgFunnel, 'cycle-loop':dgCycle, 'strategy-pyramid':dgPyramid, 'decision-matrix':dgMatrix, 'org-chart':dgOrg, 'swimlane':dgSwim, 'hub-spoke':dgHub, 'learner-journey':dgJourney, 'layered-architecture':dgLayers, 'sankey-flow':dgSankey, 'heatmap':dgHeat});
+    /* Diagram library mở rộng (17 diagram/biểu đồ SVG): dùng chung khung dgPage và bảng màu thương hiệu. */
+    const XB_THEME = Object.freeze({"colors": {"primary": "#F97C00", "primaryMid": "#FF8B2C", "primaryBright": "#FF991D", "peach": "#FBCAAB", "peachSoft": "#FFF5ED", "peachSurface": "#FDECE1", "darkTeal": "#425453", "heading": "#2B3736", "gray": "#B6B7B7", "grayLight": "#D3D1CF", "white": "#FFFFFF", "line": "#DEE8E2", "muted": "#5E6E6D", "teal": "#25AC9D", "mint": "#7FD7BB", "mintSoft": "#E5F4EF", "purple": "#85439A", "indigo": "#24338A", "blue": "#007BC1", "cyan": "#00B3D8", "redOrange": "#FE4A0B", "amber": "#F6AF2F", "yellow": "#FFD54C"}, "chartSeries": ["#F97C00", "#25AC9D", "#425453", "#007BC1", "#85439A", "#F6AF2F"], "diagramSeries": ["#F97C00", "#25AC9D", "#007BC1", "#85439A", "#F6AF2F", "#425453"]});
+    const XO = XB_THEME.colors.primary, XT = XB_THEME.colors.darkTeal, XTEAL = XB_THEME.colors.teal, XMINT = XB_THEME.colors.mint, XMINTS = XB_THEME.colors.mintSoft, XPEACH = XB_THEME.colors.peachSoft, XPEACH2 = XB_THEME.colors.peach, XGRAY = XB_THEME.colors.gray, XLINE = XB_THEME.colors.line, XMUTED = XB_THEME.colors.muted, XRED = XB_THEME.colors.redOrange, XB_SERIES = XB_THEME.chartSeries;
+    const fit = (w, size) => Math.max(4, Math.floor(w / (size * 0.55)));
+    function ink(hex) {
+      const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '')); if (!m) return '#FFFFFF';
+      const n = parseInt(m[1], 16), ch = [n >> 16 & 255, n >> 8 & 255, n & 255].map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); });
+      return (.2126 * ch[0] + .7152 * ch[1] + .0722 * ch[2]) > .45 ? XT : '#FFFFFF';
+    }
+    function xT(x, y, s, o = {}) {
+      const size = o.size || 22, lh = size * (o.lh || 1.26), lines = dgLines(s, o.max || fit(o.w || 400, size), o.count || 1);
+      const fam = o.font === 'b' ? 'Nunito,Arial,sans-serif' : 'Manrope,Arial,sans-serif';
+      const y0 = o.valign === 'middle' ? y - (lines.length - 1) * lh / 2 + size * 0.35 : y;
+      return `<text x="${x}" y="${y0}" text-anchor="${o.anchor || 'start'}" fill="${o.color || XT}" font-family="${fam}" font-size="${size}" font-weight="${o.weight || 700}"${o.ls ? ` letter-spacing="${o.ls}"` : ''}>${lines.map((l, i) => `<tspan x="${x}" dy="${i ? lh : 0}">${l}</tspan>`).join('')}</text>`;
+    }
+    const xTC = (x, y, s, o = {}) => xT(x, y, s, { anchor: 'middle', valign: 'middle', ...o });
+    const xRect = (x, y, w, h, fill, r = 16, op = 1) => `<rect x="${x}" y="${y}" width="${Math.max(0, w)}" height="${Math.max(0, h)}" rx="${r}" fill="${fill}"${op < 1 ? ` fill-opacity="${op}"` : ''}/>`;
+    function xArrow(x1, y1, x2, y2, col = XO, w = 4) {
+      const a = Math.atan2(y2 - y1, x2 - x1), hx = x2 - Math.cos(a) * 15, hy = y2 - Math.sin(a) * 15, px = Math.sin(a) * 9, py = -Math.cos(a) * 9;
+      return `<path d="M${x1} ${y1}L${hx} ${hy}" stroke="${col}" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="M${hx + px} ${hy + py}L${x2} ${y2}L${hx - px} ${hy - py}Z" fill="${col}"/>`;
+    }
+    const xNum = v => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
+    const xFmt = v => { const n = xNum(v); return (Math.round(n * 10) / 10).toLocaleString('vi-VN'); };
+    function xNice(lo, hi, ticks = 5) {
+      if (hi === lo) hi = lo + 1;
+      const raw = (hi - lo) / ticks, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+      const step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * mag;
+      return { lo: Math.floor(lo / step) * step, hi: Math.ceil(hi / step) * step, step };
+    }
+    function dgVenn(c) { /* 29. Venn Diagram */
+      const s = (c.sets || []).slice(0, 3), three = s.length >= 3, cols = [XO, XTEAL, XT];
+      const P = three ? { r: 195, c: [[505, 212], [745, 212], [625, 392]], lab: [[430, 170], [820, 170], [625, 488]], mid: [625, 272] }
+        : { r: 230, c: [[420, 300], [700, 300]], lab: [[320, 300], [800, 300]], mid: [560, 300] };
+      let o = '';
+      s.forEach((t, i) => { const [x, y] = P.c[i]; o += `<circle cx="${x}" cy="${y}" r="${P.r}" fill="${cols[i]}" fill-opacity=".13" stroke="${cols[i]}" stroke-width="4"/>`; });
+      s.forEach((t, i) => { const [x, y] = P.lab[i]; o += xTC(x, y, t.title, { size: 27, color: cols[i], max: 12, count: 2, weight: 800 }); });
+      const [mx, my] = P.mid;
+      o += `<rect x="${mx - 100}" y="${my - 40}" width="200" height="80" rx="40" fill="#FFFFFF" stroke="${XO}" stroke-width="3"/>`
+        + xTC(mx, my - (c.centerSub ? 11 : 0), c.center || '', { size: 23, color: XO, max: 15, weight: 800 })
+        + (c.centerSub ? xTC(mx, my + 17, c.centerSub, { size: 16, color: XT, max: 20, font: 'b' }) : '');
+      const n = s.length || 1, x0 = 1000, w = 728, h = Math.min(220, (600 - (n - 1) * 18) / n), top = (600 - (n * h + (n - 1) * 18)) / 2;
+      s.forEach((t, i) => {
+        const y = top + i * (h + 18);
+        o += dgR(x0, y, w, h, '#FFFFFF', XLINE, 20) + xRect(x0, y, 12, h, cols[i], 6)
+          + xT(x0 + 44, y + 54, t.title, { size: 27, color: XT, max: fit(w - 80, 27), weight: 800 })
+          + xT(x0 + 44, y + 98, t.desc, { size: 20, color: XMUTED, max: fit(w - 80, 20), count: h > 200 ? 4 : 3, font: 'b', weight: 600 });
+      });
+      return o;
+    }
+    function dgSwot(c) { /* 30. SWOT Analysis */
+      const q = (c.quadrants || []).slice(0, 4), cols = [XTEAL, XT, XO, XRED], tints = [XMINTS, '#EEF2F1', XPEACH, '#FFF0EA'];
+      const w = 852, h = 288; let o = '';
+      q.forEach((t, i) => {
+        const x = (i % 2) * (w + 24), y = Math.floor(i / 2) * (h + 24), k = cols[i];
+        o += dgR(x, y, w, h, tints[i], 'none', 22)
+          + `<path d="M${x + 22} ${y}H${x + 150}V${y + h}H${x + 22}A22 22 0 0 1 ${x} ${y + h - 22}V${y + 22}A22 22 0 0 1 ${x + 22} ${y}Z" fill="${k}"/>`
+          + xTC(x + 75, y + h / 2, t.letter || 'SWOT'[i], { size: 118, color: '#FFFFFF', max: 3, weight: 800 })
+          + xT(x + 186, y + 60, t.title, { size: 29, color: k, max: fit(w - 210, 29), weight: 800 });
+        (t.items || []).slice(0, 4).forEach((it, j) => {
+          const yy = y + 116 + j * 44;
+          o += `<circle cx="${x + 196}" cy="${yy - 7}" r="6" fill="${k}"/>` + xT(x + 216, yy, it, { size: 21, color: XT, max: fit(w - 240, 21), font: 'b', weight: 600 });
+        });
+      });
+      return o;
+    }
+    function dgPriority(c) { /* 31. Priority Matrix */
+      const px = 120, py = 8, pw = 980, ph = 520, L = c.quadrantLabels || [];
+      const qf = [XPEACH, '#F2F7F5', '#F6F8F7', '#F8F9FA'];
+      let o = xRect(px, py, pw / 2, ph / 2, qf[0], 0) + xRect(px + pw / 2, py, pw / 2, ph / 2, qf[1], 0) + xRect(px, py + ph / 2, pw / 2, ph / 2, qf[2], 0) + xRect(px + pw / 2, py + ph / 2, pw / 2, ph / 2, qf[3], 0)
+        + `<path d="M${px + pw / 2} ${py}V${py + ph}M${px} ${py + ph / 2}H${px + pw}" stroke="#FFFFFF" stroke-width="6"/>`
+        + xT(px + 26, py + 46, L[0] || 'Quick wins', { size: 24, color: XO, max: 26, weight: 800 })
+        + xT(px + pw - 26, py + 46, L[1] || 'Major projects', { size: 24, color: XTEAL, max: 26, weight: 800, anchor: 'end' })
+        + xT(px + 26, py + ph - 24, L[2] || 'Fill-ins', { size: 24, color: '#7C8B88', max: 26, weight: 800 })
+        + xT(px + pw - 26, py + ph - 24, L[3] || 'Thankless', { size: 24, color: '#7C8B88', max: 26, weight: 800, anchor: 'end' })
+        + xArrow(px - 26, py + ph, px - 26, py + 4, XT, 3) + xArrow(px, py + ph + 26, px + pw - 4, py + ph + 26, XT, 3)
+        + `<text transform="rotate(-90 ${px - 56} ${py + ph / 2})" x="${px - 56}" y="${py + ph / 2}" text-anchor="middle" fill="${XT}" font-family="Manrope,Arial,sans-serif" font-size="20" font-weight="800">${dgLines(c.yLabel || 'Impact', 30, 1)[0] || ''}</text>`
+        + xT(px + pw / 2, 590, c.xLabel || 'Effort', { size: 20, color: XT, max: 40, weight: 800, anchor: 'middle' });
+      const items = (c.items || []).slice(0, 8), n = items.length || 1, rh = Math.min(68, 560 / n);
+      items.forEach((t, i) => {
+        const x = dgClamp(t.x, 0, 100), y = dgClamp(t.y, 0, 100), cx = px + x / 100 * pw, cy = py + (1 - y / 100) * ph;
+        const k = y >= 50 ? (x < 50 ? XO : XTEAL) : (x < 50 ? XGRAY : XT);
+        o += `<circle cx="${cx}" cy="${cy}" r="27" fill="${k}" stroke="#FFFFFF" stroke-width="4"/>` + xTC(cx, cy, i + 1, { size: 21, color: ink(k), weight: 800 });
+        const ly = 20 + i * rh + rh / 2;
+        o += `<circle cx="1190" cy="${ly}" r="19" fill="${k}"/>` + xTC(1190, ly, i + 1, { size: 17, color: ink(k), weight: 800 })
+          + xTC(1224, ly, t.label, { size: 20, color: XT, max: fit(490, 20), count: 2, anchor: 'start', font: 'b', weight: 700 });
+      });
+      return o;
+    }
+    function dgMindMap(c) { /* 32. Mind Map */
+      const cx = 864, cy = 300, b = (c.branches || []).slice(0, 6), nR = Math.ceil(b.length / 2);
+      const ys = k => k === 1 ? [300] : k === 2 ? [160, 440] : [88, 300, 512];
+      let links = '', nodes = '';
+      const side = (arr, dir, off) => arr.forEach((t, i) => {
+        const by = ys(arr.length)[i], bx = cx + dir * 420, k = XB_SERIES[(off + i) % 6];
+        const sx = cx + dir * 165, ex = bx - dir * 135;
+        links += `<path d="M${sx} ${cy}C${sx + dir * 120} ${cy},${ex - dir * 120} ${by},${ex} ${by}" stroke="${k}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+        nodes += dgR(bx - 135, by - 38, 270, 76, k, 'none', 38) + xTC(bx, by, t.title, { size: 22, color: ink(k), max: 19, count: 2, weight: 800 });
+        const lv = (t.leaves || []).slice(0, 3), offs = lv.length === 1 ? [0] : lv.length === 2 ? [-32, 32] : [-62, 0, 62];
+        lv.forEach((leaf, j) => {
+          const ly = by + offs[j], edge = dir > 0 ? bx + 195 : bx - 195, boxX = dir > 0 ? edge : edge - 245;
+          links += `<path d="M${bx + dir * 135} ${by}C${bx + dir * 165} ${by},${edge - dir * 30} ${ly},${edge} ${ly}" stroke="${k}" stroke-width="2.5" fill="none" stroke-opacity=".7"/>`;
+          nodes += dgR(boxX, ly - 23, 245, 46, '#FFFFFF', XLINE, 23) + `<circle cx="${boxX + 22}" cy="${ly}" r="6" fill="${k}"/>`
+            + xTC(boxX + 38, ly, leaf, { size: 17, color: XT, max: 22, anchor: 'start', font: 'b', weight: 700 });
+        });
+      });
+      side(b.slice(0, nR), 1, 0); side(b.slice(nR), -1, nR);
+      return links + nodes + dgR(cx - 165, cy - 72, 330, 144, XO, 'none', 72)
+        + xTC(cx, cy - (c.centerSub ? 14 : 0), c.center || 'Ý tưởng', { size: 32, color: '#FFFFFF', max: 16, weight: 800 })
+        + (c.centerSub ? xTC(cx, cy + 28, c.centerSub, { size: 18, color: '#FFF5ED', max: 26, font: 'b' }) : '');
+    }
+    function dgFishbone(c) { /* 33. Fishbone / Root Cause */
+      const cats = (c.categories || []).slice(0, 6), xs = [430, 800, 1170];
+      let o = `<path d="M30 300H1350" stroke="${XT}" stroke-width="7" stroke-linecap="round"/><path d="M1338 280L1378 300L1338 320Z" fill="${XT}"/>`
+        + dgR(1386, 200, 342, 200, XO, 'none', 26)
+        + xTC(1557, 286, c.problem || 'Vấn đề', { size: 28, color: '#FFFFFF', max: fit(300, 28), count: 3, weight: 800 })
+        + (c.problemSub ? xTC(1557, 370, c.problemSub, { size: 16, color: '#FFF5ED', max: 34, font: 'b' }) : '');
+      cats.forEach((t, i) => {
+        const top = i % 2 === 0, xj = xs[Math.floor(i / 2)], ex = xj - 200, ey = top ? 78 : 522, k = XB_SERIES[i % 6];
+        o += `<path d="M${ex} ${ey}L${xj} 300" stroke="${k}" stroke-width="5" stroke-linecap="round"/>`
+          + dgR(ex - 125, top ? 18 : 530, 250, 52, k, 'none', 14) + xTC(ex, top ? 44 : 556, t.title, { size: 20, color: ink(k), max: 20, weight: 800 });
+        (t.causes || []).slice(0, 3).forEach((cause, j) => {
+          const f = [.3, .55, .8][j], px = ex + f * 200, py = ey + f * (300 - ey);
+          o += `<path d="M${px} ${py}H${px - 24}" stroke="${k}" stroke-width="2.5"/>` + xTC(px - 32, py, cause, { size: 16, color: XT, max: 22, count: 2, anchor: 'end', font: 'b', weight: 700 });
+        });
+      });
+      return o;
+    }
+    function dgStaircase(c) { /* 34. Maturity Staircase */
+      const L = (c.levels || []).slice(0, 5), n = L.length || 1, gap = 14, w = (1728 - (n - 1) * gap) / n;
+      const fills = [XMINTS, XMINT, XTEAL, XT, XO].slice(5 - n);
+      let o = '';
+      L.forEach((t, i) => {
+        const x = i * (w + gap), top = 470 - i * (n > 1 ? 330 / (n - 1) : 0), k = fills[i], tc = ink(k);
+        o += xT(x + 6, top - 66, t.desc, { size: 18, color: XMUTED, max: fit(w - 12, 18), count: 3, font: 'b', weight: 600 })
+          + dgR(x, top, w, 600 - top, k, k === XMINTS ? XMINT : 'none', 18)
+          + xRect(x + 22, top + 22, 112, 34, tc === '#FFFFFF' ? '#FFFFFF' : XT, 17, .18)
+          + xTC(x + 78, top + 39, t.tag || ('LEVEL 0' + (i + 1)), { size: 14, color: tc, max: 12, weight: 800, ls: '.06em' })
+          + xT(x + 22, top + 94, t.title, { size: 26, color: tc, max: fit(w - 44, 26), count: 2, weight: 800 });
+      });
+      return o;
+    }
+    function dgConcentric(c) { /* 35. Concentric Circles */
+      const L = (c.layers || []).slice(0, 5), n = L.length || 1, cx = 320, cy = 300, R = 290, r0 = n === 1 ? R : 80;
+      const base = [XO, '#FF8B2C', '#FF991D', XPEACH2, XPEACH], rad = i => n === 1 ? R : r0 + i * (R - r0) / (n - 1);
+      const col = i => base[n === 1 ? 0 : Math.round(i * 4 / (n - 1))];
+      let o = '';
+      for (let i = n - 1; i >= 0; i--) o += `<circle cx="${cx}" cy="${cy}" r="${rad(i)}" fill="${col(i)}" stroke="${i === n - 1 ? XPEACH2 : '#FFFFFF'}" stroke-width="${i === n - 1 ? 2 : 4}"/>`;
+      L.forEach((t, i) => {
+        const y = i === 0 ? cy : cy - (rad(i) + rad(i - 1)) / 2;
+        o += xTC(cx, y, `${i + 1} · ${t.title}`, { size: i === 0 ? 21 : 19, color: ink(col(i)), max: i === 0 ? 12 : 26, count: i === 0 ? 2 : 1, weight: 800 });
+      });
+      const x0 = 700, w = 1028, gap = 14, h = (600 - (n - 1) * gap) / n;
+      L.slice().reverse().forEach((t, r) => {
+        const i = n - 1 - r, y = r * (h + gap), k = col(i);
+        o += dgR(x0, y, w, h, '#FFFFFF', XLINE, 18) + `<circle cx="${x0 + 46}" cy="${y + h / 2}" r="24" fill="${k}" stroke="${XPEACH2}" stroke-width="2"/>`
+          + xTC(x0 + 46, y + h / 2, i + 1, { size: 20, color: ink(k), weight: 800 })
+          + xT(x0 + 90, y + h / 2 - (h > 110 ? 14 : 4), t.title, { size: 25, color: XT, max: fit(w - 130, 25), weight: 800 })
+          + xT(x0 + 90, y + h / 2 + (h > 110 ? 22 : 26), t.desc, { size: 19, color: XMUTED, max: fit(w - 130, 19), count: h > 110 ? 2 : 1, font: 'b', weight: 600 });
+      });
+      return o;
+    }
+    function dgValueChain(c) { /* 36. Value Chain (Chevron) */
+      const S = (c.stages || []).slice(0, 6), n = S.length || 1, step = 1728 / n, d = 34, ch = 108;
+      let o = '';
+      S.forEach((t, i) => {
+        const x = i * step, last = i === n - 1, W = last ? step : step + d - 8, k = last && n > 2 ? XTEAL : (i % 2 ? XT : XO);
+        const pts = [[x, 0], [x + W - d, 0], [x + W, ch / 2], [x + W - d, ch], [x, ch]];
+        if (i) pts.push([x + d, ch / 2]);
+        o += `<path d="M${pts.map(p => p.join(' ')).join('L')}Z" fill="${k}"/>`
+          + xTC(x + (i ? d : 0) / 2 + (W - d / 2) / 2 + (i ? 0 : -4), ch / 2, t.title, { size: 24, color: '#FFFFFF', max: fit(step - 80, 24), count: 2, weight: 800 });
+        const cxp = x + 6, w = step - 12, most = Math.max(1, ...S.map(st => (st.items || []).slice(0, 3).length)), chH = S.some(st => !(st.items || []).length) ? 464 : Math.min(464, 150 + most * 104);
+        o += dgR(cxp, 136, w, chH, '#FFFFFF', XLINE, 20) + xRect(cxp, 136, w, 8, k, 4)
+          + xT(cxp + 24, 196, String(i + 1).padStart(2, '0'), { size: 34, color: k, weight: 800 });
+        const items = (t.items || []).slice(0, 3);
+        if (items.length) items.forEach((it, j) => {
+          const y = 252 + j * 104;
+          o += `<circle cx="${cxp + 30}" cy="${y - 7}" r="6" fill="${k}"/>` + xT(cxp + 46, y, it, { size: 21, color: XT, max: fit(w - 70, 20), count: 3, font: 'b', weight: 600 });
+        });
+        else o += xT(cxp + 24, 252, t.desc, { size: 20, color: XT, max: fit(w - 48, 20), count: 8, font: 'b', weight: 600 });
+      });
+      return o;
+    }
+    function dgDecisionTree(c) { /* 37. Decision Tree */
+      const B = (c.branches || []).slice(0, 3), root = c.root || {}, cols = [XO, XTEAL, '#007BC1'];
+      const leaves = []; B.forEach((b, bi) => (b.children || []).slice(0, 2).forEach(ch => leaves.push({ ...ch, bi })));
+      const L = leaves.length || 1, slot = 600 / L, lh = Math.min(112, slot - 16);
+      leaves.forEach((l, i) => l.y = slot * i + slot / 2);
+      const by = B.map((b, bi) => { const ys = leaves.filter(l => l.bi === bi).map(l => l.y); return ys.length ? ys.reduce((a, v) => a + v, 0) / ys.length : 300; });
+      const ry = by.length ? by.reduce((a, v) => a + v, 0) / by.length : 300;
+      let edges = '', nodes = '';
+      const pill = (x, y, txt, k) => dgR(x - 50, y - 19, 100, 38, '#FFFFFF', k, 19) + xTC(x, y, txt, { size: 17, color: k, max: 10, weight: 800 });
+      B.forEach((b, bi) => {
+        const y = by[bi], k = cols[bi];
+        edges += `<path d="M330 ${ry}C435 ${ry},435 ${y},540 ${y}" stroke="${XT}" stroke-width="4" fill="none"/>`;
+        nodes += pill(435, (ry + y) / 2, b.label || '', XO) + dgR(540, y - 48, 340, 96, '#FFFFFF', k, 20) + xRect(540, y - 48, 10, 96, k, 5)
+          + xTC(718, y, b.title, { size: 21, color: XT, max: 25, count: 2, weight: 800 });
+      });
+      leaves.forEach((l, i) => {
+        const k = cols[l.bi];
+        edges += `<path d="M880 ${by[l.bi]}C990 ${by[l.bi]},990 ${l.y},1100 ${l.y}" stroke="${k}" stroke-width="3.5" fill="none"/>`;
+        nodes += pill(990, (by[l.bi] + l.y) / 2, l.label || '', k) + dgR(1100, l.y - lh / 2, 628, lh, l.bi % 2 ? XMINTS : XPEACH, 'none', 18) + xRect(1100, l.y - lh / 2, 10, lh, k, 5)
+          + xT(1134, l.y - (l.desc && lh > 70 ? 6 : -8), l.title, { size: 23, color: XT, max: fit(560, 23), weight: 800 })
+          + (l.desc && lh > 70 ? xT(1134, l.y + 26, l.desc, { size: 18, color: XMUTED, max: fit(560, 18), font: 'b', weight: 600 }) : '');
+      });
+      nodes += dgR(0, ry - 80, 330, 160, XT, 'none', 22) + xTC(165, ry - 12, root.title, { size: 25, color: '#FFFFFF', max: 20, count: 3, weight: 800 })
+        + (root.desc ? xTC(165, ry + 54, root.desc, { size: 16, color: '#D3D1CF', max: 30, font: 'b' }) : '');
+      return edges + nodes;
+    }
+    function dgSystemArch(c) { /* 38. System Architecture */
+      const Z = (c.zones || []).slice(0, 5), n = Z.length || 1, gap = 64, w = (1728 - (n - 1) * gap) / n, cols = [XT, XO, XTEAL, '#007BC1', '#85439A'];
+      const most = Math.max(1, ...Z.map(z => (z.items || []).slice(0, 4).length)), ih = Math.min(112, (496 - (most - 1) * 14) / most), zh = Math.min(600, 88 + most * (ih + 14) + 6), top0 = (600 - zh) / 2;
+      let o = '';
+      Z.forEach((z, i) => {
+        const x = i * (w + gap), k = cols[i % 5], items = (z.items || []).slice(0, 4), top = top0 + 88;
+        o += `<rect x="${x}" y="${top0}" width="${w}" height="${zh}" rx="22" fill="#F8FAF9" stroke="#CBD9D2" stroke-width="2" stroke-dasharray="9 8"/>`
+          + dgR(x + 16, top0 + 16, w - 32, 52, k, 'none', 26) + xTC(x + w / 2, top0 + 42, z.title, { size: 20, color: ink(k), max: fit(w - 60, 20), weight: 800 });
+        items.forEach((it, j) => {
+          const y = top + j * (ih + 14), first = (String(it.title || '?').trim()[0] || '•').replace('&', '•');
+          o += dgR(x + 16, y, w - 32, ih, '#FFFFFF', '#DCE6E0', 16) + xRect(x + 30, y + ih / 2 - 22, 44, 44, k, 12, .14)
+            + xTC(x + 52, y + ih / 2, first.toUpperCase(), { size: 20, color: k, weight: 800 })
+            + xT(x + 88, y + ih / 2 - (it.desc ? 4 : -7), it.title, { size: 19, color: XT, max: fit(w - 120, 19), weight: 800 })
+            + (it.desc ? xT(x + 88, y + ih / 2 + 22, it.desc, { size: 16, color: XMUTED, max: fit(w - 120, 16), font: 'b', weight: 600 }) : '');
+        });
+        if (i < n - 1) o += xArrow(x + w + 8, 300, x + w + gap - 8, 300, XO, 4);
+      });
+      return o;
+    }
+    function dgKanban(c) { /* 39. Kanban Board */
+      const C = (c.columns || []).slice(0, 5), n = C.length || 1, gap = 20, w = (1728 - (n - 1) * gap) / n, cols = [XGRAY, '#007BC1', XO, '#85439A', XTEAL];
+      let o = '';
+      C.forEach((col, i) => {
+        const x = i * (w + gap), k = cols[i % 5], cards = (col.cards || []).slice(0, 4);
+        o += dgR(x, 0, w, 600, '#F4F7F5', 'none', 20) + xRect(x, 0, w, 8, k, 4)
+          + xT(x + 22, 52, col.title, { size: 22, color: XT, max: fit(w - 90, 22), weight: 800 })
+          + `<circle cx="${x + w - 34}" cy="${44}" r="18" fill="${k}"/>` + xTC(x + w - 34, 44, (col.cards || []).length, { size: 17, color: ink(k), weight: 800 });
+        cards.forEach((cd, j) => {
+          const y = 78 + j * 130, tag = String(cd.tag || ''), tw = Math.min(w - 60, tag.length * 9 + 30);
+          o += dgR(x + 14, y, w - 28, 118, '#FFFFFF', '#DCE6E0', 14) + xRect(x + 14, y + 14, 6, 90, k, 3)
+            + xT(x + 34, y + 38, cd.title, { size: 19, color: XT, max: fit(w - 70, 19), count: 2, weight: 800 })
+            + (tag ? xRect(x + 34, y + 78, tw, 28, k, 14, .14) + xTC(x + 34 + tw / 2, y + 92, tag, { size: 14, color: k === XGRAY ? XT : k, max: 22, weight: 800 }) : '')
+            + xT(x + w - 28, y + 98, cd.owner, { size: 14, color: XMUTED, max: 18, anchor: 'end', font: 'b', weight: 700 });
+        });
+      });
+      return o;
+    }
+    function dgGantt(c) { /* 40. Gantt Roadmap */
+      const P = (c.periods || []).slice(0, 12), np = P.length || 1, T = (c.tasks || []).slice(0, 8), M = (c.milestones || []).slice(0, 4);
+      const tx = 350, tw = 1378, cw = tw / np, hh = 48, rowTop = 64, msH = M.length ? 64 : 0, rh = Math.min(66, (600 - rowTop - msH - 8) / Math.max(1, T.length));
+      const X = v => tx + dgClamp(v, 0, np) * cw, bottom = rowTop + rh * T.length;
+      let o = '';
+      P.forEach((p, j) => { o += xRect(tx + j * cw, hh + 8, cw, bottom - hh - 8, j % 2 ? '#F8FAF9' : '#FFFFFF', 0) + dgR(tx + j * cw + 4, 0, cw - 8, hh, '#F1F4F2', 'none', 12) + xTC(tx + j * cw + cw / 2, hh / 2, p, { size: 18, color: XT, max: fit(cw - 12, 18), weight: 800 }); });
+      T.forEach((t, i) => {
+        const y = rowTop + i * rh, my = y + rh / 2, k = XB_SERIES[i % 5], x1 = X(t.start), x2 = Math.max(x1 + 14, X(t.end));
+        o += `<path d="M0 ${y + rh}H1728" stroke="#EEF2F0" stroke-width="1.5"/>` + xTC(4, my, t.title, { size: 19, color: XT, max: fit(320, 19), anchor: 'start', weight: 800 })
+          + dgR(x1, my - 16, x2 - x1, 32, k, 'none', 16);
+        const own = String(t.owner || '');
+        if (own) o += (x2 - x1 > own.length * 8.5 + 30) ? xTC(x1 + 14, my, own, { size: 15, color: ink(k), max: 30, anchor: 'start', font: 'b', weight: 800 })
+          : xTC(x2 + 10, my, own, { size: 15, color: XMUTED, max: 22, anchor: 'start', font: 'b', weight: 700 });
+      });
+      if (M.length) {
+        const my = 600 - msH / 2;
+        o += `<path d="M${tx} ${my}H${tx + tw}" stroke="#DCE6E0" stroke-width="2"/>`;
+        M.forEach(m => {
+          const x = X(m.at);
+          o += `<path d="M${x} ${rowTop}V${my - 14}" stroke="${XO}" stroke-width="2" stroke-dasharray="4 6" stroke-opacity=".55"/><path d="M${x} ${my - 13}L${x + 13} ${my}L${x} ${my + 13}L${x - 13} ${my}Z" fill="${XO}" stroke="#FFFFFF" stroke-width="2"/>`
+            + xTC(x + 20, my, m.label, { size: 16, color: XT, max: 20, anchor: 'start', weight: 800 });
+        });
+      }
+      if (c.today !== undefined && c.today !== '' && Number.isFinite(Number(c.today))) {
+        const x = X(c.today);
+        o += `<path d="M${x} ${hh + 4}V${bottom}" stroke="${XRED}" stroke-width="3" stroke-dasharray="8 6"/>` + dgR(x - 46, hh + 6, 92, 30, XRED, 'none', 15) + xTC(x, hh + 21, c.todayLabel || 'Hôm nay', { size: 14, color: '#FFFFFF', max: 12, weight: 800 });
+      }
+      return o;
+    }
+    function dgLineChart(c) { /* 41. Line Trend Chart */
+      const labels = (c.labels || []).slice(0, 12), S = (c.series || []).slice(0, 3), nL = labels.length || 1, cols = [XO, XTEAL, XT];
+      const vals = S.flatMap(s => (s.values || []).slice(0, nL).map(Number).filter(Number.isFinite));
+      const lo0 = c.yMin !== undefined && c.yMin !== '' ? xNum(c.yMin) : Math.min(0, ...vals), hi0 = c.yMax !== undefined && c.yMax !== '' ? xNum(c.yMax) : Math.max(1, ...vals);
+      const sc = xNice(lo0, hi0), x0 = 110, x1 = 1080, y0 = 20, y1 = 500;
+      const X = i => nL === 1 ? (x0 + x1) / 2 : x0 + i * (x1 - x0) / (nL - 1), Y = v => y1 - (v - sc.lo) / (sc.hi - sc.lo) * (y1 - y0);
+      let o = '';
+      for (let v = sc.lo; v <= sc.hi + 1e-9; v += sc.step) o += `<path d="M${x0 - 20} ${Y(v)}H${x1 + 20}" stroke="#E3EAE6" stroke-width="1.5"/>` + xT(x0 - 34, Y(v) + 6, xFmt(v), { size: 16, color: '#6B7D7A', anchor: 'end', font: 'b' });
+      labels.forEach((l, i) => { o += xTC(X(i), y1 + 36, l, { size: 17, color: XT, max: 10, weight: 700, font: 'b' }); });
+      S.forEach((s, si) => {
+        const pts = (s.values || []).slice(0, nL).map((v, i) => [X(i), Y(xNum(v))]), k = cols[si];
+        if (!pts.length) return;
+        if (si === 0) o += `<path d="M${pts[0][0]} ${y1}L${pts.map(p => p.join(' ')).join('L')}L${pts.at(-1)[0]} ${y1}Z" fill="${k}" fill-opacity=".09"/>`;
+        o += `<path d="M${pts.map(p => p.join(' ')).join('L')}" fill="none" stroke="${k}" stroke-width="${si ? 4 : 5}" stroke-linejoin="round" stroke-linecap="round"${si === 2 ? ' stroke-dasharray="10 8"' : ''}/>`;
+        pts.forEach(p => { o += `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="#FFFFFF" stroke="${k}" stroke-width="4"/>`; });
+        const lp = pts.at(-1), lv = (s.values || [])[pts.length - 1], ly = Math.max(y0 + 17, Math.min(y1 - 17, lp[1])) + (si - (S.length - 1) / 2) * 40;
+        o += dgR(lp[0] + 18, ly - 17, 70, 34, k, 'none', 17) + xTC(lp[0] + 53, ly, xFmt(lv), { size: 16, color: ink(k), weight: 800 });
+      });
+      let lx = x0 - 20;
+      S.forEach((s, si) => { o += xRect(lx, 576, 30, 6, cols[si], 3) + xT(lx + 40, 586, s.name, { size: 17, color: XT, max: 26, weight: 700 }); lx += 70 + Math.min(26, String(s.name || '').length) * 10; });
+      o += dgR(1220, 10, 508, 580, XPEACH, XPEACH2, 26)
+        + xT(1258, 70, c.insightLabel || 'Insight', { size: 16, color: XO, max: 40, weight: 800, ls: '.08em' })
+        + xT(1258, 176, c.insightValue || '', { size: 92, color: XO, max: 9, weight: 800 })
+        + xT(1258, 246, c.insightText || '', { size: 21, color: XT, max: fit(430, 21), count: 9, font: 'b', weight: 600 })
+        + (c.unit ? xT(1258, 560, 'Đơn vị: ' + c.unit, { size: 15, color: XMUTED, max: 40, font: 'b' }) : '');
+      return o;
+    }
+    function dgWaterfall(c) { /* 42. Waterfall Chart */
+      const I = (c.items || []).slice(0, 8), n = I.length || 1; let run = 0;
+      const bars = I.map(t => {
+        const v = xNum(t.value); let base, top, end;
+        if (t.kind === 'start') { base = 0; top = v; run = v; } else if (t.kind === 'total') { base = 0; top = run; } else { base = run; top = run + v; run += v; }
+        end = run; return { ...t, v, base, top, end };
+      });
+      const all = bars.flatMap(b => [b.base, b.top]), sc = xNice(Math.min(0, ...all), Math.max(1, ...all));
+      const x0 = 90, x1 = 1728, y0 = 30, y1 = 470, slot = (x1 - x0) / n, bw = Math.min(150, slot * .58), Y = v => y1 - (v - sc.lo) / (sc.hi - sc.lo) * (y1 - y0);
+      let o = '';
+      for (let v = sc.lo; v <= sc.hi + 1e-9; v += sc.step) o += `<path d="M${x0 - 10} ${Y(v)}H${x1}" stroke="${v === 0 ? '#9FB1AD' : '#E3EAE6'}" stroke-width="${v === 0 ? 2 : 1.5}"/>` + xT(x0 - 22, Y(v) + 6, xFmt(v), { size: 16, color: '#6B7D7A', anchor: 'end', font: 'b' });
+      bars.forEach((b, i) => {
+        const cx = x0 + i * slot + slot / 2, k = b.kind === 'start' ? XT : b.kind === 'total' ? XO : (b.v >= 0 ? XTEAL : XRED);
+        const yt = Y(Math.max(b.base, b.top)), yb = Y(Math.min(b.base, b.top));
+        o += dgR(cx - bw / 2, yt, bw, Math.max(3, yb - yt), k, 'none', 8)
+          + xTC(cx, yt - 20, b.kind === 'delta' ? (b.v >= 0 ? '+' : '−') + xFmt(Math.abs(b.v)) : xFmt(b.top), { size: 20, color: k === XT ? XT : k, weight: 800 })
+          + xTC(cx, y1 + 44, b.label, { size: 17, color: XT, max: fit(slot - 14, 17), count: 2, weight: 700, font: 'b' });
+        if (i < n - 1) o += `<path d="M${cx + bw / 2} ${Y(b.end)}H${cx + slot - bw / 2}" stroke="#9FB1AD" stroke-width="2" stroke-dasharray="5 5"/>`;
+      });
+      const lg = [[XT, c.legendStart || 'Đầu kỳ'], [XTEAL, c.legendUp || 'Tăng'], [XRED, c.legendDown || 'Giảm'], [XO, c.legendTotal || 'Tổng cuối kỳ']];
+      let lx = x0; lg.forEach(([k, t]) => { o += xRect(lx, 574, 18, 18, k, 5) + xT(lx + 28, 589, t, { size: 16, color: XT, max: 20, font: 'b', weight: 700 }); lx += 60 + String(t).length * 9; });
+      if (c.unit) o += xT(x1, 589, 'Đơn vị: ' + c.unit, { size: 15, color: XMUTED, max: 30, anchor: 'end', font: 'b' });
+      return o;
+    }
+    function dgBarRanking(c) { /* 43. Bar Ranking */
+      const I = (c.items || []).slice(0, 8), n = I.length || 1, hl = Math.trunc(xNum(c.highlight)), target = c.target === '' || c.target === undefined ? null : xNum(c.target);
+      const max = Math.max(1, ...I.map(t => xNum(t.value)), target || 0) * 1.08, rh = Math.min(76, 540 / n), bx = 390, bw = 1150;
+      let o = '';
+      I.forEach((t, i) => {
+        const y = 10 + i * rh + rh / 2, v = xNum(t.value), w = Math.max(6, v / max * bw), on = i === hl;
+        o += `<circle cx="22" cy="${y}" r="19" fill="${on ? XO : '#EEF2F1'}"/>` + xTC(22, y, i + 1, { size: 17, color: on ? '#FFFFFF' : XT, weight: 800 })
+          + xTC(56, y, t.label, { size: 20, color: XT, max: fit(320, 20), count: rh > 60 ? 2 : 1, anchor: 'start', weight: on ? 800 : 700 })
+          + dgR(bx, y - 18, bw, 36, '#F1F4F2', 'none', 18) + dgR(bx, y - 18, w, 36, on ? XO : XGRAY, 'none', 18)
+          + xTC(bx + w + 14, y, xFmt(v) + (c.unit ? ' ' + c.unit : ''), { size: 21, color: on ? XO : XT, anchor: 'start', weight: 800 });
+      });
+      if (target !== null) {
+        const x = bx + target / max * bw, yb = 10 + n * rh;
+        o += `<path d="M${x} 0V${yb}" stroke="${XTEAL}" stroke-width="3" stroke-dasharray="8 6"/>` + dgR(x - 110, yb + 12, 220, 38, XTEAL, 'none', 19)
+          + xTC(x, yb + 31, `${c.targetLabel || 'Mục tiêu'}: ${xFmt(target)}`, { size: 16, color: '#FFFFFF', max: 28, weight: 800 });
+      }
+      return o;
+    }
+    function dgRadar(c) { /* 44. Radar Chart */
+      const A = (c.axes || []).slice(0, 8), n = Math.max(3, A.length), S = (c.series || []).slice(0, 2), max = xNum(c.max) || 5, cols = [XO, XTEAL];
+      const cx = 400, cy = 300, R = 236, ang = i => -Math.PI / 2 + i * 2 * Math.PI / n, pt = (i, r) => [cx + Math.cos(ang(i)) * r, cy + Math.sin(ang(i)) * r];
+      const levels = max <= 10 && Number.isInteger(max) ? max : 5;
+      let o = `<polygon points="${[...Array(n)].map((_, i) => pt(i, R).join(',')).join(' ')}" fill="#F8FAF9"/>`;
+      for (let l = 1; l <= levels; l++) o += `<polygon points="${[...Array(n)].map((_, i) => pt(i, R * l / levels).join(',')).join(' ')}" fill="none" stroke="#DCE6E0" stroke-width="${l === levels ? 2.5 : 1.5}"/>`;
+      for (let i = 0; i < n; i++) {
+        const [x, y] = pt(i, R), [lx, ly] = pt(i, R + 34), co = Math.cos(ang(i));
+        o += `<path d="M${cx} ${cy}L${x} ${y}" stroke="#DCE6E0" stroke-width="1.5"/>` + xTC(lx, ly, A[i] || '', { size: 19, color: XT, max: 14, count: 2, weight: 800, anchor: co > .3 ? 'start' : co < -.3 ? 'end' : 'middle' });
+      }
+      S.forEach((s, si) => {
+        const P = [...Array(n)].map((_, i) => pt(i, dgClamp((s.values || [])[i], 0, max) / max * R)), k = cols[si];
+        o += `<polygon points="${P.map(p => p.join(',')).join(' ')}" fill="${k}" fill-opacity="${si ? .12 : .2}" stroke="${k}" stroke-width="${si ? 3.5 : 4}"${si ? ' stroke-dasharray="10 7"' : ''} stroke-linejoin="round"/>`
+          + P.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="#FFFFFF" stroke="${k}" stroke-width="3.5"/>`).join('');
+      });
+      const tx = 880, cw = [290, 190, 180, 170], rows = A.length, rh = Math.min(58, 460 / Math.max(1, rows));
+      let lx = tx; S.forEach((s, si) => { o += xRect(lx, 16, 30, 8, cols[si], 4) + xT(lx + 40, 28, s.name, { size: 18, color: XT, max: 24, weight: 800 }); lx += 90 + Math.min(24, String(s.name || '').length) * 10; });
+      const hy = 80, heads = [c.axisHeader || 'Năng lực', ...S.map(s => s.name), S.length > 1 ? (c.deltaHeader || 'Chênh lệch') : null].filter(v => v !== null);
+      let hx = tx; heads.forEach((h, j) => { o += xT(j ? hx + cw[j] / 2 : hx + 16, hy, h, { size: 15, color: XMUTED, max: j ? fit(cw[j] - 8, 15) : 30, anchor: j ? 'middle' : 'start', weight: 800, ls: '.04em' }); hx += cw[j]; });
+      A.forEach((a, i) => {
+        const y = hy + 22 + i * rh, v0 = xNum((S[0]?.values || [])[i]), v1 = xNum((S[1]?.values || [])[i]);
+        o += xRect(tx, y, 830, rh - 8, i % 2 ? '#FFFFFF' : '#F6F9F7', 12) + xTC(tx + 16, y + (rh - 8) / 2, a, { size: 19, color: XT, max: 30, anchor: 'start', weight: 800 });
+        let cx2 = tx + cw[0];
+        S.forEach((s, si) => { o += xTC(cx2 + cw[si + 1] / 2, y + (rh - 8) / 2, xFmt((s.values || [])[i]), { size: 20, color: cols[si], weight: 800 }); cx2 += cw[si + 1]; });
+        if (S.length > 1) { const d = v0 - v1; o += xTC(cx2 + cw[3] / 2, y + (rh - 8) / 2, (d >= 0 ? '+' : '−') + xFmt(Math.abs(d)), { size: 20, color: d >= 0 ? XTEAL : XRED, weight: 800 }); }
+      });
+      return o;
+    }
+    function dgProgressRings(c) { /* 45. Progress Rings */
+      const Rg = (c.rings || []).slice(0, 5), n = Rg.length || 1, slot = 1728 / n, cols = [XO, XTEAL, XT, '#007BC1', '#85439A'];
+      let o = '';
+      Rg.forEach((t, i) => {
+        const cx = slot * i + slot / 2, cy = 170, r = 124, C = 2 * Math.PI * r, p = dgClamp(t.value, 0, 100) / 100, k = cols[i % 5];
+        o += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#EEF2F0" stroke-width="30"/>`
+          + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${k}" stroke-width="30" stroke-linecap="round" stroke-dasharray="${(C * p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${cx} ${cy})"/>`
+          + xTC(cx, cy - 4, Math.round(p * 100) + '%', { size: 56, color: XT, weight: 800 })
+          + xTC(cx, 360, t.title, { size: 27, color: XT, max: fit(slot - 40, 27), count: 2, weight: 800 })
+          + xTC(cx, 440, t.desc, { size: 19, color: XMUTED, max: fit(slot - 60, 19), count: 3, font: 'b', weight: 600 });
+      });
+      return o;
+    }
+    const DIAGRAM_RENDERERS = Object.freeze({'process-flow':dgProcess, 'conversion-funnel':dgFunnel, 'cycle-loop':dgCycle, 'strategy-pyramid':dgPyramid, 'decision-matrix':dgMatrix, 'org-chart':dgOrg, 'swimlane':dgSwim, 'hub-spoke':dgHub, 'learner-journey':dgJourney, 'layered-architecture':dgLayers, 'sankey-flow':dgSankey, 'heatmap':dgHeat, 'venn-diagram':dgVenn, 'swot-analysis':dgSwot, 'priority-matrix':dgPriority, 'mind-map':dgMindMap, 'fishbone':dgFishbone, 'staircase':dgStaircase, 'concentric-circles':dgConcentric, 'value-chain':dgValueChain, 'decision-tree':dgDecisionTree, 'system-architecture':dgSystemArch, 'kanban-board':dgKanban, 'gantt-roadmap':dgGantt, 'line-chart':dgLineChart, 'waterfall-chart':dgWaterfall, 'bar-ranking':dgBarRanking, 'radar-chart':dgRadar, 'progress-rings':dgProgressRings, 'custom-diagram':c=>''});
     const DIAGRAM_TYPES = new Set(Object.keys(DIAGRAM_RENDERERS));
     function renderDiagramSlide(slide,index){
       const content=escapedContent(slide.content||{});
+      // custom-diagram: content.svg is trusted author SVG placed as-is in the 1728×600 drawing area.
+      if(slide.type==='custom-diagram') return dgPage(content,index,String(slide.content?.svg??''));
       return dgPage(content,index,DIAGRAM_RENDERERS[slide.type](content));
     }
 
@@ -4681,8 +5139,15 @@ const DeckModel = (() => {
   return {serialize, normalize};
 })();
 function deckDocument(){return DeckModel.serialize(DECK_CONFIG, slides);}
-function deckApplyDocument(obj, {recordHistory=true, resetView=true}={}){
-  const next=DeckModel.normalize(obj,LAYOUT_CATALOG,DECK_DEFAULT_CONFIG);
+function deckApplyDocument(obj, {recordHistory=true, resetView=true, strictCustom=false}={}){
+  // "layouts"/"helpers" in the document replace the current ones; a document without them keeps them
+  // (history snapshots are strict so undo also reverts a layout change).
+  const incoming=xbIsObj(obj)?obj:null;
+  const custom=incoming&&(strictCustom||'layouts' in incoming||'helpers' in incoming)
+    ?{layouts:incoming.layouts,helpers:incoming.helpers}:{layouts:DECK_CONFIG.layouts,helpers:DECK_CONFIG.helpers};
+  const next=DeckModel.normalize(obj,xbCatalogFor(obj,custom.layouts),DECK_DEFAULT_CONFIG); // rejects other versions before any change
+  xbSyncCustom(custom);
+  for(const key of ['layouts','helpers']){if(xbIsObj(custom[key])&&Object.keys(custom[key]).length)next.config[key]=xbClone(custom[key]);else delete next.config[key];}
   const previous={config:DECK_CONFIG,slides,index:currentSlideIndex,sidebar:currentSidebarFilter,gallery:currentGalleryFilter,cache:new Map(DECK_DATA_CACHE)};
   try {
     DECK_CONFIG=next.config;
@@ -4692,7 +5157,7 @@ function deckApplyDocument(obj, {recordHistory=true, resetView=true}={}){
     if(resetView){currentSidebarFilter='ALL';currentGalleryFilter='ALL';}
     renderCurrentSlide();
   } catch(error) {
-    DECK_CONFIG=previous.config;slides=previous.slides;currentSlideIndex=previous.index;
+    DECK_CONFIG=previous.config;slides=previous.slides;currentSlideIndex=previous.index;xbSyncCustom(DECK_CONFIG);
     currentSidebarFilter=previous.sidebar;currentGalleryFilter=previous.gallery;
     DECK_DATA_CACHE.clear();
     for(const [key,value] of previous.cache) DECK_DATA_CACHE.set(key,value);
@@ -4716,6 +5181,7 @@ function deckRefreshCounts(){
  if(tab)tab.textContent='Template Gallery · '+slides.length;
  const all=document.getElementById('gal-filter-ALL');
  if(all)all.textContent='Tất cả ('+slides.length+')';
+ for(const g of ['A','B','C','D']){const b=document.getElementById('gal-filter-'+g);if(b)b.textContent=b.textContent.replace(/\(\d+\)/,'('+slides.filter(s=>s.group===g).length+')');}
 }
 
 
@@ -5699,15 +6165,207 @@ function deckRefreshCounts(){
           `;
   }
     });
-    function renderSlideHTML(slide, index, isThumbnail = false) {
-      if (slide.type === 'composer') return deckComposer(slide,index,isThumbnail);
-      if (DIAGRAM_TYPES.has(slide.type)) return renderDiagramSlide(slide,index);
-      const renderer = SLIDE_RENDERERS[slide.type];
-      if (!renderer) return '<div style="color:red">Unknown slide type</div>';
-      const numStr = String(index + 1).padStart(2, '0');
-      const ce = (!isThumbnail && isInlineEditEnabled && !document.body.classList.contains('presentation-fullscreen')) ? 'contenteditable="true"' : '';
-      return renderer({slide,index,isThumbnail,numStr,ce,c:escapedContent(slide.content || {})});
+    /* ==========================================================================
+       TEMPLATE AS CODE — layouts & helpers viết bằng JS ngay trong JSON của deck
+       Khoá trong tài liệu deck:
+         "helpers": { tên: "biểu thức JS" }        → hàm/hằng dùng chung
+         "layouts": { type: { name, group, desc, sample, render | template, frame, css, limits } }
+       Slide cũng có thể tự mang "render" / "template" / "frame" / "css".
+       Mã chạy không sandbox với toàn quyền của trang: chỉ nạp JSON từ nguồn tin cậy.
+       ========================================================================== */
+    const xbSrc = v => Array.isArray(v) ? v.join('\n') : String(v ?? '');
+    const xbIsObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
+    const xbClone = v => v === undefined ? undefined : JSON.parse(JSON.stringify(v));
+    const XB_ERRORS = [];
+    const XB_LAYOUT_FNS = new Map();
+    const XB_SLIDE_FNS = new Map();
+    const XB_CTX = {};
+
+    /* Everything a layout/helper can reference by name inside `render` / `template`. */
+    function xbBaseContext() {
+      return {
+        escapeHtml, escapedContent, renderStandardWhiteHeader, renderStandardWhiteFooter, renderAwsPartnerBadge,
+        renderBarChart, renderDoughnutChart, BRAND_PHOTOS, photo: key => BRAND_PHOTOS[key] || '',
+        DG_COLORS, dgN, dgClamp, dgLines, dgT, dgR, dgA, dgPage,
+        theme: XB_THEME, XO, XT, XTEAL, XMINT, XMINTS, XPEACH, XPEACH2, XGRAY, XLINE, XMUTED, XRED, XB_SERIES,
+        fit, ink, xT, xTC, xRect, xArrow, xNum, xFmt, xNice,
+        DECK_COLORS, deckSafe, deckChart, deckDiagram, deckComponent, deckMarkdown, deckTable,
+        get config() { return DECK_CONFIG; },
+        get meta() { return DECK_CONFIG.meta || {}; },
+        get slides() { return slides; },
+        get XB() { return window.XB; },
+        slide: null
+      };
     }
+    function xbSetCtx(name, value) {
+      Object.defineProperty(XB_CTX, name, { value, writable: true, configurable: true, enumerable: true });
+    }
+    function xbCompileHelper(name, src) {
+      if (typeof src !== 'string' && !Array.isArray(src)) return xbClone(src);
+      return new Function('ctx', `with (ctx) { return (${xbSrc(src)}\n); }`)(XB_CTX);
+    }
+    function xbCompileRender(def, label) {
+      const body = def.render !== undefined ? xbSrc(def.render)
+        : def.template !== undefined ? 'return `' + xbSrc(def.template) + '`;' : "return '';";
+      try {
+        return new Function('ctx', `with (ctx) { return function render(slide, index, isThumbnail, c, ce, numStr, layout) {\n${body}\n}; }`)(XB_CTX);
+      } catch (e) {
+        XB_ERRORS.push(`${label}: ${e.message}`);
+        const msg = e.message;
+        return () => xbErrorSlide(`${label} không biên dịch được`, msg);
+      }
+    }
+    function xbErrorSlide(title, detail) {
+      return `<div style="width:1920px;height:1080px;background:#FFF5ED;color:#425453;padding:120px;font-family:Manrope,Arial,sans-serif;box-sizing:border-box">
+        <div style="font-size:22px;font-weight:800;letter-spacing:.1em;color:#F97C00">XBRAIN TEMPLATE AS CODE · LỖI RENDER</div>
+        <div style="font-size:56px;font-weight:800;margin:24px 0">${escapeHtml(title)}</div>
+        <pre style="font-size:24px;white-space:pre-wrap;background:#fff;border:2px solid #FBCAAB;border-radius:20px;padding:32px;max-height:560px;overflow:hidden">${escapeHtml(detail)}</pre></div>`;
+    }
+    function xbApplyLayoutStyles(config) {
+      const css = Object.values(config?.layouts || {}).map(d => xbIsObj(d) ? xbSrc(d.css) : '').filter(Boolean).join('\n');
+      if (!document.head) return; // no DOM (e.g. contract tests running the script in a VM)
+      let el = document.getElementById('v1-layout-style');
+      if (!css) { el?.remove(); return; }
+      if (!el) { el = document.createElement('style'); el.id = 'v1-layout-style'; document.head.appendChild(el); }
+      el.textContent = css;
+    }
+    /* Rebuild helpers + custom layouts from a config object (DECK_CONFIG or an incoming document). */
+    function xbSyncCustom(config) {
+      XB_ERRORS.length = 0; XB_LAYOUT_FNS.clear(); XB_SLIDE_FNS.clear();
+      for (const k of Object.keys(XB_CTX)) delete XB_CTX[k];
+      Object.defineProperties(XB_CTX, Object.getOwnPropertyDescriptors(xbBaseContext()));
+      for (const [name, src] of Object.entries(config?.helpers || {})) {
+        try { xbSetCtx(name, xbCompileHelper(name, src)); } catch (e) { XB_ERRORS.push(`helper ${name}: ${e.message}`); }
+      }
+      for (let i = LAYOUT_CATALOG.length - 1; i >= 0; i--) if (LAYOUT_CATALOG[i].custom) LAYOUT_CATALOG.splice(i, 1);
+      for (const [type, d] of Object.entries(config?.layouts || {})) {
+        if (!xbIsObj(d)) continue;
+        XB_LAYOUT_FNS.set(type, xbCompileRender(d, `layout ${type}`));
+        if (!LAYOUT_CATALOG.some(l => l.type === type))
+          LAYOUT_CATALOG.push({ type, group: d.group || 'D', name: d.name || type, desc: d.desc || 'Layout tự định nghĩa (template as code)', limits: d.limits || {}, custom: true });
+      }
+      xbApplyLayoutStyles(config);
+      if (XB_ERRORS.length) console.warn('[xbrain template-as-code]', XB_ERRORS);
+    }
+    function xbCustomRender(slide) {
+      if (slide.render !== undefined || slide.template !== undefined) {
+        const key = xbSrc(slide.render ?? slide.template) + (slide.render !== undefined ? '#r' : '#t');
+        if (!XB_SLIDE_FNS.has(key)) XB_SLIDE_FNS.set(key, xbCompileRender(slide, `slide ${slide.id}`));
+        return XB_SLIDE_FNS.get(key);
+      }
+      return XB_LAYOUT_FNS.get(slide.type) || null;
+    }
+    function xbEditAttr(isThumbnail) {
+      return (!isThumbnail && isInlineEditEnabled && !document.body.classList.contains('presentation-fullscreen')) ? 'contenteditable="true"' : '';
+    }
+    function xbRenderCustom(fn, slide, index, isThumbnail) {
+      const layout = DECK_CONFIG.layouts?.[slide.type] || {};
+      const numStr = String(index + 1).padStart(2, '0'), ce = xbEditAttr(isThumbnail), c = slide.content || {};
+      xbSetCtx('slide', slide);
+      let html = fn(slide, index, isThumbnail, c, ce, numStr, layout);
+      const frame = slide.frame !== undefined ? slide.frame : layout.frame;
+      if (frame) {
+        if (typeof XB_CTX[frame] !== 'function') throw new Error(`frame "${frame}" không phải hàm helper`);
+        html = XB_CTX[frame](c, index, html, { slide, isThumbnail, ce, numStr, layout });
+      }
+      return (slide.css ? `<style>${xbSrc(slide.css)}</style>` : '') + html;
+    }
+    /* Built-in "Custom HTML" layout: standard brand header/footer + free HTML from content.html. */
+    function renderCustomHtmlSlide(slide, index, isThumbnail) {
+      const numStr = String(index + 1).padStart(2, '0'), ce = xbEditAttr(isThumbnail), raw = slide.content || {}, c = escapedContent(raw);
+      return `<div class="w-[1920px] h-[1080px] bg-white relative overflow-hidden" style="display:flex;flex-direction:column">
+        ${renderStandardWhiteHeader(c.sectionTag || 'CUSTOM', numStr)}
+        <div style="position:relative;z-index:10;flex:1;padding:36px 96px 90px;display:flex;flex-direction:column">
+          <h1 class="font-heading" style="font-weight:800;font-size:48px;color:#2B3736;margin:0 0 32px" ${ce} data-field="title">${c.title || ''}</h1>
+          <div style="flex:1" ${ce} data-field="html">${String(raw.html ?? '')}</div>
+        </div>
+        ${renderStandardWhiteFooter(numStr, false)}
+      </div>`;
+    }
+    function xbSampleFor(type) {
+      return DECK_CONFIG.layouts?.[type]?.sample || XB_LAYOUT_SAMPLES[type] || slides.find(s => s.type === type)?.content || null;
+    }
+    function xbMergeMap(base, patch) {
+      const out = { ...(base || {}) };
+      for (const [k, v] of Object.entries(patch || {})) { if (v === null) delete out[k]; else if (v !== undefined) out[k] = xbClone(v); }
+      return out;
+    }
+    /* Pack = {layouts?, helpers?, replace?}: merged key by key; a null value removes that key. */
+    function xbMergePack(pack, { record = true } = {}) {
+      const next = { ...DECK_CONFIG };
+      for (const key of ['layouts', 'helpers']) {
+        if (pack[key] === undefined) continue;
+        const merged = pack.replace ? (xbClone(pack[key]) || {}) : xbMergeMap(DECK_CONFIG[key], pack[key]);
+        if (Object.keys(merged).length) next[key] = merged; else delete next[key];
+      }
+      const apply = () => { DECK_CONFIG = next; xbSyncCustom(DECK_CONFIG); };
+      if (record) DeckStore.change(apply); else apply();
+      xbRefreshViews();
+      return { layouts: Object.keys(DECK_CONFIG.layouts || {}), errors: XB_ERRORS.slice() };
+    }
+    function xbRefreshViews() {
+      if (document.readyState === 'loading') return;
+      renderCurrentSlide();
+      if (currentAppMode === 'gallery') renderGalleryGrid();
+      if (XB_ERRORS.length) xbToast(`Có ${XB_ERRORS.length} lỗi biên dịch layout/helper · xem console`);
+    }
+    /* Slides that carry their own render/template may use a type that is not in the catalog. */
+    /* Catalog used to validate an incoming document: built-in layouts + the layouts it brings
+       + slides that carry their own render/template. Nothing is compiled or registered here. */
+    function xbCatalogFor(doc, layouts) {
+      const list = Array.isArray(doc) ? doc : (doc?.slides || []);
+      const base = LAYOUT_CATALOG.filter(l => !l.custom);
+      const known = new Set(base.map(l => l.type));
+      const extra = [];
+      for (const [type, d] of Object.entries(xbIsObj(layouts) ? layouts : {}))
+        if (!known.has(type) && xbIsObj(d)) { known.add(type); extra.push({ type, group: d.group || 'D', name: d.name || type }); }
+      for (const s of list)
+        if (xbIsObj(s) && s.type && !known.has(s.type) && (s.render !== undefined || s.template !== undefined)) { known.add(s.type); extra.push({ type: s.type, group: s.group || 'B', name: s.layoutName || s.type }); }
+      return base.concat(extra);
+    }
+    const XB_VERSION = '1.0';
+    function xbRequireVersion(obj, optional) {
+      if (optional && obj.version === undefined) return;
+      if (obj.version !== XB_VERSION) throw new Error('Expected JSON schema version ' + XB_VERSION);
+    }
+    /* Import any JSON: pack (layouts/helpers only), copied slides payload, or a whole deck document. */
+    function xbImportAny(obj, gap) {
+      const hasSlides = Array.isArray(obj) || Array.isArray(obj?.slides);
+      const packLike = xbIsObj(obj) && ('layouts' in obj || 'helpers' in obj);
+      if (!hasSlides && packLike) {
+        xbRequireVersion(obj, true); // packs may omit version; any other version is rejected
+        const r = xbMergePack(obj);
+        xbToast(`Đã nạp pack · ${r.layouts.length} layout tự định nghĩa${r.errors.length ? ' · ' + r.errors.length + ' lỗi (xem console)' : ''}`);
+        return 'pack';
+      }
+      if (xbIsObj(obj) && obj.xbrainSlides) {
+        const list = xbSlidesFromPayload(obj);
+        if (!list.length) throw new Error('Không có slide hợp lệ trong dữ liệu');
+        insertSlidesAt(list.map(xbMakeSlide), gap ?? currentSlideIndex + 1, 'Đã chèn');
+        return 'slides';
+      }
+      deckApplyDocument(obj);
+      return 'deck';
+    }
+
+    function renderSlideHTML(slide, index, isThumbnail = false) {
+      try {
+        const custom = xbCustomRender(slide);
+        if (custom) return xbRenderCustom(custom, slide, index, isThumbnail);
+        if (slide.type === 'composer') return deckComposer(slide,index,isThumbnail);
+        if (slide.type === 'custom-html') return renderCustomHtmlSlide(slide,index,isThumbnail);
+        if (DIAGRAM_TYPES.has(slide.type)) return renderDiagramSlide(slide,index);
+        const renderer = SLIDE_RENDERERS[slide.type];
+        if (!renderer) return xbErrorSlide(`Không có layout "${slide.type}"`, 'Thêm layout này qua "layouts" trong JSON (pack) hoặc window.XB.defineLayout, hoặc cho slide một "render"/"template" riêng.');
+        const numStr = String(index + 1).padStart(2, '0');
+        const ce = (!isThumbnail && isInlineEditEnabled && !document.body.classList.contains('presentation-fullscreen')) ? 'contenteditable="true"' : '';
+        return renderer({slide,index,isThumbnail,numStr,ce,c:escapedContent(slide.content || {})});
+      } catch (e) {
+        console.error('[xbrain render]', slide && slide.type, e);
+        return xbErrorSlide(`Slide ${String(index + 1).padStart(2, '0')} · ${slide && slide.type}`, e.stack || e.message);
+      }
+    }
+    xbSyncCustom(DECK_CONFIG);
 
     /* ==========================================================================
        PHASE 4.3 – 4.7 — PRESENTATION ENGINE, SCALING, GALLERY, CHARTS & EXPORT
@@ -5785,7 +6443,8 @@ function deckRefreshCounts(){
         el.addEventListener('blur', () => {
           const field = el.getAttribute('data-field');
           if (field && slide.content) {
-            DeckStore.change(()=>{slide.content[field] = el.innerText.trim();});
+            const keepHtml = (slide.type === 'custom-html' && field === 'html') || (XB_LAYOUT_FNS.has(slide.type) && /<[a-z!\/]/i.test(String(slide.content[field] ?? '')));
+            DeckStore.change(()=>{slide.content[field] = keepHtml ? el.innerHTML.trim() : el.innerText.trim();});
             renderSidebarList();
           }
         });
@@ -5824,6 +6483,7 @@ function deckRefreshCounts(){
     function renderSidebarList() {
       const container = document.getElementById('sidebar-slide-list');
       if (!container) return;
+      syncSlideSelection();
 
       container.innerHTML = slides.map((s, idx) => {
         if (currentSidebarFilter !== 'ALL' && s.group !== currentSidebarFilter) return '';
@@ -5833,7 +6493,7 @@ function deckRefreshCounts(){
         const groupColor = s.group === 'A' ? 'bg-[#F97C00]/20 text-[#FF991D]' : (s.group === 'B' ? 'bg-[#25AC9D]/20 text-[#7FD7BB]' : (s.group === 'D' ? 'bg-[#85439A]/25 text-[#E3B4F0]' : 'bg-[#007BC1]/25 text-[#00B3D8]'));
 
         return `
-          <div data-click-action="selectSlide" data-click-arg="${idx}" class="cursor-pointer rounded-xl p-3 transition-all border ${isActive ? 'bg-[#263333] border-[#F97C00] shadow-md' : 'bg-[#151C1C] border-[#263232] hover:border-[#3E5050]'}">
+          <div draggable="true" data-slide-index="${idx}" data-click-action="sidebarClick" data-click-arg="event" title="Kéo để di chuyển · giữ Ctrl khi thả để sao chép · Ctrl/Shift+click để chọn nhiều · chuột phải để xem thao tác" class="cursor-pointer rounded-xl p-3 transition-all border ${isActive ? 'bg-[#263333] border-[#F97C00] shadow-md' : 'bg-[#151C1C] border-[#263232] hover:border-[#3E5050]'}${!isActive && selectedSlideIds.has(s.id) ? ' v1-selected' : ''}${cutState?.ids.has(s.id) ? ' v1-cut' : ''}">
             <div class="flex items-center justify-between mb-1">
               <div class="flex items-center gap-2">
                 <span class="w-6 h-6 rounded-md ${isActive ? 'bg-[#F97C00] text-white' : 'bg-[#242F2F] text-slate-300'} font-heading font-extrabold text-[11px] flex items-center justify-center">${num}</span>
@@ -5898,7 +6558,7 @@ function deckRefreshCounts(){
         const catMeta = LAYOUT_CATALOG.find(l => l.type === s.type) || {};
         // Thumbnail scale: 440px wide / 1920px = 0.229166
         return `
-          <div data-click-action="selectSlide" data-click-arg="${idx}" class="group cursor-pointer bg-[#1C2525] border border-[#2E3C3C] hover:border-[#F97C00] rounded-2xl overflow-hidden shadow-lg transition-all flex flex-col">
+          <div draggable="true" data-slide-index="${idx}" data-click-action="galleryClick" data-click-arg="event" title="Kéo để sắp xếp · giữ Ctrl khi thả để sao chép · Ctrl/Shift+click để chọn nhiều" class="group cursor-pointer bg-[#1C2525] border border-[#2E3C3C] hover:border-[#F97C00] rounded-2xl overflow-hidden shadow-lg transition-all flex flex-col${selectedSlideIds.has(s.id) ? ' v1-selected' : ''}${cutState?.ids.has(s.id) ? ' v1-cut' : ''}">
             <!-- Scaled 16:9 Live Preview Box -->
             <div class="relative w-full pt-[56.25%] bg-black overflow-hidden">
               <div class="gallery-thumb-scaler absolute top-0 left-0 origin-top-left pointer-events-none" style="width:1920px; height:1080px;">
@@ -6049,9 +6709,9 @@ function deckRefreshCounts(){
     }
 
     function addSlideByType(type) {
-      const templateSlide = slides.find(s => s.type === type) || slides[0];
-      const newSlide = JSON.parse(JSON.stringify(templateSlide));
-      newSlide.id = 'slide-' + Date.now();
+      const templateSlide = slides.find(s => s.type === type);
+      const newSlide = templateSlide ? JSON.parse(JSON.stringify(templateSlide)) : xbMakeSlide({type, content: xbClone(xbSampleFor(type) || {})});
+      newSlide.id = newSlideId();
       DeckStore.change(()=>{slides.splice(currentSlideIndex + 1, 0, newSlide);currentSlideIndex++;});
       closeAddSlideModal();
       switchAppMode('workspace');
@@ -6093,12 +6753,14 @@ function deckRefreshCounts(){
       const err = document.getElementById('json-editor-error');
       try {
         const parsed = JSON.parse(textarea.value);
-        if (!parsed || !LAYOUT_CATALOG.some(item=>item.type===parsed.type) || (parsed.type!=='composer' && (!parsed.content || typeof parsed.content!=='object' || Array.isArray(parsed.content)))) {
+        const ownCode = parsed && (parsed.render!==undefined || parsed.template!==undefined);
+        if (!parsed || !(LAYOUT_CATALOG.some(item=>item.type===parsed.type) || (ownCode && parsed.type)) || (parsed.type!=='composer' && (!parsed.content || typeof parsed.content!=='object' || Array.isArray(parsed.content)))) {
           throw new Error('type chưa được đăng ký hoặc content không hợp lệ.');
         }
+        const meta = LAYOUT_CATALOG.find(item=>item.type===parsed.type) || {group: parsed.group || 'B', name: parsed.layoutName || parsed.type};
         parsed.id = slides[currentSlideIndex].id;
-        parsed.group = LAYOUT_CATALOG.find(item=>item.type===parsed.type).group;
-        parsed.layoutName = LAYOUT_CATALOG.find(item=>item.type===parsed.type).name.replace(/^\d+\. /,'');
+        parsed.group = ownCode && parsed.group ? parsed.group : meta.group;
+        parsed.layoutName = ownCode && parsed.layoutName ? parsed.layoutName : meta.name.replace(/^\d+\. /,'');
         DeckStore.change(()=>{slides[currentSlideIndex] = parsed;});
         closeDataEditorModal();
         renderCurrentSlide();
@@ -6119,11 +6781,12 @@ function deckRefreshCounts(){
     function importDeckJSON(){document.getElementById('import-deck-json').click();}
     async function receiveDeckJSON(evt){
       const f=evt.target.files?.[0];if(!f)return;
-      try{deckApplyDocument(JSON.parse(await f.text()));switchAppMode('workspace');}
+      try{const kind=xbImportAny(JSON.parse(await f.text()));if(kind==='deck')switchAppMode('workspace');}
       catch(err){alert('JSON import: '+err.message);}finally{evt.target.value='';}
     }
-    function downloadEditedHTML() {
+    function buildEditedHTML() {
       const doc=document.documentElement.cloneNode(true);
+      for(const el of doc.querySelectorAll('#v1-toast,#v1-slide-menu,.v1-drop-line,.v1-drag-ghost,#v1-layout-style'))el.remove();
       doc.querySelector('body')?.classList.remove('presentation-fullscreen');
       for(const selector of ['#print-all-slides-container','#gallery-grid-container','#sidebar-slide-list','#active-slide-viewport']){const el=doc.querySelector(selector);if(el)el.innerHTML='';}
       doc.querySelector('#canvas-scale-wrapper')?.removeAttribute('style');
@@ -6135,7 +6798,10 @@ function deckRefreshCounts(){
       const boot=doc.querySelector('#v1-embedded-deck');
       if(!boot)throw Error('Missing embedded document container');
       boot.textContent=JSON.stringify(deckDocument()).replaceAll('<','\\u003c').replaceAll('\u2028','\\u2028').replaceAll('\u2029','\\u2029');
-      downloadTextFile('xbrain-presentation-system-v1.0.0-edited.html','<!DOCTYPE html>\n'+doc.outerHTML,'text/html;charset=utf-8');
+      return '<!DOCTYPE html>\n'+doc.outerHTML;
+    }
+    function downloadEditedHTML() {
+      downloadTextFile('xbrain-presentation-system-v1.0.0-edited.html',buildEditedHTML(),'text/html;charset=utf-8');
     }
     function walkContent(data,path=[],out=[]) {
       if(Array.isArray(data)) data.forEach((v,i)=>walkContent(v,[...path,i],out));
@@ -6180,7 +6846,7 @@ function deckRefreshCounts(){
       const warnings=[];
       slides.forEach((s,i)=>{
         if(s.type==='composer')return;
-        const walk=(v,path)=>{const diagram=DIAGRAM_TYPES.has(s.type); const key=String(path.split('.').at(-1)||'');
+        const walk=(v,path)=>{const diagram=DIAGRAM_TYPES.has(s.type); const key=String(path.split('.').at(-1)||''); if(['svg','html'].includes(key))return;
           const limit=!diagram?700 : path==='content.title'?100 : key==='subtitle'?220 : ['desc','action','short'].includes(key)?120 : ['title','label','metric','tag'].includes(key)?85 : 180;
           if(typeof v==='string'&&v.length>limit)warnings.push(`Slide ${i+1}: ${path} (${v.length}/${limit} ký tự)`);
           else if(Array.isArray(v))v.forEach((x,j)=>walk(x,path+'['+j+']'));
@@ -6267,7 +6933,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`;
     }
     const DeckHistory=createDeckHistory({
       serialize:()=>JSON.stringify(deckDocument()),
-      restore:snapshot=>deckApplyDocument(JSON.parse(snapshot), {recordHistory:false,resetView:false})
+      restore:snapshot=>deckApplyDocument(JSON.parse(snapshot), {recordHistory:false,resetView:false,strictCustom:true})
     });
     const DeckStore = {
       change(update){update();DeckHistory.record();}
@@ -6348,6 +7014,8 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`;
         exportPrintPDF: exportPrintPDF,
         filterGallery: filterGallery,
         filterSidebarSlides: filterSidebarSlides,
+        galleryClick: galleryClick,
+        sidebarClick: sidebarClick,
         importDeckJSON: importDeckJSON,
         nextSlide: nextSlide,
         openAddSlideModal: openAddSlideModal,
@@ -6385,6 +7053,459 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`;
       return {bind};
     })();
     AppController.bind();
+
+    /* ==========================================================================
+       SLIDE PANEL KIỂU POWERPOINT / CANVA
+       Chọn nhiều (Ctrl/Shift+click), kéo để di chuyển, Ctrl/Alt+kéo để sao chép, menu chuột phải,
+       Ctrl+C / Ctrl+X / Ctrl+V (clipboard hệ thống dạng JSON, dán được sang tệp khác), Ctrl+D,
+       Delete, Alt+↑/↓, Ctrl+A. Dùng được ở danh sách slide bên trái và lưới Template Gallery.
+       Mọi thao tác đi qua DeckStore nên Ctrl+Z hoàn tác được.
+       ========================================================================== */
+    const XB_MAX_SLIDES = 400;
+    let selectedSlideIds = new Set(), selAnchorIdx = 0, slideClipboard = null, dragState = null;
+    const SLIDE_PANELS = { list: 'sidebar-slide-list', grid: 'gallery-grid-container' };
+    const XB_BOUND_PANELS = new WeakSet();
+    const pad2 = n => String(n).padStart(2, '0');
+    function newSlideId() { return 'slide-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+    function catalogMeta(type) { return LAYOUT_CATALOG.find(l => l.type === type); }
+    function xbMakeSlide(src) {
+      const s = xbClone(src) || {};
+      delete s.id;
+      if (!s.type && Array.isArray(s.components)) s.type = 'composer';
+      const meta = catalogMeta(s.type) || {};
+      s.id = newSlideId();
+      s.group = s.group || meta.group || 'B';
+      s.layoutName = s.layoutName || String(meta.name || s.type || 'Custom').replace(/^\d+\.\s*/, '');
+      if (!xbIsObj(s.content)) s.content = {};
+      return s;
+    }
+    function xbSlideIsValid(s) {
+      if (!xbIsObj(s)) return false;
+      const type = s.type || (Array.isArray(s.components) ? 'composer' : '');
+      return !!catalogMeta(type) || ((s.render !== undefined || s.template !== undefined) && !!type);
+    }
+    function syncSlideSelection() {
+      const ids = new Set(slides.map(s => s.id));
+      selectedSlideIds = new Set([...selectedSlideIds].filter(id => ids.has(id)));
+      const cur = slides[currentSlideIndex];
+      if (cur && !selectedSlideIds.has(cur.id)) { selectedSlideIds = new Set([cur.id]); selAnchorIdx = currentSlideIndex; }
+    }
+    function setSingleSelection(i) { if (slides[i]) { selectedSlideIds = new Set([slides[i].id]); selAnchorIdx = i; } }
+    function selectedIndices() {
+      const idx = slides.map((s, i) => selectedSlideIds.has(s.id) ? i : -1).filter(i => i >= 0);
+      return idx.length ? idx : [currentSlideIndex];
+    }
+    function applyClickSelection(e, idx) {
+      if (e.shiftKey) {
+        const a = Math.min(selAnchorIdx, idx), b = Math.max(selAnchorIdx, idx);
+        selectedSlideIds = new Set(slides.slice(a, b + 1).map(s => s.id));
+        return true;
+      }
+      if (e.ctrlKey || e.metaKey) {
+        const id = slides[idx].id;
+        if (selectedSlideIds.has(id) && selectedSlideIds.size > 1) { selectedSlideIds.delete(id); selAnchorIdx = idx; return false; }
+        selectedSlideIds.add(id); selAnchorIdx = idx; return true;
+      }
+      setSingleSelection(idx); return true;
+    }
+    const xbItemIndex = e => { const item = e.target.closest?.('[data-slide-index]'); return item ? +item.dataset.slideIndex : -1; };
+    function sidebarClick(e) {
+      const idx = xbItemIndex(e); if (idx < 0 || !slides[idx]) return;
+      document.getElementById(SLIDE_PANELS.list)?.focus({ preventScroll: true });
+      if (applyClickSelection(e, idx)) { selectSlide(idx); return; }
+      // Ctrl+click removed a slide from the selection: keep showing a slide that is still selected.
+      if (!selectedSlideIds.has(slides[currentSlideIndex]?.id)) currentSlideIndex = slides.findIndex(s => selectedSlideIds.has(s.id));
+      renderCurrentSlide();
+    }
+    function galleryClick(e) {
+      const idx = xbItemIndex(e); if (idx < 0 || !slides[idx]) return;
+      document.getElementById(SLIDE_PANELS.grid)?.focus({ preventScroll: true });
+      if (e.ctrlKey || e.metaKey || e.shiftKey) { applyClickSelection(e, idx); refreshSelectionMarks(); return; }
+      setSingleSelection(idx); selectSlide(idx);
+    }
+    function refreshSelectionMarks() {
+      Object.values(SLIDE_PANELS).forEach(id => document.querySelectorAll(`#${id} [data-slide-index]`).forEach(el => {
+        const s = slides[+el.dataset.slideIndex];
+        el.classList.toggle('v1-selected', !!s && selectedSlideIds.has(s.id) && (id === SLIDE_PANELS.grid || +el.dataset.slideIndex !== currentSlideIndex));
+      }));
+    }
+
+    /* Deck mutations: recorded by DeckStore (undo/redo), then re-rendered. */
+    function applyDeckChange(focusIndex, ids, message) {
+      currentSlideIndex = Math.max(0, Math.min(focusIndex, slides.length - 1));
+      selectedSlideIds = new Set(ids && ids.length ? ids : [slides[currentSlideIndex].id]);
+      selAnchorIdx = currentSlideIndex;
+      renderCurrentSlide();
+      if (currentAppMode === 'gallery') renderGalleryGrid();
+      const el = document.querySelector(`#${currentAppMode === 'gallery' ? SLIDE_PANELS.grid : SLIDE_PANELS.list} [data-slide-index="${currentSlideIndex}"]`);
+      el?.scrollIntoView({ block: 'nearest' });
+      if (message) xbToast(message);
+    }
+    function moveSlidesTo(indices, gap, verb = 'Đã di chuyển') {
+      const ids = new Set(indices.map(i => slides[i].id));
+      const moving = slides.filter(s => ids.has(s.id));
+      const before = slides.slice(0, gap).filter(s => !ids.has(s.id)).length;
+      const rest = slides.filter(s => !ids.has(s.id));
+      rest.splice(before, 0, ...moving);
+      const changed = rest.some((s, i) => s !== slides[i]);
+      if (changed) DeckStore.change(() => { slides = rest; });
+      applyDeckChange(before, [...ids], changed ? `${verb} ${moving.length} slide tới vị trí ${pad2(before + 1)}` : '');
+    }
+    function insertSlidesAt(newSlides, gap, verb = 'Đã chèn') {
+      if (!newSlides.length) return;
+      if (slides.length + newSlides.length > XB_MAX_SLIDES) { xbToast(`Bộ slide tối đa ${XB_MAX_SLIDES} slide`); return; }
+      gap = Math.max(0, Math.min(gap, slides.length));
+      DeckStore.change(() => { slides.splice(gap, 0, ...newSlides); });
+      applyDeckChange(gap, newSlides.map(s => s.id), `${verb} ${newSlides.length} slide tại vị trí ${pad2(gap + 1)}`);
+    }
+    function copySlidesTo(indices, gap) { insertSlidesAt(indices.map(i => xbMakeSlide(slides[i])), gap, 'Đã sao chép'); }
+    function duplicateSelection() { const idx = selectedIndices(); copySlidesTo(idx, idx[idx.length - 1] + 1); }
+    function deleteSelection() {
+      const idx = selectedIndices();
+      if (idx.length >= slides.length) { xbToast('Bộ slide phải còn ít nhất 1 slide'); return; }
+      const ids = new Set(idx.map(i => slides[i].id));
+      DeckStore.change(() => { slides = slides.filter(s => !ids.has(s.id)); });
+      applyDeckChange(Math.min(idx[0], slides.length - 1), null, `Đã xoá ${idx.length} slide · Ctrl+Z để hoàn tác`);
+    }
+    function moveSelectionBy(delta) {
+      // Like PowerPoint: each selected slide moves one step; gaps between selected slides are kept.
+      const idx = selectedIndices();
+      if ((delta < 0 && idx[0] === 0) || (delta > 0 && idx[idx.length - 1] === slides.length - 1)) return;
+      const ids = idx.map(i => slides[i].id), curId = slides[currentSlideIndex].id, arr = slides.slice();
+      (delta > 0 ? [...idx].reverse() : idx).forEach(i => { const j = i + delta; [arr[i], arr[j]] = [arr[j], arr[i]]; });
+      DeckStore.change(() => { slides = arr; });
+      applyDeckChange(slides.findIndex(s => s.id === curId), ids, `Đã ${delta < 0 ? 'đưa lên' : 'đưa xuống'} ${ids.length} slide`);
+    }
+    function moveSelectionToEdge(edge) { moveSlidesTo(selectedIndices(), edge === 'top' ? 0 : slides.length); }
+    function selectAllSlides() { selectedSlideIds = new Set(slides.map(s => s.id)); refreshSelectionMarks(); xbToast(`Đã chọn ${slides.length} slide`); }
+
+    /* Clipboard payload {xbrainSlides:true, slides:[...], layouts?, helpers?}: custom layouts used by the
+       copied slides travel with them, so they paste correctly into another copy of this file. */
+    function slidePayload(indices) {
+      const list = indices.map(i => { const s = xbClone(slides[i]); delete s.id; return s; });
+      const payload = { xbrainSlides: true, version: XB_VERSION, slides: list };
+      const used = [...new Set(list.map(s => s.type))].filter(t => DECK_CONFIG.layouts?.[t]);
+      if (used.length) {
+        payload.layouts = Object.fromEntries(used.map(t => [t, DECK_CONFIG.layouts[t]]));
+        if (DECK_CONFIG.helpers) payload.helpers = DECK_CONFIG.helpers;
+      }
+      return JSON.stringify(payload);
+    }
+    /* Imported slide collections (clipboard payload, dropped file) must declare version 1.0. */
+    function xbSlidesFromPayload(obj) {
+      if (!xbIsObj(obj)) throw new Error('Expected a JSON object with version ' + XB_VERSION);
+      xbRequireVersion(obj);
+      if (obj.layouts || obj.helpers) {
+        const missing = Object.keys(obj.layouts || {}).some(t => !DECK_CONFIG.layouts?.[t]);
+        if (missing || obj.helpers) xbMergePack({ layouts: obj.layouts, helpers: obj.helpers });
+      }
+      return (Array.isArray(obj.slides) ? obj.slides : []).filter(xbSlideIsValid);
+    }
+    function parseSlidePayload(text) {
+      let obj; try { obj = JSON.parse(text); } catch (e) { return []; }
+      if (!xbIsObj(obj) || !obj.xbrainSlides) return [];
+      try { return xbSlidesFromPayload(obj); } catch (e) { xbToast('Không dán được: ' + e.message); return []; }
+    }
+    function writeSystemClipboard(text) {
+      if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).catch(() => fallbackCopy(text)); else fallbackCopy(text);
+    }
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+      document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+    }
+    function writeSlidesToClipboard(idx, clipboardEvent, extra) {
+      slideClipboard = idx.map(i => xbClone(slides[i]));
+      let payload = slidePayload(idx);
+      if (extra) payload = JSON.stringify({ ...JSON.parse(payload), ...extra });
+      if (clipboardEvent) clipboardEvent.clipboardData.setData('text/plain', payload); else writeSystemClipboard(payload);
+    }
+    function copySelection(clipboardEvent) {
+      const idx = selectedIndices();
+      clearCut(false);
+      writeSlidesToClipboard(idx, clipboardEvent);
+      xbToast(`Đã sao chép ${idx.length} slide · Ctrl+V để dán`);
+    }
+    /* Cut works like a file manager: the slides stay in place, faded, until they are pasted somewhere
+       else (then they are moved there, one undo step). Esc or a new Ctrl+C cancels the cut. */
+    let cutState = null;
+    function refreshCutMarks() {
+      Object.values(SLIDE_PANELS).forEach(id => document.querySelectorAll(`#${id} [data-slide-index]`).forEach(el => {
+        const s = slides[+el.dataset.slideIndex];
+        el.classList.toggle('v1-cut', !!(s && cutState?.ids.has(s.id)));
+      }));
+    }
+    function clearCut(notify) {
+      if (!cutState) return;
+      cutState = null; refreshCutMarks();
+      if (notify) xbToast('Đã huỷ thao tác cắt');
+    }
+    function cutSelection(clipboardEvent) {
+      const idx = selectedIndices();
+      if (idx.length >= slides.length) { xbToast('Không thể cắt toàn bộ bộ slide'); return; }
+      const token = 'cut-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      writeSlidesToClipboard(idx, clipboardEvent, { cutToken: token });
+      cutState = { ids: new Set(idx.map(i => slides[i].id)), token };
+      refreshCutMarks();
+      xbToast(`Đã cắt ${idx.length} slide · chọn vị trí mới rồi Ctrl+V để chuyển tới đó · Esc để huỷ`);
+    }
+    function pasteCutSlides() {
+      const ids = cutState.ids;
+      const idx = slides.map((s, i) => ids.has(s.id) ? i : -1).filter(i => i >= 0);
+      if (!idx.length) { clearCut(false); xbToast('Các slide đã cắt không còn trong bộ slide'); return; }
+      const target = selectedIndices().filter(i => !ids.has(slides[i].id));
+      if (!target.length) { xbToast('Chọn một slide khác làm vị trí đích rồi Ctrl+V · Esc để huỷ cắt'); return; }
+      cutState = null;
+      moveSlidesTo(idx, target[target.length - 1] + 1, 'Đã chuyển');
+    }
+    function pasteSlides(list) {
+      if (cutState) { pasteCutSlides(); return; }
+      if (!list || !list.length) { xbToast('Chưa có slide trong bộ nhớ tạm · dùng Ctrl+C trước, hoặc Ctrl+V để dán từ tệp khác'); return; }
+      const idx = selectedIndices();
+      insertSlidesAt(list.map(xbMakeSlide), idx[idx.length - 1] + 1, 'Đã dán');
+    }
+
+    /* Drag & drop */
+    function slideItems(container) { return [...container.querySelectorAll('[data-slide-index]')]; }
+    function dropTarget(container, mode, e) {
+      const items = slideItems(container);
+      if (!items.length) return { gap: slides.length, el: null, before: false };
+      if (mode === 'list') {
+        for (const el of items) { const r = el.getBoundingClientRect(); if (e.clientY < r.top + r.height / 2) return { gap: +el.dataset.slideIndex, el, before: true }; }
+        const last = items[items.length - 1]; return { gap: +last.dataset.slideIndex + 1, el: last, before: false };
+      }
+      let best = null, bestD = Infinity;
+      for (const el of items) {
+        const r = el.getBoundingClientRect(), dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right), dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom), d = dx * dx + dy * dy * 4;
+        if (d < bestD) { bestD = d; best = el; }
+      }
+      const r = best.getBoundingClientRect(), before = e.clientX < r.left + r.width / 2;
+      return { gap: +best.dataset.slideIndex + (before ? 0 : 1), el: best, before };
+    }
+    function showDropLine(container, mode, t, copy) {
+      let line = container.querySelector(':scope > .v1-drop-line');
+      if (!line) { line = document.createElement('div'); line.className = 'v1-drop-line'; container.appendChild(line); }
+      line.dataset.label = copy ? 'Sao chép vào đây' : 'Di chuyển tới đây';
+      line.classList.toggle('v1-vertical', mode === 'grid');
+      const el = t.el; if (!el) { line.style.display = 'none'; return; }
+      line.style.display = 'block';
+      if (mode === 'list') {
+        line.style.left = el.offsetLeft + 'px'; line.style.width = el.offsetWidth + 'px'; line.style.height = '3px';
+        line.style.top = (t.before ? el.offsetTop - 7 : el.offsetTop + el.offsetHeight + 4) + 'px';
+      } else {
+        line.style.top = el.offsetTop + 'px'; line.style.height = el.offsetHeight + 'px'; line.style.width = '4px';
+        line.style.left = (t.before ? el.offsetLeft - 16 : el.offsetLeft + el.offsetWidth + 12) + 'px';
+      }
+    }
+    function hideDropLine(container) { container.querySelector(':scope > .v1-drop-line')?.remove(); }
+    function autoScroll(scroller, e) {
+      const r = scroller.getBoundingClientRect(), edge = 48;
+      if (e.clientY < r.top + edge) scroller.scrollTop -= 14; else if (e.clientY > r.bottom - edge) scroller.scrollTop += 14;
+    }
+    async function xbHandleExternalDrop(e, gap) {
+      let list = parseSlidePayload(e.dataTransfer.getData('text/plain'));
+      const file = [...(e.dataTransfer.files || [])].find(f => /\.json$/i.test(f.name));
+      if (!list.length && file) {
+        const text = await file.text(); let obj = null;
+        try { obj = JSON.parse(text); } catch (err) { xbToast('Tệp JSON lỗi cú pháp: ' + err.message); return; }
+        const hasSlides = Array.isArray(obj) || Array.isArray(obj?.slides);
+        if (!hasSlides && xbIsObj(obj) && ('layouts' in obj || 'helpers' in obj)) { xbImportAny(obj); return; }
+        list = xbSlidesFromPayload(obj); // throws on a missing/other version: nothing is changed
+      }
+      if (list.length) insertSlidesAt(list.map(xbMakeSlide), gap, 'Đã chèn');
+      else xbToast('Nội dung kéo vào không phải slide XBrain hợp lệ');
+    }
+    function bindSlideDnD(container, mode, scroller) {
+      if (!container || XB_BOUND_PANELS.has(container)) return;
+      XB_BOUND_PANELS.add(container); container.tabIndex = 0;
+      container.addEventListener('dragstart', e => {
+        const item = e.target.closest?.('[data-slide-index]'); if (!item) return;
+        const idx = +item.dataset.slideIndex;
+        if (!selectedSlideIds.has(slides[idx].id)) { setSingleSelection(idx); refreshSelectionMarks(); }
+        const indices = selectedIndices();
+        dragState = { indices, ids: indices.map(i => slides[i].id) };
+        e.dataTransfer.effectAllowed = 'copyMove';
+        e.dataTransfer.setData('text/plain', slidePayload(indices));
+        const ghost = document.createElement('div'); ghost.className = 'v1-drag-ghost';
+        ghost.textContent = indices.length > 1 ? `${indices.length} slide` : `Slide ${pad2(idx + 1)} · ${slides[idx].layoutName || slides[idx].type}`;
+        document.body.appendChild(ghost); e.dataTransfer.setDragImage(ghost, 18, 18); setTimeout(() => ghost.remove(), 0);
+        requestAnimationFrame(() => slideItems(container).forEach(el => { if (dragState && dragState.ids.includes(slides[+el.dataset.slideIndex]?.id)) el.classList.add('v1-dragging'); }));
+      });
+      container.addEventListener('dragover', e => {
+        e.preventDefault();
+        const copy = !dragState || e.ctrlKey || e.altKey || e.metaKey;
+        e.dataTransfer.dropEffect = copy ? 'copy' : 'move';
+        showDropLine(container, mode, dropTarget(container, mode, e), copy);
+        autoScroll(scroller || container, e);
+      });
+      container.addEventListener('dragleave', e => { if (!container.contains(e.relatedTarget)) hideDropLine(container); });
+      container.addEventListener('drop', e => {
+        e.preventDefault();
+        const t = dropTarget(container, mode, e); hideDropLine(container);
+        if (dragState) {
+          const { indices } = dragState; dragState = null;
+          if (e.ctrlKey || e.altKey || e.metaKey) copySlidesTo(indices, t.gap); else moveSlidesTo(indices, t.gap);
+          return;
+        }
+        xbHandleExternalDrop(e, t.gap).catch(err => xbToast('Không chèn được: ' + err.message));
+      });
+      container.addEventListener('dragend', () => {
+        dragState = null; hideDropLine(container);
+        container.querySelectorAll('.v1-dragging').forEach(el => el.classList.remove('v1-dragging'));
+      });
+      container.addEventListener('contextmenu', e => {
+        const item = e.target.closest?.('[data-slide-index]'); if (!item) return;
+        e.preventDefault();
+        const idx = +item.dataset.slideIndex;
+        if (!selectedSlideIds.has(slides[idx].id)) { setSingleSelection(idx); if (mode === 'list') selectSlide(idx); else refreshSelectionMarks(); }
+        openSlideMenu(e.clientX, e.clientY);
+      });
+    }
+
+    /* Right-click menu */
+    function openSlideMenu(x, y) {
+      closeSlideMenu();
+      const idx = selectedIndices(), n = idx.length;
+      const atTop = idx[0] === 0, atBottom = idx[idx.length - 1] === slides.length - 1;
+      const items = [
+        ['Sao chép', 'Ctrl+C', () => copySelection()], ['Cắt', 'Ctrl+X', () => cutSelection(), n >= slides.length],
+        ['Dán sau slide này', 'Ctrl+V', () => pasteSlides(slideClipboard), !slideClipboard], ['Nhân bản', 'Ctrl+D', duplicateSelection], '-',
+        ['Lên trên', 'Alt+↑', () => moveSelectionBy(-1), atTop], ['Xuống dưới', 'Alt+↓', () => moveSelectionBy(1), atBottom],
+        ['Đưa lên đầu', '', () => moveSelectionToEdge('top'), atTop], ['Đưa xuống cuối', '', () => moveSelectionToEdge('bottom'), atBottom], '-',
+        ['Xoá', 'Del', deleteSelection, n >= slides.length, 'v1-danger'],
+      ];
+      const menu = document.createElement('div'); menu.className = 'v1-menu'; menu.id = 'v1-slide-menu'; menu.setAttribute('role', 'menu');
+      menu.innerHTML = `<div class="v1-menu-head">${n > 1 ? n + ' slide đã chọn' : 'Slide ' + pad2(idx[0] + 1)}</div>`;
+      items.forEach(it => {
+        if (it === '-') { menu.insertAdjacentHTML('beforeend', '<div class="v1-menu-sep"></div>'); return; }
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'menuitem'); b.disabled = !!it[3]; if (it[4]) b.className = it[4];
+        b.innerHTML = `<span>${it[0]}</span><kbd>${it[1]}</kbd>`; b.addEventListener('click', () => { closeSlideMenu(); it[2](); });
+        menu.appendChild(b);
+      });
+      document.body.appendChild(menu);
+      const r = menu.getBoundingClientRect();
+      menu.style.left = Math.min(x, innerWidth - r.width - 8) + 'px'; menu.style.top = Math.min(y, innerHeight - r.height - 8) + 'px';
+    }
+    function closeSlideMenu() { document.getElementById('v1-slide-menu')?.remove(); }
+    document.addEventListener('mousedown', e => { if (!e.target.closest?.('#v1-slide-menu')) closeSlideMenu(); });
+    window.addEventListener('blur', closeSlideMenu);
+    window.addEventListener('resize', closeSlideMenu);
+
+    let xbToastTimer = null;
+    function xbToast(msg) {
+      if (!msg) return;
+      let el = document.getElementById('v1-toast');
+      if (!el) { el = document.createElement('div'); el.id = 'v1-toast'; el.className = 'v1-toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+      el.textContent = msg; el.classList.add('show');
+      clearTimeout(xbToastTimer); xbToastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    /* Keyboard + clipboard events (ignored while typing, in modals, brand view or fullscreen). */
+    const XB_MODALS = ['modal-add-slide', 'modal-json-editor', 'modal-content-editor', 'v1-visual-modal', 'v1-deck-modal'];
+    function slideShortcutsActive() {
+      const a = document.activeElement;
+      const typing = a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
+      const modal = XB_MODALS.some(id => { const m = document.getElementById(id); return m && !m.classList.contains('hidden'); });
+      return !typing && !modal && currentAppMode !== 'brand' && !document.body.classList.contains('presentation-fullscreen');
+    }
+    const focusInSlidePanel = () => !!document.activeElement?.closest?.(`#${SLIDE_PANELS.list},#${SLIDE_PANELS.grid}`);
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeSlideMenu(); clearCut(true); return; }
+      if (!slideShortcutsActive()) return;
+      const k = e.key, mod = e.ctrlKey || e.metaKey;
+      if (mod && !e.shiftKey && k.toLowerCase() === 'd') { e.preventDefault(); duplicateSelection(); }
+      else if (mod && k.toLowerCase() === 'a' && focusInSlidePanel()) { e.preventDefault(); selectAllSlides(); }
+      else if (e.altKey && (k === 'ArrowUp' || k === 'ArrowDown')) { e.preventDefault(); moveSelectionBy(k === 'ArrowUp' ? -1 : 1); }
+      else if ((k === 'Delete' || k === 'Backspace') && focusInSlidePanel()) { e.preventDefault(); deleteSelection(); }
+      else if (!e.altKey && !mod && (k === 'ArrowUp' || k === 'ArrowDown') && focusInSlidePanel() && currentAppMode === 'workspace') { e.preventDefault(); k === 'ArrowUp' ? prevSlide() : nextSlide(); }
+    });
+    document.addEventListener('copy', e => {
+      if (!slideShortcutsActive() || !window.getSelection().isCollapsed) return;
+      e.preventDefault(); copySelection(e);
+    });
+    document.addEventListener('cut', e => {
+      if (!slideShortcutsActive() || !window.getSelection().isCollapsed) return;
+      e.preventDefault(); cutSelection(e);
+    });
+    document.addEventListener('paste', e => {
+      if (!slideShortcutsActive()) return;
+      const text = e.clipboardData?.getData('text/plain') || '';
+      e.preventDefault();
+      let token = null; try { token = JSON.parse(text)?.cutToken || null; } catch (err) { }
+      // Our own pending cut (same file) → move; slides copied elsewhere → insert copies.
+      if (cutState && (!text || token === cutState.token)) { pasteCutSlides(); return; }
+      const list = parseSlidePayload(text);
+      if (list.length) { clearCut(false); insertSlidesAt(list.map(xbMakeSlide), selectedIndices().at(-1) + 1, 'Đã dán'); return; }
+      pasteSlides(slideClipboard);
+    });
+
+    /* ==========================================================================
+       window.XB — API cho agent / console
+       ========================================================================== */
+    function xbInsertOne(slide, index) {
+      const s = xbMakeSlide(slide);
+      insertSlidesAt([s], index ?? currentSlideIndex + 1, 'Đã thêm');
+      return s.id;
+    }
+    window.XB = {
+      version: '1.0.0',
+      schemaVersion: XB_VERSION,
+      getDeck: () => xbClone(deckDocument()),
+      setDeck(doc) { deckApplyDocument(xbClone(doc)); return slides.length; },
+      import: (obj, index) => xbImportAny(xbClone(obj), index),
+      merge: pack => xbMergePack(xbClone(pack)),
+      defineLayout: (type, def) => xbMergePack({ layouts: { [type]: xbClone(def) } }),
+      removeLayout: type => xbMergePack({ layouts: { [type]: null } }),
+      defineHelper: (name, src) => xbMergePack({ helpers: { [name]: src } }),
+      layouts: () => LAYOUT_CATALOG.map(({ type, group, name, desc, limits, custom }) => ({ type, group, name, desc, limits: limits || {}, custom: !!custom })),
+      sample: type => xbClone(xbSampleFor(type)),
+      slides: () => xbClone(slides),
+      addSlide(type, content, index, extra = {}) {
+        return xbInsertOne({ ...xbClone(extra), type, content: xbClone(content ?? xbSampleFor(type) ?? {}) }, index);
+      },
+      insertSlides(list, index) {
+        const arr = (Array.isArray(list) ? list : [list]).filter(xbSlideIsValid).map(xbMakeSlide);
+        insertSlidesAt(arr, index ?? currentSlideIndex + 1, 'Đã thêm');
+        return arr.map(s => s.id);
+      },
+      updateSlide(index, patch) {
+        if (!slides[index]) throw new Error('Không có slide ' + index);
+        DeckStore.change(() => { slides[index].content = { ...(slides[index].content || {}), ...xbClone(patch) }; });
+        renderCurrentSlide();
+      },
+      replaceSlide(index, slide) {
+        if (!slides[index]) throw new Error('Không có slide ' + index);
+        const s = xbMakeSlide(slide); s.id = slides[index].id;
+        DeckStore.change(() => { slides[index] = s; });
+        renderCurrentSlide();
+      },
+      removeSlide(index) { setSingleSelection(index); deleteSelection(); },
+      moveSlide(from, to) { moveSlidesTo([from], to > from ? to + 1 : to); },
+      render: (slideOrIndex, index = 0) => typeof slideOrIndex === 'number'
+        ? renderSlideHTML(slides[slideOrIndex], slideOrIndex, true)
+        : renderSlideHTML(xbMakeSlide(slideOrIndex), index, true),
+      select: i => selectSlide(i),
+      undo: () => undoDeck(),
+      redo: () => redoDeck(),
+      errors: () => XB_ERRORS.slice(),
+      exportHTML: () => buildEditedHTML(),
+      exportJSON: () => JSON.stringify(deckDocument(), null, 2),
+      ctx: XB_CTX,
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Built-in sample slides that were declared without id/group/layoutName get them here.
+      const seen = new Set();
+      slides.forEach((s, i) => {
+        const meta = catalogMeta(s.type) || {};
+        if (!s.id || seen.has(s.id)) s.id = `slide-${s.type || 'x'}-${i + 1}`;
+        seen.add(s.id);
+        s.group = s.group || meta.group || 'B';
+        s.layoutName = s.layoutName || String(meta.name || s.type).replace(/^\d+\.\s*/, '');
+        if (!xbIsObj(s.content)) s.content = {};
+      });
+      bindSlideDnD(document.getElementById(SLIDE_PANELS.list), 'list');
+      bindSlideDnD(document.getElementById(SLIDE_PANELS.grid), 'grid', document.getElementById('gallery-view'));
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       const bootText=document.getElementById('v1-embedded-deck')?.textContent.trim();

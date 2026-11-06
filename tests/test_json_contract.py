@@ -40,11 +40,21 @@ script = script.replace(/\}\)\(\);\s*$/, `
   const emptyDraft=draft.load();
   draft.save(current);
   const savedDraft=draft.load();
+  const fails=fn=>{try{fn();return false;}catch(error){return error.message;}};
+  const layoutDoc={version:'1.0',layouts:{'kpi-tiles':{group:'D',template:'<b>x</b>'}},slides:[{type:'kpi-tiles',content:{}}]};
+  const templateAsCode={
+    layoutSlideAccepted:DeckModel.normalize(layoutDoc,xbCatalogFor(layoutDoc,layoutDoc.layouts),DECK_DEFAULT_CONFIG).slides[0].type,
+    layoutSlideWithoutLayouts:fails(()=>DeckModel.normalize({version:'1.0',slides:layoutDoc.slides},xbCatalogFor({slides:layoutDoc.slides},undefined),DECK_DEFAULT_CONFIG)),
+    packVersions:['2.0',1,null].map(version=>fails(()=>xbRequireVersion({version},true))),
+    packWithoutVersion:fails(()=>xbRequireVersion({},true)),
+    payloadWithoutVersion:fails(()=>xbSlidesFromPayload({xbrainSlides:true,slides:[]})),
+    customLayoutsRegistered:LAYOUT_CATALOG.filter(x=>x.custom).length
+  };
   globalThis.result={document:current,layouts:LAYOUT_CATALOG.map(x=>x.type),
     components:Object.keys(COMPONENT_RENDERERS),visuals:DECK_DESCRIPTORS,
     normalized:DeckModel.serialize(normalized.config,normalized.slides),rejectedVersions,
     draft:{empty:emptyDraft,saved:savedDraft,reads,keys:[...storage.keys()]},
-    array:DeckModel.serialize(array.config,array.slides)};
+    array:DeckModel.serialize(array.config,array.slides),templateAsCode};
 })();`);
 const context={window:{addEventListener(){}},document:{addEventListener(){}},console};
 vm.runInNewContext(script,context,{timeout:5000});
@@ -55,12 +65,12 @@ process.stdout.write(JSON.stringify(context.result));
 class JsonContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.schema = json.loads(SCHEMA.read_text())
+        cls.schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
         cls.validator = Draft202012Validator(cls.schema)
-        cls.example = json.loads(EXAMPLE.read_text())
+        cls.example = json.loads(EXAMPLE.read_text(encoding="utf-8"))
         cls.source = json.loads(subprocess.run(
             ["node", "-e", EXTRACT], cwd=ROOT, check=True,
-            capture_output=True, text=True, timeout=15,
+            capture_output=True, text=True, encoding="utf-8", timeout=15,
         ).stdout)
 
     def assertValid(self, document):
@@ -202,6 +212,57 @@ class JsonContractTest(unittest.TestCase):
         }}))
         for transform in [{"limit": 2001}, {"order": "descending"}, {"filter": {"gt": 3}}]:
             self.assertInvalid(self.deck({"type": "chart", "transform": transform}))
+
+    INTEGRATED_LAYOUTS = [
+        "venn-diagram", "swot-analysis", "priority-matrix", "mind-map", "fishbone", "staircase",
+        "concentric-circles", "value-chain", "decision-tree", "system-architecture", "kanban-board",
+        "gantt-roadmap", "line-chart", "waterfall-chart", "bar-ranking", "radar-chart",
+        "progress-rings", "custom-html", "custom-diagram",
+    ]
+
+    def test_integrated_layouts_have_sample_slides_and_strict_content(self):
+        sample_types = {slide["type"] for slide in self.source["document"]["slides"]}
+        for layout in self.INTEGRATED_LAYOUTS:
+            with self.subTest(layout=layout):
+                self.assertIn(layout, self.source["layouts"])
+                self.assertIn(layout, sample_types)
+                self.assertInvalid({"version": "1.0", "slides": [{"type": layout, "content": {"titel": "Typo"}}]})
+                self.assertInvalid({"version": "1.0", "slides": [{"type": layout}]})
+        for content in [
+            {"items": [{"label": "A", "value": 1, "kind": "up"}]},
+            {"items": [{"label": "A", "value": "10"}]},
+        ]:
+            self.assertInvalid({"version": "1.0", "slides": [{"type": "waterfall-chart", "content": content}]})
+        self.assertInvalid({"version": "1.0", "slides": [{"type": "progress-rings", "content": {"rings": [{"value": 140}]}}]})
+        self.assertValid({"version": "1.0", "slides": [{"type": "custom-diagram", "content": {
+            "title": "Own SVG", "svg": "<rect width=\"10\" height=\"10\"/>"}}]})
+
+    def test_template_as_code_contract(self):
+        layout = {"group": "D", "name": "KPI Tiles", "frame": "dgPage", "sample": {"items": []},
+                  "render": ["const items = c.items || [];", "return items.map(i => i.value).join('');"]}
+        self.assertValid({"version": "1.0", "helpers": {"pill": "(t) => `<b>${t}</b>`"},
+                          "layouts": {"kpi-tiles": layout},
+                          "slides": [{"type": "kpi-tiles", "content": {"items": [{"value": "200"}]}}]})
+        # a slide of a custom layout needs the layouts map; a slide carrying its own code does not
+        self.assertInvalid({"version": "1.0", "slides": [{"type": "kpi-tiles", "content": {}}]})
+        self.assertValid({"version": "1.0", "slides": [{"type": "one-off", "content": {}, "template": "<div>${c.x}</div>"}]})
+        self.assertValid({"version": "1.0", "slides": [{"type": "cover", "content": {}, "render": "return '';", "css": ".a{}"}]})
+        for bad in [{"rendr": "return '';"}, {"group": "D"}, {"render": 42}, {"template": "", "group": "Z"}]:
+            with self.subTest(layout=bad):
+                self.assertInvalid({"version": "1.0", "layouts": {"x": bad}, "slides": [{"type": "cover", "content": {}}]})
+        self.assertInvalid({"version": "1.0", "layouts": {"bad name": layout}, "slides": [{"type": "cover", "content": {}}]})
+        self.assertInvalid({"version": "1.0", "helpers": [], "slides": [{"type": "cover", "content": {}}]})
+        self.assertInvalid({"version": "1.0", "slides": [{"type": "one-off", "content": {}, "render": "", "titel": "x"}]})
+
+    def test_template_as_code_runtime(self):
+        result = self.source["templateAsCode"]
+        version_error = "Expected JSON schema version 1.0"
+        self.assertEqual(result["layoutSlideAccepted"], "kpi-tiles")
+        self.assertTrue(result["layoutSlideWithoutLayouts"])
+        self.assertEqual(result["packVersions"], [version_error] * 3)
+        self.assertFalse(result["packWithoutVersion"])
+        self.assertEqual(result["payloadWithoutVersion"], version_error)
+        self.assertEqual(result["customLayoutsRegistered"], 0)
 
     def test_metadata_and_trusted_content_remain_supported(self):
         self.assertValid(self.deck({"type": "html", "html": "<strong>Example</strong>"}) | {

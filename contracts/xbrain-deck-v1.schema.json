@@ -74,7 +74,33 @@
       "minItems": 1,
       "maxItems": 400,
       "items": {
-        "$ref": "#/$defs/slide"
+        "anyOf": [
+          {
+            "$ref": "#/$defs/slide"
+          },
+          {
+            "$ref": "#/$defs/codeSlide"
+          },
+          {
+            "$ref": "#/$defs/layoutSlide"
+          }
+        ]
+      }
+    },
+    "layouts": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_-]+$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/layoutDefinition"
+      }
+    },
+    "helpers": {
+      "type": "object",
+      "description": "Shared helpers: JS expression strings (or arrays of lines); other JSON values are used as-is.",
+      "propertyNames": {
+        "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
       }
     }
   },
@@ -82,6 +108,31 @@
   "required": [
     "version",
     "slides"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "layouts"
+        ]
+      },
+      "else": {
+        "properties": {
+          "slides": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/slide"
+                },
+                {
+                  "$ref": "#/$defs/codeSlide"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
   ],
   "$defs": {
     "row": {
@@ -2375,6 +2426,926 @@
       },
       "additionalProperties": false
     },
+    "content-venn-diagram": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "center": {
+          "type": "string"
+        },
+        "centerSub": {
+          "type": "string"
+        },
+        "sets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "29. Venn Diagram",
+      "description": "Content for the venn-diagram template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-swot-analysis": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "quadrants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "letter": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "30. SWOT Analysis",
+      "description": "Content for the swot-analysis template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-priority-matrix": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "xLabel": {
+          "type": "string"
+        },
+        "yLabel": {
+          "type": "string"
+        },
+        "quadrantLabels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "31. Priority Matrix",
+      "description": "Content for the priority-matrix template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-mind-map": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "center": {
+          "type": "string"
+        },
+        "centerSub": {
+          "type": "string"
+        },
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "leaves": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "32. Mind Map",
+      "description": "Content for the mind-map template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-fishbone": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "problem": {
+          "type": "string"
+        },
+        "problemSub": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "causes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "33. Fishbone / Root Cause",
+      "description": "Content for the fishbone template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-staircase": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tag": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "34. Maturity Staircase",
+      "description": "Content for the staircase template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-concentric-circles": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "35. Concentric Circles",
+      "description": "Content for the concentric-circles template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-value-chain": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "36. Value Chain (Chevron)",
+      "description": "Content for the value-chain template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-decision-tree": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "root": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "desc": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "children": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "desc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "37. Decision Tree",
+      "description": "Content for the decision-tree template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-system-architecture": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "zones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "desc": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "38. System Architecture",
+      "description": "Content for the system-architecture template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-kanban-board": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "tag": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "39. Kanban Board",
+      "description": "Content for the kanban-board template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-gantt-roadmap": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "periods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "today": {
+          "type": "number"
+        },
+        "todayLabel": {
+          "type": "string"
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "start": {
+                "type": "number"
+              },
+              "end": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "at": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "40. Gantt Roadmap",
+      "description": "Content for the gantt-roadmap template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-line-chart": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "series": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "yMin": {
+          "type": "number"
+        },
+        "yMax": {
+          "type": "number"
+        },
+        "insightLabel": {
+          "type": "string"
+        },
+        "insightValue": {
+          "type": "string"
+        },
+        "insightText": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "41. Line Trend Chart",
+      "description": "Content for the line-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-waterfall-chart": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "legendStart": {
+          "type": "string"
+        },
+        "legendUp": {
+          "type": "string"
+        },
+        "legendDown": {
+          "type": "string"
+        },
+        "legendTotal": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "start",
+                  "delta",
+                  "total"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "42. Waterfall Chart",
+      "description": "Content for the waterfall-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-bar-ranking": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "highlight": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "target": {
+          "type": "number"
+        },
+        "targetLabel": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "43. Bar Ranking",
+      "description": "Content for the bar-ranking template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-radar-chart": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "max": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "axes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "axisHeader": {
+          "type": "string"
+        },
+        "deltaHeader": {
+          "type": "string"
+        },
+        "series": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "44. Radar Chart",
+      "description": "Content for the radar-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-progress-rings": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "rings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "45. Progress Rings",
+      "description": "Content for the progress-rings template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-custom-html": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "html": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "46. Custom HTML",
+      "description": "Content for the custom-html template. Omitted fields use renderer defaults; unknown field names are rejected. content.html is trusted author markup inserted without sanitizing."
+    },
+    "content-custom-diagram": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "svg": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "47. Custom SVG Diagram",
+      "description": "Content for the custom-diagram template. Omitted fields use renderer defaults; unknown field names are rejected. content.svg is trusted author markup inserted without sanitizing."
+    },
     "slide": {
       "type": "object",
       "properties": {
@@ -2413,6 +3384,25 @@
             "layered-architecture",
             "sankey-flow",
             "heatmap",
+            "venn-diagram",
+            "swot-analysis",
+            "priority-matrix",
+            "mind-map",
+            "fishbone",
+            "staircase",
+            "concentric-circles",
+            "value-chain",
+            "decision-tree",
+            "system-architecture",
+            "kanban-board",
+            "gantt-roadmap",
+            "line-chart",
+            "waterfall-chart",
+            "bar-ranking",
+            "radar-chart",
+            "progress-rings",
+            "custom-html",
+            "custom-diagram",
             "composer"
           ]
         },
@@ -2467,6 +3457,22 @@
           "items": {
             "$ref": "#/$defs/component"
           }
+        },
+        "render": {
+          "$ref": "#/$defs/code",
+          "description": "Function body; (slide, index, isThumbnail, c, ce, numStr, layout) and all helpers are in scope."
+        },
+        "template": {
+          "$ref": "#/$defs/code",
+          "description": "Template-literal body; same scope as render."
+        },
+        "frame": {
+          "type": "string",
+          "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
+        },
+        "css": {
+          "$ref": "#/$defs/code",
+          "description": "CSS added with the slide."
         }
       },
       "additionalProperties": false,
@@ -3185,9 +4191,753 @@
               }
             ]
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "venn-diagram"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-venn-diagram"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "swot-analysis"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-swot-analysis"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "priority-matrix"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-priority-matrix"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "mind-map"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-mind-map"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "fishbone"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-fishbone"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "staircase"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-staircase"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "concentric-circles"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-concentric-circles"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "value-chain"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-value-chain"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "decision-tree"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-decision-tree"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "system-architecture"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-system-architecture"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "kanban-board"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-kanban-board"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "gantt-roadmap"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-gantt-roadmap"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "line-chart"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-line-chart"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "waterfall-chart"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-waterfall-chart"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "bar-ranking"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-bar-ranking"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "radar-chart"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-radar-chart"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "progress-rings"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-progress-rings"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "custom-html"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-custom-html"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "custom-diagram"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-custom-diagram"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
         }
       ],
       "description": "A registered template or composer. id/group/layoutName are optional at authoring time and supplied by the importer. IDs should be unique within a deck."
+    },
+    "code": {
+      "description": "JavaScript source: one string, or an array of lines joined with newlines.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "layoutDefinition": {
+      "type": "object",
+      "description": "Layout written as code (template as code). Code runs without a sandbox: load trusted documents only.",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
+        },
+        "desc": {
+          "type": "string"
+        },
+        "sample": {
+          "type": "object"
+        },
+        "limits": {
+          "type": "object"
+        },
+        "render": {
+          "$ref": "#/$defs/code",
+          "description": "Function body; (slide, index, isThumbnail, c, ce, numStr, layout) and all helpers are in scope."
+        },
+        "template": {
+          "$ref": "#/$defs/code",
+          "description": "Template-literal body; same scope as render."
+        },
+        "frame": {
+          "type": "string",
+          "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
+        },
+        "css": {
+          "$ref": "#/$defs/code",
+          "description": "CSS added with the slide."
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "render"
+          ]
+        },
+        {
+          "required": [
+            "template"
+          ]
+        }
+      ]
+    },
+    "codeSlide": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "not": {
+            "enum": [
+              "cover",
+              "agenda",
+              "section-divider",
+              "closing",
+              "title-body",
+              "two-column",
+              "text-image",
+              "three-card",
+              "four-quadrant",
+              "quote",
+              "kpi-dashboard",
+              "charts",
+              "data-table",
+              "timeline",
+              "comparison",
+              "track-architecture",
+              "process-flow",
+              "conversion-funnel",
+              "cycle-loop",
+              "strategy-pyramid",
+              "decision-matrix",
+              "org-chart",
+              "swimlane",
+              "hub-spoke",
+              "learner-journey",
+              "layered-architecture",
+              "sankey-flow",
+              "heatmap",
+              "venn-diagram",
+              "swot-analysis",
+              "priority-matrix",
+              "mind-map",
+              "fishbone",
+              "staircase",
+              "concentric-circles",
+              "value-chain",
+              "decision-tree",
+              "system-architecture",
+              "kanban-board",
+              "gantt-roadmap",
+              "line-chart",
+              "waterfall-chart",
+              "bar-ranking",
+              "radar-chart",
+              "progress-rings",
+              "custom-html",
+              "custom-diagram",
+              "composer"
+            ]
+          }
+        },
+        "group": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
+        },
+        "layoutName": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object"
+        },
+        "render": {
+          "$ref": "#/$defs/code",
+          "description": "Function body; (slide, index, isThumbnail, c, ce, numStr, layout) and all helpers are in scope."
+        },
+        "template": {
+          "$ref": "#/$defs/code",
+          "description": "Template-literal body; same scope as render."
+        },
+        "frame": {
+          "type": "string",
+          "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
+        },
+        "css": {
+          "$ref": "#/$defs/code",
+          "description": "CSS added with the slide."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "description": "Slide of a non-built-in type that carries its own render or template.",
+      "anyOf": [
+        {
+          "required": [
+            "render"
+          ]
+        },
+        {
+          "required": [
+            "template"
+          ]
+        }
+      ]
+    },
+    "layoutSlide": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "not": {
+            "enum": [
+              "cover",
+              "agenda",
+              "section-divider",
+              "closing",
+              "title-body",
+              "two-column",
+              "text-image",
+              "three-card",
+              "four-quadrant",
+              "quote",
+              "kpi-dashboard",
+              "charts",
+              "data-table",
+              "timeline",
+              "comparison",
+              "track-architecture",
+              "process-flow",
+              "conversion-funnel",
+              "cycle-loop",
+              "strategy-pyramid",
+              "decision-matrix",
+              "org-chart",
+              "swimlane",
+              "hub-spoke",
+              "learner-journey",
+              "layered-architecture",
+              "sankey-flow",
+              "heatmap",
+              "venn-diagram",
+              "swot-analysis",
+              "priority-matrix",
+              "mind-map",
+              "fishbone",
+              "staircase",
+              "concentric-circles",
+              "value-chain",
+              "decision-tree",
+              "system-architecture",
+              "kanban-board",
+              "gantt-roadmap",
+              "line-chart",
+              "waterfall-chart",
+              "bar-ranking",
+              "radar-chart",
+              "progress-rings",
+              "custom-html",
+              "custom-diagram",
+              "composer"
+            ]
+          }
+        },
+        "group": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
+        },
+        "layoutName": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object"
+        },
+        "render": {
+          "$ref": "#/$defs/code",
+          "description": "Function body; (slide, index, isThumbnail, c, ce, numStr, layout) and all helpers are in scope."
+        },
+        "template": {
+          "$ref": "#/$defs/code",
+          "description": "Template-literal body; same scope as render."
+        },
+        "frame": {
+          "type": "string",
+          "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
+        },
+        "css": {
+          "$ref": "#/$defs/code",
+          "description": "CSS added with the slide."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "content"
+      ],
+      "description": "Slide using a layout from the document \"layouts\" map; only allowed when the document defines layouts."
     }
   }
 }
