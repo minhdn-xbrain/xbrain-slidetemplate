@@ -19,10 +19,10 @@ await context.route(/^https?:/,route=>route.abort());
 const page=await context.newPage(),pageErrors=[],results={};page.on('pageerror',e=>pageErrors.push(e.message));page.on('dialog',d=>d.dismiss());
 async function checkContractViewer(target,name){
  const before=await target.evaluate(()=>JSON.stringify(XB.getDeck())),counter=await target.locator('#slide-counter-badge').innerText();
- const modal=target.getByRole('dialog',{name:'Schema / Contract',exact:true}),trigger=target.getByRole('button',{name:'Schema / Contract',exact:true});
+ const modal=target.getByRole('dialog',{name:'Schema / Contract',exact:true}),trigger=target.locator('#v1-contract-trigger'),opener=target.locator('#v1-menu-ai-trigger');
  const output=target.locator('#v1-contract-json');
  assert.equal(await output.textContent(),'');
- await trigger.click();assert.equal(await trigger.getAttribute('aria-expanded'),'true');
+ await opener.click();await trigger.click();assert.equal(await trigger.getAttribute('aria-expanded'),'true');
  const schemaText=await output.textContent(),schema=JSON.parse(schemaText);
  assert.deepEqual(schema,await target.evaluate(()=>XBrainCompiler.schema()));
  assert.deepEqual(schema,JSON.parse(fs.readFileSync(path.join(root,'contracts/xbrain-deck-v1.schema.json'),'utf8')));
@@ -73,7 +73,7 @@ async function checkContractViewer(target,name){
   await target.screenshot({path:path.join(dir,`${name}-contract-${width}.png`)});
  }
  await target.keyboard.press('Escape');assert.equal(await modal.isVisible(),false);
- assert.equal(await trigger.evaluate(el=>el===document.activeElement),true);
+ assert.equal(await opener.evaluate(el=>el===document.activeElement),true);
  assert.equal(await trigger.getAttribute('aria-expanded'),'false');assert.equal(await output.textContent(),'');
  assert.equal(await target.evaluate(()=>JSON.stringify(XB.getDeck())),before);
  return {schemaMatchesRuntimeAndFile:true,contractMatchesRuntime:true,accessibleText:true,clipboard:true,clipboardFallback:true,blockedClipboard:true,downloads:true,keyboardAndFocus:true,deckUnchanged:true};
@@ -141,7 +141,7 @@ try{
  const color=await page.evaluate(()=>{const ids=['scoped','unscoped'];return ids.map(id=>{const i=XB.getDeck().slides.findIndex(s=>s.id===id);XB.select(i);return getComputedStyle(document.querySelector('#active-slide-viewport .v1-text')).color;});});
  assert.equal(color[0],'rgb(195, 0, 0)');assert.notEqual(color[0],color[1]);results.colors=color;
  const beforeExport=await page.evaluate(()=>JSON.stringify(XB.getDeck()));
- await page.locator('#v1-contract-trigger').click();await page.locator('#v1-contract-tab-contract').click();
+ await page.locator('#v1-menu-ai-trigger').click();await page.locator('#v1-contract-trigger').click();await page.locator('#v1-contract-tab-contract').click();
  fs.writeFileSync(path.join(dir,'exported-app.html'),await page.evaluate(()=>XB.exportHTML()));
  await page.keyboard.press('Escape');
  const reopened=await context.newPage();await reopened.goto(pathToFileURL(path.join(dir,'exported-app.html')).href);

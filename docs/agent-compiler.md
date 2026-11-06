@@ -2,9 +2,24 @@
 
 Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `untrusted`.
 
+## Header và thao tác Studio
+
+Header chia hai tầng: tên tài liệu/số slide/trạng thái nháp ở trên, thao tác ở dưới. **Soạn thảo** và **Tổng quan** chuyển giữa canvas và lưới slide của deck đang mở. **Trình chiếu** luôn nằm ở nhóm bên phải.
+
+- **Tệp:** mở bài trình chiếu JSON, lưu nháp hoặc khôi phục nháp (`xbrain-v1-draft`).
+- **Thêm slide:** slide từ mẫu hoặc biểu đồ/sơ đồ.
+- **Sửa nội dung:** chỉnh slide hiện tại; **AI / JSON** cung cấp schema, JSON slide, JSON toàn deck và nạp lại dữ liệu URL.
+- **Kiểm tra:** chạy QA; badge phản ánh lần kiểm tra thực tế, chuyển sang **Kiểm tra lại** khi nội dung hoặc dữ liệu URL thay đổi.
+- **Xuất:** HTML chỉnh sửa được, dữ liệu JSON, In/PDF.
+- **Tùy chọn:** bật/tắt chỉnh sửa trực tiếp, hướng dẫn thương hiệu và thông tin phiên bản.
+
+Menu mở bằng click, Enter/Space hoặc mũi tên lên/xuống; dùng mũi tên/Home/End để chọn và Escape để đóng. Nhãn thao tác được giữ khi offline. Màn hình hẹp xuống hàng thay vì dùng thanh cuộn ngang.
+
+**Đã lưu nháp** chỉ hiện sau khi lưu/khôi phục thành công. Sửa rồi undo về đúng bản đã lưu khôi phục trạng thái đó; bản HTML mở lại bắt đầu một phiên tra cứu trạng thái mới. Undo/redo bật theo lịch sử thực tế; mở menu, đổi chế độ xem và xem schema không ghi lịch sử.
+
 ## Lấy contract từ trình duyệt
 
-Chọn **Schema / Contract** cạnh **Deck JSON** trong Studio. Tab **Schema JSON** hiển thị kết quả `XBrainCompiler.schema()`; tab **Agent Contract** hiển thị kết quả `XBrainCompiler.contract()`, gồm schema, layout, component, variant, yêu cầu dữ liệu, giới hạn và mã diagnostic.
+Chọn **AI / JSON → Schema / Contract** trong Studio. Tab **Schema JSON** hiển thị kết quả `XBrainCompiler.schema()`; tab **Agent Contract** hiển thị kết quả `XBrainCompiler.contract()`, gồm schema, layout, component, variant, yêu cầu dữ liệu, giới hạn và mã diagnostic.
 
 JSON được tạo khi mở/chuyển tab và hiển thị trong phần tử văn bản `#v1-contract-json` của dialog `#v1-contract-modal`, để extension AI đọc qua DOM/accessibility. **Sao chép** dùng clipboard với fallback chọn văn bản khi trình duyệt hạn chế quyền; **Tải JSON** lưu `xbrain-deck-v1.schema.json` hoặc `xbrain-agent-contract-v1.json` theo tab hiện tại. Có thể chuyển tab bằng phím mũi tên và đóng bằng Escape.
 
@@ -105,6 +120,8 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 # Optional, không thêm dependency trình duyệt vào ứng dụng:
 XB_PLAYWRIGHT_MODULE=/path/to/playwright-core CHROME_PATH=/path/to/chrome \
   node tests/browser_improvements.mjs /tmp/xbrain-browser-check
+XB_PLAYWRIGHT_MODULE=/path/to/playwright-core CHROME_PATH=/path/to/chrome \
+  node tests/browser_header.mjs /tmp/xbrain-header-check
 ```
 
 Fixture tích hợp: `tests/fixtures/recursive-pipeline.json`. Kết quả và ảnh trước/sau: `docs/audits/2026-11-06-improvements/`. Fixture PARADOX gốc được giữ làm stress test các lỗi template legacy/nội dung đã ghi trong audit, không phải deck chuẩn đã sửa.

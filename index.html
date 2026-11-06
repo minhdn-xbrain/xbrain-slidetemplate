@@ -42,10 +42,6 @@
     window.dispatchEvent(new Event('deck-library-loaded'));
   </script>
   <style>
-    /* Release note appears in the top bar without relying on CDN utility classes. */
-    .v100-release-info { min-width:0; max-width: 620px; }
-    .v100-release-info p { white-space: normal; line-height: 1.35; }
-    @media (max-width: 1180px) { .v100-release-info { display:none; } }
     /* ==========================================================================
        PHASE 2 — XBRAIN BRAND DESIGN SYSTEM (CSS DESIGN TOKENS)
        Official palette and fonts from XBrain PDF (Dec 2025); spacing and UI tokens proposed for presentation.
@@ -2918,8 +2914,8 @@ body.presentation-fullscreen .edit-mode-active [contenteditable=true] { outline:
 /* Presenting: no toolbar over the slide (the workspace fills the screen, so a hover rule kept it visible).
    Navigate with ←/→, Space, PageUp/PageDown; Esc leaves presentation mode. */
 body.presentation-fullscreen #floating-pres-controls {display:none!important;}
-@media (max-width:1020px) { #app-sidebar {width:210px;} #app-topbar {gap:8px; padding:8px 10px;} #app-topbar > div:first-child {display:none;} }
-@media (max-width:680px) { #app-sidebar {display:none;} #app-topbar {flex-wrap:wrap;justify-content:center;} #app-topbar > div:nth-child(2){order:2;} #studio-view{height:100%;} #floating-pres-controls{font-size:11px;} #active-layout-badge,#active-group-badge{display:none;} #gallery-view,#brand-system-view {padding:12px;} }
+@media (max-width:1020px) { #app-sidebar {width:210px;} }
+@media (max-width:680px) { #app-sidebar {display:none;} #studio-view{height:100%;} #floating-pres-controls{font-size:11px;} #active-layout-badge,#active-group-badge{display:none;} #gallery-view,#brand-system-view {padding:12px;} }
 @media print {
   @page {size:20in 11.25in;margin:0;}
   html,body {height:auto!important;min-height:0!important;width:auto!important;}
@@ -2928,14 +2924,6 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
   .print-slide-page {display:block!important;page-break-inside:avoid!important;break-inside:avoid!important;page-break-after:always!important;break-after:page!important;width:1920px!important;height:1080px!important;position:relative!important;overflow:hidden!important;}
   .print-slide-page:last-child {page-break-after:auto!important;break-after:auto!important;}
   svg[data-chart] {overflow:hidden!important;}
-}
-
-@media (max-width:680px) {
-  #app-topbar { height:auto!important; min-height:112px!important; flex-direction:column!important; flex-wrap:nowrap!important; align-items:stretch!important; justify-content:flex-start!important; gap:6px!important; padding:7px 8px!important; }
-  #app-topbar > div:nth-child(2) { order:1!important; width:100%!important; min-width:0!important; flex:none!important; justify-content:center!important; }
-  #app-topbar > div:last-child { order:2!important; width:100%!important; max-width:100%!important; min-width:0!important; flex:none!important; overflow-x:auto!important; overflow-y:hidden!important; flex-wrap:nowrap!important; justify-content:flex-start!important; padding-bottom:6px!important; }
-  #app-topbar > div:last-child button { flex:none!important; white-space:nowrap!important; }
-  #app-topbar > div:last-child::-webkit-scrollbar {height:3px;}
 }
 
     /* V2 diagram system. Proposed presentation styles based on XBrain brand palette. */
@@ -2984,17 +2972,22 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 
 .v1-contract-body{height:min(820px,90vh);min-height:0}.v1-contract-tabs{display:flex;gap:10px;padding:14px 23px}.v1-contract-tabs [aria-selected="true"]{background:#F97C00;color:#111C1A;border-color:#F97C00}.v1-contract-panel{display:flex;flex:1;min-height:0}.v1-contract-json{flex:1;min-width:0;min-height:0;overflow:auto;margin:0;padding:20px 23px;background:#0F1818;color:#DCF1E8;font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre;tab-size:2;user-select:text}.v1-contract-json:focus-visible{outline:2px solid #F97C00;outline-offset:-2px}.v1-contract-status{min-height:18px;margin:0;padding:8px 23px;font:500 12px/1.5 Nunito,Arial;color:#AFBDB7}.v1-contract-actions{flex-wrap:wrap}
 
-/* Two-tier toolbar keeps all actions reachable without stealing slide real estate. */
-#app-topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:50px 42px;height:108px!important;gap:2px 10px;padding:5px 18px!important;align-items:center;overflow:hidden}
-#app-topbar>div:nth-child(1){grid-column:1;grid-row:1;min-width:0}
-#app-topbar>div:nth-child(2){grid-column:2;grid-row:1;min-width:0}
-#app-topbar>div:nth-child(3){grid-column:1 / -1;grid-row:2;max-width:100%;overflow-x:auto;overflow-y:hidden;justify-content:flex-start;padding-bottom:3px;scrollbar-width:thin}
-#app-topbar>div:nth-child(3)>button{flex-shrink:0}
-@media(max-width:740px){#app-topbar{grid-template-columns:1fr;grid-template-rows:37px 33px 45px;height:126px!important;padding:5px 9px!important;gap:2px}
-#app-topbar>div:nth-child(1){grid-column:1;grid-row:1}
-#app-topbar>div:nth-child(2){grid-column:1;grid-row:2;justify-self:start;max-width:calc(100vw - 20px);overflow-x:auto}
-#app-topbar>div:nth-child(3){grid-column:1;grid-row:3}
-}
+/* Header: document context, task groups and pinned presentation actions. */
+#app-topbar{position:relative;z-index:40;flex:none;min-width:0;background:#1C2625;color:#ECF2EF;border-bottom:1px solid #34413E;font-family:Manrope,Arial,sans-serif}
+.v1-header-context{display:flex;align-items:center;gap:24px;height:56px;padding:0 24px;border-bottom:1px solid #2D3936;min-width:0}
+.v1-header-logo{display:flex;align-items:center;flex:none}.v1-header-logo svg{display:block;width:124px;height:37px}
+.v1-header-document{min-width:0;flex:1;display:flex;align-items:baseline;gap:16px}.v1-header-document h1{font:700 14px/1.4 Manrope,Arial;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:500px;min-width:0}.v1-header-meta{display:flex;align-items:center;gap:10px;flex:none;color:#A7B7AF;font:500 12px/1.4 Nunito,Arial}.v1-header-meta span+span{border-left:1px solid #43514B;padding-left:10px}
+.v1-header-modes{display:flex;gap:4px;align-items:center;flex:none}.v1-header-tab{border:0;background:transparent;color:#9DAFA6;padding:8px 12px;border-radius:6px;font:600 12px/1.4 Manrope,Arial;cursor:pointer}.v1-header-tab:hover{color:#F5F8F6;background:#283530}.v1-header-tab[aria-current="page"]{color:#F5F8F6;background:#304039;box-shadow:inset 0 -2px #F97C00}
+.v1-header-actions{height:48px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 24px;min-width:0}.v1-header-start,.v1-header-end{display:flex;align-items:center;gap:6px;flex:none}.v1-header-end{margin-left:auto}.v1-header-history{display:flex;gap:2px;padding:0 10px;margin-right:4px;border-left:1px solid #39463F;border-right:1px solid #39463F}
+.v1-header-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;padding:7px 11px;border:1px solid transparent;border-radius:7px;background:transparent;color:#DCE7DF;white-space:nowrap;font:600 12px/1.4 Manrope,Arial;cursor:pointer;transition:background .15s,color .15s}.v1-header-button svg{width:16px;height:16px;flex:none}.v1-header-button:hover{background:#2A3931;color:#fff}.v1-header-button[aria-expanded="true"]{background:#304139;color:#fff}.v1-header-button:disabled{opacity:.32;cursor:default;background:transparent}.v1-header-icon{padding:7px;width:34px}.v1-header-chevron{width:10px!important;height:10px!important;opacity:.7}.v1-header-outline{border-color:#45544B;background:#27352D}.v1-header-primary{padding:8px 16px;background:#F97C00;color:#142019;border-color:#F97C00;font-weight:800}.v1-header-primary:hover{background:#FF991D;color:#142019}
+#app-topbar button:focus-visible{outline:2px solid #FF991D;outline-offset:3px}
+.v1-header-menu-host{position:relative;flex:none}.v1-header-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:60;min-width:250px;max-width:calc(100vw - 24px);max-height:calc(100vh - 120px);overflow:auto;padding:7px;background:#23312A;border:1px solid #46564B;border-radius:10px;box-shadow:0 16px 40px #07120E66}.v1-header-menu[hidden]{display:none!important}.v1-header-menu-end{left:auto;right:0}.v1-header-menu button{display:flex;align-items:center;gap:12px;width:100%;min-height:39px;text-align:left;padding:9px 11px;border:0;border-radius:6px;background:transparent;color:#ECF3EE;font:600 12px/1.4 Manrope,Arial;cursor:pointer}.v1-header-menu button:hover,.v1-header-menu button:focus-visible{background:#35493C}.v1-header-menu small{margin-left:auto;font:500 11px Nunito,Arial;color:#A8B9AD}.v1-header-menu [role="separator"]{height:1px;background:#405043;margin:6px 5px}.v1-menu-check{width:15px;color:#FF991D;opacity:0}.v1-header-menu [aria-checked="true"] .v1-menu-check{opacity:1}
+.v1-qa-badge{border-radius:4px;padding:1px 5px;background:#4B3E27;color:#FFD591;font:700 11px/1.4 Nunito,Arial}.v1-qa-badge[data-state="clean"]{color:#B4DDC6;background:#2A4736}.v1-qa-badge[data-state="stale"]{color:#D8CEC0;background:#454237}
+.v1-about-copy{padding:22px 24px;font:500 14px/1.7 Nunito,Arial;color:#C6D3CB}.v1-about-copy p{margin:0 0 12px}.v1-about-copy p:last-child{margin-bottom:0}
+@media(max-width:1180px){.v1-header-document{display:block}.v1-header-document h1{font-size:13px}.v1-header-meta{font-size:11px;gap:8px}.v1-header-context,.v1-header-actions{padding-left:16px;padding-right:16px;gap:16px}}
+@media(max-width:900px){.v1-header-logo svg{width:104px;height:31px}.v1-header-context{gap:14px}.v1-header-button{padding-left:8px;padding-right:8px;gap:5px}.v1-header-history{padding:0 5px}.v1-header-start,.v1-header-end{gap:3px}.v1-header-actions{gap:6px}.v1-header-tab{padding:8px}.v1-header-document h1{max-width:240px}}
+@media(min-width:681px) and (max-width:900px){.v1-header-actions{height:auto;min-height:88px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}.v1-header-start,.v1-header-end{width:100%;justify-content:space-between}.v1-header-end{border-top:1px solid #34423A;padding-top:5px}}
+@media(max-width:680px){.v1-header-context{height:auto;min-height:86px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 12px;padding-top:9px;padding-bottom:9px}.v1-header-logo{grid-column:1;grid-row:1}.v1-header-document{grid-column:2 / 4;grid-row:1}.v1-header-document h1{max-width:100%}.v1-header-modes{grid-column:1 / 3;grid-row:2}.v1-header-context>.v1-header-menu-host{grid-column:3;grid-row:2;justify-self:end}.v1-header-actions{height:auto;min-height:88px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px;gap:4px}.v1-header-start,.v1-header-end{width:100%;justify-content:space-between}.v1-header-start{flex-wrap:wrap;justify-content:flex-start;gap:4px}.v1-header-end{border-top:1px solid #34423A;padding-top:5px}.v1-header-history{margin:0;padding:0 5px}.v1-header-button{font-size:11px;padding:7px}.v1-header-menu{min-width:220px}.v1-header-start>.v1-header-menu-host:last-child .v1-header-menu{left:auto;right:0}}
 
 .v1-icon-symbol{font-size:68px;line-height:1;color:#F97C00;display:inline-block;padding:16px}
 .v1-chips,.v1-legend{display:flex;gap:15px;align-content:center;flex-wrap:wrap;padding:20px}.v1-chips span{border:2px solid #F97C00;padding:12px 19px;border-radius:32px;background:#FFF9F3;font:750 19px Manrope,Arial}
@@ -3168,81 +3161,78 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
        ========================================================================== -->
   <div id="app-shell" class="flex flex-col h-screen w-screen overflow-hidden bg-[#161D1D]">
 
-    <!-- TOP NAVIGATION BAR -->
-    <header id="app-topbar" class="h-16 bg-[#1E2727] border-b border-[#2E3B3B] px-5 flex items-center justify-between shrink-0 z-30">
-      <!-- Left: Brand Identity & Title -->
-      <div class="flex items-center gap-4">
-        <div class="bg-white/95 px-3 py-1.5 rounded-lg flex items-center shadow-sm">
-          <svg class="w-24 h-7"><use href="#xbrain-logo-primary"></use></svg>
+    <!-- Document context and task-oriented header; menus work without CDN utilities. -->
+    <header id="app-topbar" aria-label="Điều khiển bài trình chiếu">
+      <div class="v1-header-context">
+        <div class="v1-header-logo" aria-label="XBrain"><svg role="img" aria-label="XBrain"><use href="#xbrain-logo-white"></use></svg></div>
+        <div class="v1-header-document">
+          <h1 id="v1-document-name">Bộ trình chiếu mẫu</h1>
+          <div class="v1-header-meta"><span id="v1-document-count">107 slide</span><span id="v1-draft-status" role="status">Chưa lưu nháp</span></div>
         </div>
-        <div class="v100-release-info">
-          <div class="flex items-center gap-2">
-            <span class="font-heading font-bold text-white text-sm tracking-tight">Presentation as Code v1.0.0</span>
-            <span class="text-[11px] font-heading font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F97C00]/20 text-[#FF991D] border border-[#F97C00]/30">Dec 2025 Brand Guidelines</span>
+        <nav class="v1-header-modes" aria-label="Chế độ xem">
+          <button id="tab-btn-workspace" type="button" class="v1-header-tab" aria-current="page" data-click-action="switchAppMode" data-click-arg="'workspace'">Soạn thảo</button>
+          <button id="tab-btn-gallery" type="button" class="v1-header-tab" data-click-action="switchAppMode" data-click-arg="'gallery'"><span>Tổng quan</span></button>
+        </nav>
+        <div class="v1-header-menu-host" data-v1-menu="options">
+          <button id="v1-menu-options-trigger" type="button" class="v1-header-button" aria-haspopup="menu" aria-controls="v1-menu-options" aria-expanded="false" data-v1-menu-trigger="options" data-click-action="toggleHeaderMenu" data-click-arg="'options'">Tùy chọn <i data-lucide="chevron-down" class="v1-header-chevron"></i></button>
+          <div id="v1-menu-options" class="v1-header-menu v1-header-menu-end" role="menu" aria-labelledby="v1-menu-options-trigger" hidden>
+            <button id="btn-toggle-edit" type="button" role="menuitemcheckbox" aria-checked="true" data-click-action="toggleInlineEdit"><span class="v1-menu-check" aria-hidden="true">✓</span><span id="edit-mode-label">Chỉnh sửa trực tiếp</span></button>
+            <div role="separator"></div>
+            <button id="tab-btn-brand" type="button" role="menuitem" data-click-action="switchAppMode" data-click-arg="'brand'">Hướng dẫn thương hiệu</button>
+            <button type="button" role="menuitem" data-click-action="openHeaderAbout">Giới thiệu XBrain <small>v1.0.0</small></button>
           </div>
-          <p class="text-xs text-slate-400">v1.0.0: Bản phát hành đầu tiên · JSON-first · 107 slides · 104 visual variants</p>
         </div>
       </div>
-
-      <!-- Center: Mode Switcher Tabs -->
-      <div class="flex items-center bg-[#131919] p-1 rounded-xl border border-[#2A3636]">
-        <button id="tab-btn-workspace" data-click-action="switchAppMode" data-click-arg="'workspace'" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold transition-all bg-[#F97C00] text-white shadow">
-          <i data-lucide="monitor-play" class="w-3.5 h-3.5"></i>
-          <span>Slide Studio</span>
-        </button>
-        <button id="tab-btn-gallery" data-click-action="switchAppMode" data-click-arg="'gallery'" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold transition-all text-slate-300 hover:text-white">
-          <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
-          <span>Template Gallery · 70</span>
-        </button>
-        <button id="tab-btn-brand" data-click-action="switchAppMode" data-click-arg="'brand'" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold transition-all text-slate-300 hover:text-white">
-          <i data-lucide="palette" class="w-3.5 h-3.5"></i>
-          <span>Brand Design System</span>
-        </button>
+      <div class="v1-header-actions" role="group" aria-label="Thao tác bài trình chiếu">
+        <div class="v1-header-start">
+          <div class="v1-header-menu-host" data-v1-menu="file">
+            <button id="v1-menu-file-trigger" type="button" class="v1-header-button" aria-haspopup="menu" aria-controls="v1-menu-file" aria-expanded="false" data-v1-menu-trigger="file" data-click-action="toggleHeaderMenu" data-click-arg="'file'">Tệp <i data-lucide="chevron-down" class="v1-header-chevron"></i></button>
+            <div id="v1-menu-file" class="v1-header-menu" role="menu" aria-labelledby="v1-menu-file-trigger" hidden>
+              <button type="button" role="menuitem" data-click-action="importDeckJSON">Mở bài trình chiếu JSON</button>
+              <div role="separator"></div>
+              <button type="button" role="menuitem" data-click-action="saveLocalDraft">Lưu nháp trong trình duyệt</button>
+              <button type="button" role="menuitem" data-click-action="restoreLocalDraft">Khôi phục bản nháp</button>
+            </div>
+          </div>
+          <div class="v1-header-history" role="group" aria-label="Lịch sử chỉnh sửa">
+            <button id="v1-undo" type="button" class="v1-header-button v1-header-icon" data-click-action="undoDeck" aria-label="Hoàn tác" title="Hoàn tác (Ctrl+Z)" disabled><i data-lucide="undo-2"></i></button>
+            <button id="v1-redo" type="button" class="v1-header-button v1-header-icon" data-click-action="redoDeck" aria-label="Làm lại" title="Làm lại (Ctrl+Y)" disabled><i data-lucide="redo-2"></i></button>
+          </div>
+          <div class="v1-header-menu-host" data-v1-menu="add">
+            <button id="v1-menu-add-trigger" type="button" class="v1-header-button" aria-haspopup="menu" aria-controls="v1-menu-add" aria-expanded="false" data-v1-menu-trigger="add" data-click-action="toggleHeaderMenu" data-click-arg="'add'"><i data-lucide="plus"></i> Thêm slide <i data-lucide="chevron-down" class="v1-header-chevron"></i></button>
+            <div id="v1-menu-add" class="v1-header-menu" role="menu" aria-labelledby="v1-menu-add-trigger" hidden>
+              <button type="button" role="menuitem" data-click-action="openAddSlideModal">Slide từ mẫu</button>
+              <button type="button" role="menuitem" data-click-action="deckOpenLibrary">Biểu đồ / sơ đồ</button>
+            </div>
+          </div>
+          <button type="button" class="v1-header-button" data-click-action="openContentEditorModal" title="Sửa nội dung của slide hiện tại">Sửa nội dung</button>
+          <div class="v1-header-menu-host" data-v1-menu="ai">
+            <button id="v1-menu-ai-trigger" type="button" class="v1-header-button" aria-haspopup="menu" aria-controls="v1-menu-ai" aria-expanded="false" data-v1-menu-trigger="ai" data-click-action="toggleHeaderMenu" data-click-arg="'ai'">AI / JSON <i data-lucide="chevron-down" class="v1-header-chevron"></i></button>
+            <div id="v1-menu-ai" class="v1-header-menu" role="menu" aria-labelledby="v1-menu-ai-trigger" hidden>
+              <button id="v1-contract-trigger" type="button" role="menuitem" data-click-action="deckOpenContract" aria-haspopup="dialog" aria-controls="v1-contract-modal" aria-expanded="false">Schema / Contract</button>
+              <div role="separator"></div>
+              <button type="button" role="menuitem" data-click-action="openDataEditorModal">JSON của slide hiện tại</button>
+              <button type="button" role="menuitem" data-click-action="deckOpenDeckEditor">JSON toàn bộ bài trình chiếu</button>
+              <div role="separator"></div>
+              <button type="button" role="menuitem" data-click-action="deckReloadRemote">Nạp lại dữ liệu URL</button>
+            </div>
+          </div>
+        </div>
+        <div class="v1-header-end">
+          <button id="v1-qa-trigger" type="button" class="v1-header-button" data-click-action="runDeckQA" title="Chưa kiểm tra"><i data-lucide="check-circle-2"></i><span id="v1-qa-label">Kiểm tra</span><span id="v1-qa-status" class="v1-qa-badge" hidden></span></button>
+          <div class="v1-header-menu-host" data-v1-menu="export">
+            <button id="v1-menu-export-trigger" type="button" class="v1-header-button v1-header-outline" aria-haspopup="menu" aria-controls="v1-menu-export" aria-expanded="false" data-v1-menu-trigger="export" data-click-action="toggleHeaderMenu" data-click-arg="'export'">Xuất <i data-lucide="chevron-down" class="v1-header-chevron"></i></button>
+            <div id="v1-menu-export" class="v1-header-menu v1-header-menu-end" role="menu" aria-labelledby="v1-menu-export-trigger" hidden>
+              <button type="button" role="menuitem" data-click-action="downloadEditedHTML">HTML có thể chỉnh sửa</button>
+              <button type="button" role="menuitem" data-click-action="saveDeckJSON">Dữ liệu JSON</button>
+              <div role="separator"></div>
+              <button type="button" role="menuitem" data-click-action="exportPrintPDF">In / PDF</button>
+            </div>
+          </div>
+          <button id="v1-present" type="button" class="v1-header-button v1-header-primary" data-click-action="startFullscreenPresentation"><i data-lucide="play"></i> Trình chiếu</button>
+        </div>
       </div>
-
-      <!-- Right: Actions (Edit Toggle, Add Slide, JSON Data, Print/PDF, Present Fullscreen) -->
-      <div class="flex items-center gap-2">
-        <button id="btn-toggle-edit" data-click-action="toggleInlineEdit" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] hover:bg-[#314040] text-slate-200 border border-[#384848] transition-all" title="Bật/Tắt chỉnh sửa trực tiếp trên slide">
-          <i data-lucide="pen-line" class="w-3.5 h-3.5 text-[#FF991D]"></i>
-          <span id="edit-mode-label">Inline Edit: ON</span>
-        </button>
-
-        <button data-click-action="openAddSlideModal" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] hover:bg-[#314040] text-slate-200 border border-[#384848] transition-all" title="Thêm slide mới từ thư viện 28 layout">
-          <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-[#7FD7BB]"></i>
-          <span class="hidden sm:inline">Thêm Slide</span>
-        </button>
-
-        <button class="v2-btn" data-click-action="undoDeck" title="Undo (Ctrl+Z)">↶ Undo</button>
-        <button class="v2-btn" data-click-action="redoDeck" title="Redo (Ctrl+Y)">↷ Redo</button>
-        <button class="v2-btn" data-click-action="saveLocalDraft" title="Lưu nháp trong trình duyệt">Lưu nháp</button>
-        <button class="v2-btn" data-click-action="restoreLocalDraft" title="Khôi phục bản nháp">Mở nháp</button>
-        <button data-click-action="openContentEditorModal" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] text-slate-200 border border-[#384848] transition-all" title="Sửa các trường dữ liệu trên slide">
-          Sửa nội dung
-        </button>
-        <button data-click-action="saveDeckJSON" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] text-slate-200 border border-[#384848]" title="Tải JSON của toàn bộ bài trình bày">Lưu JSON</button>
-        <button data-click-action="importDeckJSON" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] text-slate-200 border border-[#384848]" title="Nạp bộ slide JSON">Mở JSON</button>
-        <button data-click-action="downloadEditedHTML" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] text-slate-200 border border-[#384848]" title="Tải về file HTML độc lập với chỉnh sửa">Tải HTML</button>
-        <input id="import-deck-json" type="file" accept="application/json,.json" class="hidden" data-change-action="receiveDeckJSON" data-change-arg="event">
-        <button data-click-action="openDataEditorModal" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] hover:bg-[#314040] text-slate-200 border border-[#384848] transition-all" title="Chỉnh sửa dữ liệu JSON của slide">
-          <i data-lucide="code-2" class="w-3.5 h-3.5 text-[#00B3D8]"></i>
-          <span class="hidden lg:inline">Slide JSON</span>
-        </button>
-
-        <button class="v2-btn" data-click-action="runDeckQA" title="Kiểm tra nội dung và diagram trước khi xuất">Kiểm tra QA</button>
-        <button data-click-action="exportPrintPDF" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-[#263232] hover:bg-[#314040] text-slate-200 border border-[#384848] transition-all" title="In hoặc xuất toàn bộ bộ slide ra PDF chuẩn 16:9">
-          <i data-lucide="printer" class="w-3.5 h-3.5 text-[#FFD54C]"></i>
-          <span class="hidden lg:inline">Print / PDF</span>
-        </button>
-
-        <button class="v1-btn" data-click-action="deckOpenDeckEditor" title="Chỉnh toàn bộ deck dưới dạng JSON">{ } Deck JSON</button>
-        <button id="v1-contract-trigger" class="v1-btn" data-click-action="deckOpenContract" aria-haspopup="dialog" aria-controls="v1-contract-modal" aria-expanded="false" title="Xem schema và hợp đồng JSON cho AI agent">Schema / Contract</button>
-        <button class="v1-btn" data-click-action="deckOpenLibrary" title="Visual registry">◈ Visual Library</button>
-        <button class="v1-btn" data-click-action="deckReloadRemote" title="Nạp lại URL/API trong datasets">↻ Data</button>
-        <button data-click-action="startFullscreenPresentation" class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-heading font-bold bg-gradient-to-r from-[#F97C00] to-[#FF991D] hover:from-[#e07000] hover:to-[#f08c10] text-white shadow-lg shadow-orange-950/40 transition-all">
-          <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-          <span>Trình Chiếu</span>
-        </button>
-      </div>
+      <input id="import-deck-json" type="file" accept="application/json,.json" hidden data-change-action="receiveDeckJSON" data-change-arg="event">
     </header>
 
     <!-- ========================================================================
@@ -3303,7 +3293,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 
           <div class="h-4 w-[1px] bg-[#374746] mx-1"></div>
 
-          <button data-click-action="switchAppMode" data-click-arg="'gallery'" class="p-1.5 rounded-full hover:bg-[#2E3B3B] text-slate-300 hover:text-white transition" title="Xem toàn bộ 70 Template">
+          <button data-click-action="switchAppMode" data-click-arg="'gallery'" class="p-1.5 rounded-full hover:bg-[#2E3B3B] text-slate-300 hover:text-white transition" title="Tổng quan các slide trong bài trình chiếu">
             <i data-lucide="grid" class="w-4 h-4"></i>
           </button>
           <button data-click-action="toggleFullscreenPresentation" class="p-1.5 rounded-full hover:bg-[#2E3B3B] text-slate-300 hover:text-white transition" title="Toàn màn hình (ESC để thoát)">
@@ -3324,10 +3314,10 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F97C00]/15 text-[#FF991D] text-xs font-heading font-bold uppercase tracking-wider mb-2">
               <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-              <span>Phase 3 & 4.5 — Slide Template Library</span>
+              <span>Lưới slide</span>
             </div>
-            <h2 class="text-3xl font-heading font-extrabold text-white">Thư Viện 48 Layout Chuẩn Nhận Diện Xbrain</h2>
-            <p class="text-slate-400 text-sm mt-1">Nhấp vào bất kỳ slide nào để mở trong Slide Studio (1920×1080), chỉnh sửa nội dung hoặc trình chiếu trực tiếp.</p>
+            <h2 class="text-3xl font-heading font-extrabold text-white">Tổng quan bài trình chiếu</h2>
+            <p class="text-slate-400 text-sm mt-1">Chọn một slide để mở trong Soạn thảo (1920×1080), chỉnh sửa nội dung hoặc trình chiếu.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button data-click-action="filterGallery" data-click-arg="'ALL'" id="gal-filter-ALL" class="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#F97C00] text-white">Tất cả (89)</button>
@@ -5782,7 +5772,7 @@ const deckData=DataResolver.data, deckRows=DataResolver.rows;
 async function deckReloadRemote(){
  const lines=await DataResolver.reloadRemote();
  if(!lines.length){alert('Không có dataset remote trong JSON.');return;}
- renderCurrentSlide();alert(lines.join('\n')+'\nLưu ý: dữ liệu remote không tự nhúng vào HTML xuất.');
+ HeaderStatus.invalidateQA();renderCurrentSlide();alert(lines.join('\n')+'\nLưu ý: dữ liệu remote không tự nhúng vào HTML xuất.');
 }
 function deckSVG(t){return `<svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${deckSafe(t||'Diagram')}" class="v1-svg">`;}
 function deckEnd(){return'</svg>';}
@@ -6512,6 +6502,58 @@ function createContractViewer({getDocument,getCompiler,getClipboard,download}){
 }
 const ContractViewer=createContractViewer({getDocument:()=>document,getCompiler:()=>XBrainCompiler,getClipboard:()=>navigator.clipboard,download:(...args)=>downloadTextFile(...args)});
 
+// Header menu navigation is delegated and independent from deck data/history.
+function createHeaderMenus({getDocument}){
+ let active=null;
+ const element=id=>getDocument().getElementById(id);
+ const trigger=name=>element('v1-menu-'+name+'-trigger');
+ const menu=name=>element('v1-menu-'+name);
+ const items=name=>[...menu(name).querySelectorAll('[role="menuitem"],[role="menuitemcheckbox"]')].filter(el=>!el.disabled);
+ function close(restoreFocus=true){
+  if(!active)return;const name=active;active=null;menu(name).hidden=true;trigger(name).setAttribute('aria-expanded','false');if(restoreFocus)trigger(name).focus();
+ }
+ function open(name,last=false){
+  if(!menu(name)||!trigger(name))return;close(false);active=name;const panel=menu(name);panel.style.left='';panel.style.right='';panel.hidden=false;trigger(name).setAttribute('aria-expanded','true');
+  const rect=panel.getBoundingClientRect(),host=panel.parentElement.getBoundingClientRect(),width=getDocument().defaultView.innerWidth;
+  if(rect.left<8||rect.right>width-8){panel.style.left=(Math.max(8,Math.min(rect.left,width-rect.width-8))-host.left)+'px';panel.style.right='auto';}
+  const list=items(name);(last?list.at(-1):list[0])?.focus();
+ }
+ function toggle(name){if(active===name)close();else open(name);}
+ function bind(){
+  const doc=getDocument(),root=element('app-topbar');if(!root)return;
+  doc.addEventListener('click',event=>{if(!event.target.closest('[data-v1-menu]'))close(false);});
+  doc.addEventListener('focusin',event=>{if(active&&!event.target.closest('[data-v1-menu="'+active+'"]'))close(false);});
+  doc.defaultView.addEventListener('resize',()=>close(false));
+  root.addEventListener('keydown',event=>{
+   const opener=event.target.closest('[data-v1-menu-trigger]');
+   if(opener&&['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();event.stopPropagation();open(opener.dataset.v1MenuTrigger,event.key==='ArrowUp');return;}
+   if(active){
+    event.stopPropagation();
+    if(event.key==='Escape'){event.preventDefault();close();return;}
+    if(event.key==='Tab'){close();return;}
+    const list=items(active),index=list.indexOf(doc.activeElement);
+    if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)){
+     event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?list.length-1:(index+(event.key==='ArrowDown'?1:-1)+list.length)%list.length;list[next]?.focus();
+    }
+   }else if(event.target.closest('button')&&[' ','ArrowLeft','ArrowRight','Home','End'].includes(event.key))event.stopPropagation();
+  });
+ }
+ return {toggle,close,bind,get isOpen(){return active!==null;}};
+}
+const HeaderMenus=createHeaderMenus({getDocument:()=>document});
+const XB_ABOUT_BOUND=new WeakSet();
+function openHeaderAbout(){
+ const modal=document.getElementById('v1-about-modal');modal.classList.remove('hidden');
+ if(!XB_ABOUT_BOUND.has(modal)){
+  XB_ABOUT_BOUND.add(modal);modal.addEventListener('keydown',event=>{
+   event.stopPropagation();if(event.key==='Escape'){event.preventDefault();closeHeaderAbout();return;}
+   if(event.key==='Tab'){const buttons=[...modal.querySelectorAll('button')],first=buttons[0],last=buttons.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}
+  });
+ }
+ modal.querySelector('button').focus();
+}
+function closeHeaderAbout(){const modal=document.getElementById('v1-about-modal');if(!modal||modal.classList.contains('hidden'))return;modal.classList.add('hidden');document.getElementById('v1-menu-options-trigger').focus();}
+
 window.addEventListener('deck-library-loaded', () => {
  const active=document.getElementById('active-slide-viewport');
  if(active) EnhancedRenderers.mount(active);
@@ -6519,7 +6561,8 @@ window.addEventListener('deck-library-loaded', () => {
 
 function deckRefreshCounts(){
  const tab=document.querySelector('#tab-btn-gallery span');
- if(tab)tab.textContent='Template Gallery · '+slides.length;
+ if(tab)tab.textContent='Tổng quan';
+ HeaderStatus.render();
  const all=document.getElementById('gal-filter-ALL');
  if(all)all.textContent='Tất cả ('+slides.length+')';
  for(const g of ['A','B','C','D']){const b=document.getElementById('gal-filter-'+g);if(b)b.textContent=b.textContent.replace(/\(\d+\)/,'('+slides.filter(s=>s.group===g).length+')');}
@@ -7740,6 +7783,11 @@ function deckRefreshCounts(){
 
 
     const ICON_PATHS={
+      'plus':'<path d="M12 5v14M5 12h14"/>',
+      'check-circle-2':'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+      'chevron-down':'<path d="m6 9 6 6 6-6"/>',
+      'undo-2':'<path d="M9 14 4 9l5-5M4 9h9a7 7 0 0 1 0 14"/>',
+      'redo-2':'<path d="m15 14 5-5-5-5M20 9h-9a7 7 0 0 0 0 14"/>',
       'monitor-play':'<rect x="2" y="3" width="20" height="15" rx="2"/><path d="M8 22h8M12 18v4"/><path d="m10 7 5 3-5 3z"/>',
       'layout-grid':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
       'grid':'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
@@ -7983,14 +8031,8 @@ function deckRefreshCounts(){
       gallery.classList.add('hidden');
       brand.classList.add('hidden');
 
-      ['workspace', 'gallery', 'brand'].forEach(m => {
-        const btn = document.getElementById(`tab-btn-${m}`);
-        if (btn) {
-          btn.className = (m === mode)
-            ? 'flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold transition-all bg-[#F97C00] text-white shadow'
-            : 'flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold transition-all text-slate-300 hover:text-white';
-        }
-      });
+      HeaderMenus.close(false);
+      HeaderStatus.render();
 
       if (mode === 'workspace') {
         studio.classList.remove('hidden');
@@ -8010,10 +8052,10 @@ function deckRefreshCounts(){
       const label = document.getElementById('edit-mode-label');
       if (isInlineEditEnabled) {
         viewport.classList.add('edit-mode-active');
-        label.textContent = 'Inline Edit: ON';
+        label.textContent = 'Chỉnh sửa trực tiếp';
       } else {
         viewport.classList.remove('edit-mode-active');
-        label.textContent = 'Inline Edit: OFF';
+        label.textContent = 'Chỉnh sửa trực tiếp';
       }
       renderCurrentSlide();
     }
@@ -8171,6 +8213,8 @@ function deckRefreshCounts(){
       doc.querySelector('#active-slide-viewport')?.removeAttribute('style');
       for(const selector of ['#v1-contract-json','#v1-contract-status'])doc.querySelector(selector)?.replaceChildren();
       doc.querySelector('#v1-contract-trigger')?.setAttribute('aria-expanded','false');
+      for(const menu of doc.querySelectorAll('.v1-header-menu'))menu.hidden=true;
+      for(const trigger of doc.querySelectorAll('[data-v1-menu-trigger]'))trigger.setAttribute('aria-expanded','false');
       for(const modal of doc.querySelectorAll('.v1-modal,#modal-content-editor,#modal-json-editor,#modal-add-slide'))modal.classList.add('hidden');
       doc.querySelector('#studio-view')?.classList.remove('hidden');
       doc.querySelector('#gallery-view')?.classList.add('hidden');
@@ -8233,6 +8277,7 @@ function deckRefreshCounts(){
     function xbDiagLine(d){const m=/^\/slides\/(\d+)(.*)$/.exec(d.path||'');return `${d.severity==='error'?'✖':'⚠'} ${m?'Slide '+(Number(m[1])+1)+(m[2]?' '+m[2].replace(/^\//,'').replace(/\//g,' › '):''):(d.path||'deck')}: ${d.message}`;}
     function runDeckQA(){
       let report;try{report=xbEditorQA(true);}catch(e){alert('QA: '+e.message);return [];}
+      HeaderStatus.checked(JSON.stringify(deckDocument()),report.summary);
       const lines=report.diagnostics.filter(d=>d.severity!=='info').map(xbDiagLine);
       alert(lines.length?`Phát hiện ${report.summary.errors} lỗi, ${report.summary.warnings} cảnh báo (điểm ${Math.round(report.summary.score)}/100):\n\n${lines.slice(0,18).join('\n')}${lines.length>18?'\n… và '+(lines.length-18)+' mục khác (XB.qa() trong console để xem đủ)':''}`:
         `Đã kiểm tra ${slides.length} slide: không phát hiện lỗi dữ liệu, bố cục hay tràn chữ.
@@ -8258,17 +8303,19 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
 
 
     /* V2 state: undo/redo, opt-in local draft, and content limits. */
-    function createDeckHistory({serialize,restore,limit=35}) {
+    function createDeckHistory({serialize,restore,limit=35,onChange=()=>{}}) {
       let snapshot=null, undoStack=[], redoStack=[];
+      const notify=()=>onChange({snapshot,canUndo:undoStack.length>0,canRedo:redoStack.length>0});
       function record() {
         const now=serialize();
-        if(snapshot===null){snapshot=now;return;}
+        if(snapshot===null){snapshot=now;notify();return;}
         if(snapshot!==now){
           undoStack.push(snapshot);
           if(undoStack.length>limit) undoStack.shift();
           redoStack=[];
           snapshot=now;
         }
+        notify();
       }
       function undo() {
         record();
@@ -8276,17 +8323,49 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         redoStack.push(snapshot);
         snapshot=undoStack.pop();
         restore(snapshot);
+        notify();
       }
       function redo() {
         if(!redoStack.length) return;
         undoStack.push(snapshot);
         snapshot=redoStack.pop();
         restore(snapshot);
+        notify();
       }
       return {record,undo,redo};
     }
+    function createHeaderStatus({getDocument,getInfo}){
+      let snapshot=null,savedSnapshot=null,savedAt=null,qaSnapshot=null,qaSummary=null,canUndo=false,canRedo=false,saveError=false;
+      function render(){
+        const doc=getDocument(),name=doc.getElementById('v1-document-name');if(!name)return;
+        const info=getInfo(),title=info.name||'Bộ trình chiếu chưa đặt tên';name.textContent=title;name.title=title;
+        doc.getElementById('v1-document-count').textContent=info.count+' slide';
+        const draft=doc.getElementById('v1-draft-status'),saved=savedSnapshot!==null&&snapshot===savedSnapshot;
+        draft.textContent=saveError?'Chưa lưu được nháp':saved?'Đã lưu nháp':savedSnapshot!==null?'Có thay đổi':'Chưa lưu nháp';
+        draft.title=savedAt?'Bản nháp gần nhất: '+savedAt:'Bản nháp chỉ được lưu khi chọn Tệp → Lưu nháp trong trình duyệt.';
+        doc.getElementById('v1-undo').disabled=!canUndo;doc.getElementById('v1-redo').disabled=!canRedo;
+        for(const mode of ['workspace','gallery','brand']){const button=doc.getElementById('tab-btn-'+mode);if(!button)continue;if(info.mode===mode)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');}
+        const inline=doc.getElementById('btn-toggle-edit');inline.setAttribute('aria-checked',String(info.inline));
+        const qa=doc.getElementById('v1-qa-trigger'),badge=doc.getElementById('v1-qa-status'),label=doc.getElementById('v1-qa-label'),fresh=qaSummary&&snapshot===qaSnapshot;
+        label.textContent=qaSummary&&!fresh?'Kiểm tra lại':'Kiểm tra';badge.hidden=!qaSummary;
+        if(!qaSummary){qa.title='Chưa kiểm tra';qa.removeAttribute('aria-label');return;}
+        if(!fresh){badge.textContent='•';badge.dataset.state='stale';qa.title='Nội dung đã thay đổi. Cần kiểm tra lại.';}
+        else{const issues=qaSummary.errors+qaSummary.warnings;badge.textContent=issues?String(issues):'✓';badge.dataset.state=issues?'issues':'clean';qa.title=qaSummary.errors+' lỗi · '+qaSummary.warnings+' cảnh báo';}
+        qa.setAttribute('aria-label',label.textContent+': '+qa.title);
+      }
+      return {
+        render,
+        changed(state){snapshot=state.snapshot;canUndo=state.canUndo;canRedo=state.canRedo;saveError=false;render();},
+        saved(value,when){savedSnapshot=value;savedAt=when;saveError=false;render();},
+        saveFailed(){saveError=true;render();},
+        checked(value,summary){qaSnapshot=value;qaSummary=summary;render();},
+        invalidateQA(){qaSnapshot=null;render();}
+      };
+    }
+    const HeaderStatus=createHeaderStatus({getDocument:()=>document,getInfo:()=>({name:DECK_CONFIG.metadata?.name===DECK_DEFAULT_CONFIG.metadata.name?'Bộ trình chiếu mẫu':DECK_CONFIG.metadata?.name,count:slides.length,inline:isInlineEditEnabled,mode:currentAppMode})});
     const DeckHistory=createDeckHistory({
       serialize:()=>JSON.stringify(deckDocument()),
+      onChange:state=>HeaderStatus.changed(state),
       restore:snapshot=>deckApplyDocument(JSON.parse(snapshot), {recordHistory:false,resetView:false,strictCustom:true})
     });
     const DeckStore = {
@@ -8298,19 +8377,19 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     function createDraftRepository(getStorage) {
       const currentKey='xbrain-v1-draft';
       return {
-        save(document){getStorage().setItem(currentKey,JSON.stringify({...document,savedAt:new Date().toISOString()}));},
+        save(document){const savedAt=new Date().toISOString();getStorage().setItem(currentKey,JSON.stringify({...document,savedAt}));return savedAt;},
         load(){const raw=getStorage().getItem(currentKey);return raw?JSON.parse(raw):null;}
       };
     }
     const DraftRepository=createDraftRepository(()=>localStorage);
     function saveLocalDraft(){
-      try{DraftRepository.save(deckDocument());alert('Đã lưu bản nháp trong trình duyệt. Để sao lưu lâu dài, hãy tải JSON hoặc HTML.');}
-      catch(err){alert('Trình duyệt không hỗ trợ lưu bản nháp ở chế độ này. Hãy dùng Lưu JSON: '+err.message);}
+      try{const doc=deckDocument(),when=DraftRepository.save(doc);HeaderStatus.saved(JSON.stringify(doc),when);xbToast('Đã lưu nháp trong trình duyệt.');}
+      catch(err){HeaderStatus.saveFailed();xbToast('Không lưu được bản nháp. Hãy dùng Xuất → Dữ liệu JSON.');}
     }
     function restoreLocalDraft(){
       try {const o=DraftRepository.load();if(!o)throw Error('Chưa có bản nháp');if(!Array.isArray(o.slides))throw Error('Dữ liệu bản nháp không hợp lệ');
         if(!confirm('Thay bộ slide hiện tại bằng bản nháp đã lưu?'))return;
-        deckApplyDocument(o);currentSlideIndex=0;renderCurrentSlide();}
+        deckApplyDocument(o);HeaderStatus.saved(JSON.stringify(deckDocument()),o.savedAt||'không có thời gian');currentSlideIndex=0;renderCurrentSlide();}
       catch(err){alert('Không mở được bản nháp: '+err.message);}
     }
     window.addEventListener('keydown', event => {
@@ -8319,7 +8398,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       if(event.key==='Escape') {
         if(document.body.classList.contains('presentation-fullscreen')) exitFullscreenPresentation();
         closeAddSlideModal();closeDataEditorModal();closeContentEditorModal();
-        deckCloseLibrary();deckCloseDeckEditor();ContractViewer.close();
+        deckCloseLibrary();deckCloseDeckEditor();ContractViewer.close();closeHeaderAbout();HeaderMenus.close();
         return;
       }
       if(editing) return;
@@ -8328,7 +8407,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         else if(event.key.toLowerCase()==='y'){event.preventDefault();redoDeck();}
         return;
       }
-      const modalOpen=['modal-add-slide','modal-json-editor','modal-content-editor','v1-visual-modal','v1-deck-modal','v1-contract-modal']
+      const modalOpen=['modal-add-slide','modal-json-editor','modal-content-editor','v1-visual-modal','v1-deck-modal','v1-contract-modal','v1-about-modal']
         .some(id=>!document.getElementById(id).classList.contains('hidden'));
       if(currentAppMode!=='workspace'||modalOpen) return;
       if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();nextSlide();}
@@ -8348,6 +8427,9 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     // AppController: event delegation works for both static and rendered controls.
     const AppController = (() => {
       const actions = {
+        toggleHeaderMenu: name => HeaderMenus.toggle(name),
+        openHeaderAbout: openHeaderAbout,
+        closeHeaderAbout: closeHeaderAbout,
         DuplicateCurrentSlide: DuplicateCurrentSlide,
         addSlideByType: addSlideByType,
         applyContentEditor: applyContentEditor,
@@ -8398,7 +8480,8 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         const element = event.target.closest(`[data-${kind}-action]`);
         if (!element) return;
         const action = actions[element.getAttribute(`data-${kind}-action`)];
-        if (!action) return;
+        if (!action || element.disabled) return;
+        if(kind==='click'&&element.closest('.v1-header-menu'))HeaderMenus.close();
         const raw = element.getAttribute(`data-${kind}-arg`);
         if (raw === null) action();
         else if (raw === 'event') action(event);
@@ -8759,12 +8842,12 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     }
 
     /* Keyboard + clipboard events (ignored while typing, in modals, brand view or fullscreen). */
-    const XB_MODALS = ['modal-add-slide', 'modal-json-editor', 'modal-content-editor', 'v1-visual-modal', 'v1-deck-modal', 'v1-contract-modal', 'v1-chrome-dialog'];
+    const XB_MODALS = ['modal-add-slide', 'modal-json-editor', 'modal-content-editor', 'v1-visual-modal', 'v1-deck-modal', 'v1-contract-modal', 'v1-about-modal', 'v1-chrome-dialog'];
     function slideShortcutsActive() {
       const a = document.activeElement;
       const typing = a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
       const modal = XB_MODALS.some(id => { const m = document.getElementById(id); return m && !m.classList.contains('hidden'); });
-      return !typing && !modal && currentAppMode !== 'brand' && !document.body.classList.contains('presentation-fullscreen');
+      return !HeaderMenus.isOpen && !typing && !modal && currentAppMode !== 'brand' && !document.body.classList.contains('presentation-fullscreen');
     }
     const focusInSlidePanel = () => !!document.activeElement?.closest?.(`#${SLIDE_PANELS.list},#${SLIDE_PANELS.grid}`);
     window.addEventListener('keydown', e => {
@@ -9361,6 +9444,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     window.addEventListener('DOMContentLoaded', () => {
       const bootText=document.getElementById('v1-embedded-deck')?.textContent.trim();
       if(bootText){try{deckApplyDocument(JSON.parse(bootText), {recordHistory:false});}catch(e){console.warn('Embedded deck data invalid',e);}}
+      HeaderMenus.bind();
       trackDeckState();
       renderCurrentSlide();
       renderInlineIcons();
@@ -9368,6 +9452,13 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     })();
   </script>
 
+  <div id="v1-about-modal" class="v1-modal hidden" role="dialog" aria-modal="true" aria-labelledby="v1-about-title">
+    <div class="v1-modal-body" style="width:min(520px,96vw)">
+      <div class="v1-modal-head"><h3 id="v1-about-title">XBrain Presentation as Code</h3><button type="button" class="v1-modal-close" data-click-action="closeHeaderAbout" aria-label="Đóng giới thiệu">×</button></div>
+      <div class="v1-about-copy"><p>Phiên bản <strong>1.0.0</strong> · JSON schema <strong>1.0</strong></p><p>Tạo, chỉnh sửa và trình chiếu slide theo thương hiệu XBrain. Nội dung và dữ liệu được lưu dưới dạng JSON.</p><p>Nhận diện theo XBrain Brand Guidelines, tháng 12/2025. Mở trực tiếp bằng file HTML; font và thư viện nâng cao là phần bổ sung khi có mạng.</p></div>
+      <div class="v1-modal-actions"><button type="button" class="v1-btn" data-click-action="closeHeaderAbout">Đóng</button></div>
+    </div>
+  </div>
   <div id="v1-deck-modal" class="v1-modal hidden" role="dialog" aria-label="Deck JSON Editor">
     <div class="v1-modal-body" style="height:min(820px,90vh)">
       <div class="v1-modal-head"><div><h3>Deck JSON · Single Source of Truth</h3><p>Theme · datasets · slides · components · customCss. Chỉnh toàn bộ presentation qua JSON.</p></div><button class="v1-modal-close" data-click-action="deckCloseDeckEditor">×</button></div>

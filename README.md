@@ -7,9 +7,9 @@ Release **1.0.0** · JSON schema **1.0**.
 ## Bắt đầu nhanh
 
 1. Mở [index.html](index.html) bằng Chrome hoặc Edge, không cần cài đặt hay server.
-2. Bấm vào chữ để sửa, kéo-thả slide để sắp xếp; dùng **Template Gallery** để xem các mẫu.
-3. Chọn **Trình Chiếu** để trình bày hoặc **In PDF** để xuất bản in.
-4. Chọn **Tải HTML** để lưu bộ slide độc lập, hoặc **Lưu JSON** để lưu dữ liệu và mở lại bằng **Mở JSON**.
+2. Bấm vào chữ để sửa, kéo-thả slide để sắp xếp; dùng **Tổng quan** để xem toàn bộ slide và **Thêm slide → Slide từ mẫu** để chọn mẫu.
+3. Chọn **Trình chiếu** để trình bày hoặc **In PDF** để xuất bản in.
+4. Chọn **Xuất → HTML có thể chỉnh sửa** hoặc **Xuất → Dữ liệu JSON** để lưu ra tệp. Mở lại JSON bằng **Tệp → Mở bài trình chiếu JSON**.
 
 File mở trực tiếp bằng `file://`. Font, ECharts và Mermaid dùng CDN khi có mạng; khi offline, ứng dụng dùng font và nội dung dự phòng.
 
@@ -17,7 +17,7 @@ File mở trực tiếp bằng `file://`. Font, ECharts và Mermaid dùng CDN kh
 
 Mỗi deck cần `"version": "1.0"` và mảng `slides`. Mỗi slide chọn `type` và cung cấp dữ liệu theo hợp đồng của layout.
 
-Trong Studio, mở **Schema / Contract** cạnh **Deck JSON** để đọc **Schema JSON** hoặc **Agent Contract**, sao chép và tải JSON. Nội dung hiển thị trực tiếp để extension AI có thể đọc qua giao diện; tính năng dùng được offline và lấy dữ liệu từ compiler hiện tại.
+Trong Studio, mở **AI / JSON → Schema / Contract** để đọc **Schema JSON** hoặc **Agent Contract**, sao chép và tải JSON. Nội dung hiển thị trực tiếp để extension AI có thể đọc qua giao diện; tính năng dùng được offline và lấy dữ liệu từ compiler hiện tại.
 
 Bắt đầu từ [deck mẫu](contracts/example-deck-v1.json), tra cấu trúc trong [JSON Schema](contracts/xbrain-deck-v1.schema.json), rồi chạy với **Node.js ≥ 18**:
 
