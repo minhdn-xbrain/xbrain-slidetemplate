@@ -4172,46 +4172,6 @@
             "properties": {
               "type": {
                 "enum": [
-                  "composer"
-                ]
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          "then": {
-            "properties": {
-              "content": {
-                "$ref": "#/$defs/content-composer"
-              }
-            },
-            "anyOf": [
-              {
-                "required": [
-                  "components"
-                ]
-              },
-              {
-                "required": [
-                  "content"
-                ],
-                "properties": {
-                  "content": {
-                    "required": [
-                      "components"
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "enum": [
                   "venn-diagram"
                 ]
               }
@@ -4660,6 +4620,46 @@
             },
             "required": [
               "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "composer"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-composer"
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "components"
+                ]
+              },
+              {
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "required": [
+                      "components"
+                    ]
+                  }
+                }
+              }
             ]
           }
         }

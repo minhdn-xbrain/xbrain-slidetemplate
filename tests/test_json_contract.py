@@ -260,6 +260,17 @@ class JsonContractTest(unittest.TestCase):
                                             "nodes": [{"label": "A", "date": "JAN", "group": "con"}, "B"]}))
                 self.assertInvalid(self.deck({"type": "chart", "variant": variant}))
 
+    def test_semantic_data_fields_for_visuals(self):
+        # Fields the native renderers read (dates, lanes, statuses, coordinates, RACI) stay valid v1 JSON.
+        self.assertValid(self.deck({"type": "diagram", "variant": "gantt", "options": {"today": "2026-10-06"}, "nodes": [
+            {"id": "a", "label": "Build", "start": "2026-10-01", "end": "2026-10-31", "lane": "Ops", "status": "Doing"},
+            {"id": "b", "label": "Review", "start": 3, "end": 3, "kind": "milestone", "parent": "a", "x": 2, "y": 4,
+             "group": "con", "raci": {"Ops": "R"}, "date": "2026-10"}],
+            "edges": [{"from": "a", "to": "b", "label": "then", "value": 12, "kind": "return", "critical": True}]}))
+        self.assertValid(self.deck({"type": "chart", "variant": "combo", "data": [{"label": "Q1", "value": 3, "target": 4}]}))
+        self.assertInvalid(self.deck({"type": "diagram", "variant": "sankey", "edges": [{"from": "a"}]}))
+        self.assertInvalid(self.deck({"type": "diagram", "variant": "gantt", "nodes": [{"label": "x", "value": "big"}]}))
+
     def test_template_as_code_contract(self):
         layout = {"group": "D", "name": "KPI Tiles", "frame": "dgPage", "sample": {"items": []},
                   "render": ["const items = c.items || [];", "return items.map(i => i.value).join('');"]}
