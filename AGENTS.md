@@ -1,6 +1,6 @@
 # XBrain Presentation System
 
-HTML được tổ chức theo kiến trúc **Template as Code**: template/renderer định nghĩa bố cục; JSON cung cấp nội dung, cấu hình và dữ liệu. Khi thêm slide, tái sử dụng template qua JSON và giữ nội dung tách khỏi logic render.
+HTML được tổ chức theo kiến trúc **Presentation as Code**: template/renderer định nghĩa bố cục; JSON cung cấp nội dung, cấu hình và dữ liệu. Khi thêm slide, tái sử dụng template qua JSON và giữ nội dung tách khỏi logic render.
 
 ## Ràng buộc
 

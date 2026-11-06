@@ -3,7 +3,7 @@
   "version": "1.0",
   "releaseVersion": "1.0.0",
   "metadata": {
-    "name": "XBrain · Template as Code",
+    "name": "XBrain · Presentation as Code",
     "note": "Số liệu minh họa."
   },
   "theme": {
@@ -44,7 +44,7 @@
       "id": "cover",
       "type": "cover",
       "content": {
-        "badge": "TEMPLATE AS CODE",
+        "badge": "Presentation as Code",
         "titleLine1": "Build once.",
         "titleLine2": "Present clearly.",
         "titleLine3": "",
@@ -103,7 +103,7 @@
       "type": "process-flow",
       "content": {
         "sectionTag": "WORKFLOW",
-        "kicker": "TEMPLATE AS CODE",
+        "kicker": "Presentation as Code",
         "title": "Từ dữ liệu tới bài trình bày",
         "subtitle": "Tái sử dụng template và kiểm tra kết quả.",
         "steps": [

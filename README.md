@@ -1,6 +1,6 @@
 # XBrain Presentation System
 
-Bộ slide và studio trình chiếu theo nhận diện thương hiệu XBrain (Brand Guidelines 12/2025), gói gọn trong **một tệp HTML**. Bố cục do template trong HTML định nghĩa; nội dung, dữ liệu và cả layout mới đều có thể viết bằng **JSON** ("Template as Code").
+Bộ slide và studio trình chiếu theo nhận diện thương hiệu XBrain (Brand Guidelines 12/2025), gói gọn trong **một tệp HTML**. Bố cục do template trong HTML định nghĩa; nội dung, dữ liệu và cả layout mới đều có thể viết bằng **JSON** ("Presentation as Code").
 
 - Mở trực tiếp bằng `file://`, không cần cài đặt hay server.
 - 107 slide mẫu, 48 layout, 104 biến thể biểu đồ/diagram cho JSON Composer.
@@ -27,7 +27,7 @@ Font Manrope/Nunito, ECharts và Mermaid tải từ CDN khi có mạng. Khi offl
 | `contracts/xbrain-deck-v1.schema.json` | JSON Schema (Draft 2020-12) của định dạng deck `1.0`. **Được sinh tự động**, không sửa tay. |
 | `contracts/example-deck-v1.json` | Ví dụ deck hợp lệ ngắn. |
 | `tests/test_json_contract.py`, `tests/test_compiler.py` | Test hợp đồng và test trình biên dịch, chạy runtime trong HTML bằng Node. |
-| `tests/fixtures/` | Deck mẫu viết chỉ bằng JSON (đề xuất hợp tác, báo cáo vận hành, template as code, QBR) và các ca biên: sai version, dữ liệu xấu, nội dung không tin cậy. |
+| `tests/fixtures/` | Deck mẫu viết chỉ bằng JSON (đề xuất hợp tác, báo cáo vận hành, Presentation as Code, QBR) và các ca biên: sai version, dữ liệu xấu, nội dung không tin cậy. |
 | `docs/agent-compiler.md` | Hướng dẫn chi tiết trình biên dịch: vòng lặp cho agent, mã chẩn đoán, hợp đồng dữ liệu của chart/diagram. |
 | `docs/XBrain_Brand Guidelines.pdf` | Bộ nhận diện thương hiệu dùng làm chuẩn. |
 | `AGENTS.md` | Quy ước cho người và agent khi sửa mã. |
@@ -109,7 +109,7 @@ Một deck là một tài liệu có `"version": "1.0"` và mảng `slides`. M�
 
 **Header/footer dạng dữ liệu:** `chrome` ở cấp deck (`headerLabel`, `website`, `address`) áp cho mọi slide; `chrome` trong từng slide ghi đè riêng cho slide đó.
 
-## Template as code
+## Presentation as Code
 
 Ngoài layout dựng sẵn, deck có thể tự mang layout viết bằng JavaScript:
 
@@ -152,7 +152,7 @@ node tools/xbrain.mjs pipeline deck.json -o deck.html   # gộp repair → qa �
 ```
 
 - Mã thoát: `0` là sạch, `1` là còn lỗi (đọc `diagnostics` để sửa JSON), `2` là sai version hoặc lỗi đầu vào.
-- `--trusted` để chạy template as code; `--lenient` để cho phép dữ liệu mẫu ngầm định; `qa --browser` đo pixel bằng Chrome/Edge headless.
+- `--trusted` để chạy Presentation as Code; `--lenient` để cho phép dữ liệu mẫu ngầm định; `qa --browser` đo pixel bằng Chrome/Edge headless.
 - Trong studio, cùng trình biên dịch có sẵn qua `XB.compiler`, `XB.qa()`, `XB.repair()`; nút **Kiểm tra QA** cũng dùng nó.
 
 Chi tiết xem [`docs/agent-compiler.md`](docs/agent-compiler.md).
@@ -184,7 +184,7 @@ python -m unittest discover -s tests -p "test_*.py"
 Test chạy chính mã ứng dụng trong HTML (không mở trình duyệt) để kiểm:
 - schema khớp với registry đang chạy (layout, component, variant);
 - quy tắc `version: "1.0"`;
-- bản nháp, header/footer, template as code;
+- bản nháp, header/footer, Presentation as Code;
 - các deck trong `tests/fixtures/`: hợp lệ theo schema, nạp được, render mọi slide không ra trang lỗi;
 - trình biên dịch: chẩn đoán, repair, build tái lập được, sandbox cho nội dung không tin cậy.
 

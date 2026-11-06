@@ -4734,7 +4734,7 @@
     },
     "layoutDefinition": {
       "type": "object",
-      "description": "Layout written as code (template as code). Code runs without a sandbox: load trusted documents only.",
+      "description": "Layout written as code (Presentation as Code). Code runs without a sandbox: load trusted documents only.",
       "properties": {
         "name": {
           "type": "string"
