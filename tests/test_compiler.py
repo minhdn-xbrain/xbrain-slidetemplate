@@ -227,6 +227,10 @@ class CompilerTest(unittest.TestCase):
             static = a.read_text(encoding="utf-8")
             self.assertEqual(static.count('class="xb-page"'), 12)
             self.assertNotIn("<script", static)
+            # Shared SVG resources must survive extraction when the sprite's hiding method changes.
+            for resource in ("xbrain-logo-primary", "xbrain-logo-white", "techx-logo-color",
+                             "techx-logo-white", "tx-clip-lr", "tx-clip-ul"):
+                self.assertIn(f'id="{resource}"', static)
             app = Path(tmp) / "app.html"
             cli("build", FIX / "qbr-deck.json", "-o", app, "--app")
             embedded = re.search(r'<script id="v1-embedded-deck" type="application/json">(.*?)</script>', app.read_text(encoding="utf-8"), re.S).group(1)

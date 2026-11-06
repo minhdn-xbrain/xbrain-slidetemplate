@@ -3061,7 +3061,8 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
   <!-- ==========================================================================
        SHARED INLINE SVG DEFINITIONS (Extracted from XBrain Brand Guidelines PDF)
        ========================================================================== -->
-  <svg width="0" height="0" class="hidden" aria-hidden="true">
+  <!-- Keep SVG resources active: display:none disables referenced clip paths in Chromium. -->
+  <svg width="0" height="0" class="v1-svg-defs" aria-hidden="true" style="position:absolute;overflow:hidden">
     <defs>
       <!-- Gradient for Xbrain Primary Logo 'X' Lower-Right Arm -->
       <linearGradient id="xb-grad-lr" gradientUnits="userSpaceOnUse" x1="-0.382079" y1="0" x2="1.761395" y2="0" gradientTransform="matrix(-47.835609,-56.621738,56.621738,-47.835609,574.196594,566.204376)">

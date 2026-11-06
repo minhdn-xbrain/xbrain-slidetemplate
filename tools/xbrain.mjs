@@ -52,7 +52,7 @@ export function readRuntimeParts(htmlFile = DEFAULT_HTML) {
   const script = match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');
   const head = html.slice(0, html.indexOf('</head>'));
   const css = [...head.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1]).join('\n');
-  const sprite = (html.match(/<svg width="0" height="0" class="hidden" aria-hidden="true">[\s\S]*?<\/svg>/) || [''])[0]
+  const sprite = (html.match(/<svg width="0" height="0" class="(?:v1-svg-defs|hidden)" aria-hidden="true"(?: style="[^"]*")?>[\s\S]*?<\/svg>/) || [''])[0]
     .replace('class="hidden"', 'style="position:absolute;width:0;height:0;overflow:hidden"');
   const fonts = [...head.matchAll(/<link[^>]+fonts\.(?:googleapis|gstatic)\.com[^>]*>/g)].map(m => m[0]).join('\n') + '\n';
   return { html, script, css, sprite, fonts };
