@@ -1,0 +1,159 @@
+{
+  "$schema": "./xbrain-deck-v1.schema.json",
+  "version": "1.0",
+  "releaseVersion": "1.0.0",
+  "metadata": {
+    "name": "XBrain · Template as Code",
+    "note": "Số liệu minh họa."
+  },
+  "theme": {
+    "preset": "xbrain",
+    "tokens": {
+      "primary": "#F97C00",
+      "ink": "#425453",
+      "teal": "#25AC9D"
+    }
+  },
+  "datasets": {
+    "skills": {
+      "type": "json",
+      "value": [
+        {
+          "label": "CloudOps",
+          "value": 72
+        },
+        {
+          "label": "DevOps",
+          "value": 83
+        },
+        {
+          "label": "GenAI",
+          "value": 64
+        }
+      ]
+    },
+    "intake": {
+      "type": "csv",
+      "value": "Stage,Value\nApplications,100\nQualified,60\nCompleted,45"
+    }
+  },
+  "assets": {},
+  "customCss": "",
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "content": {
+        "badge": "TEMPLATE AS CODE",
+        "titleLine1": "Build once.",
+        "titleLine2": "Present clearly.",
+        "titleLine3": "",
+        "subtitle": "Nội dung và cấu hình được cung cấp qua JSON.",
+        "presenter": "XBrain Team",
+        "location": "Da Nang, Vietnam",
+        "website": "www.xbrain.com.vn"
+      }
+    },
+    {
+      "id": "capabilities",
+      "type": "composer",
+      "title": "Năng lực theo nhóm",
+      "subtitle": "Một dataset dùng chung cho biểu đồ và bảng.",
+      "layout": "auto",
+      "content": {
+        "sectionTag": "CAPABILITIES",
+        "source": "DỮ LIỆU MINH HỌA"
+      },
+      "components": [
+        {
+          "id": "skills-chart",
+          "type": "chart",
+          "variant": "bar-horizontal",
+          "dataRef": "skills",
+          "span": 7,
+          "height": 430,
+          "transform": {
+            "sortBy": "value",
+            "order": "desc"
+          }
+        },
+        {
+          "id": "skills-table",
+          "type": "table",
+          "data": {
+            "$ref": "datasets.skills"
+          },
+          "span": 5,
+          "height": 430,
+          "columns": [
+            {
+              "key": "label",
+              "label": "Nhóm"
+            },
+            {
+              "key": "value",
+              "label": "Điểm"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "process",
+      "type": "process-flow",
+      "content": {
+        "sectionTag": "WORKFLOW",
+        "kicker": "TEMPLATE AS CODE",
+        "title": "Từ dữ liệu tới bài trình bày",
+        "subtitle": "Tái sử dụng template và kiểm tra kết quả.",
+        "steps": [
+          {
+            "title": "Viết JSON",
+            "desc": "Chọn type và điền content."
+          },
+          {
+            "title": "Kiểm tra",
+            "desc": "Validate contract và xem bố cục."
+          },
+          {
+            "title": "Trình bày",
+            "desc": "Mở HTML hoặc xuất PDF."
+          }
+        ]
+      }
+    },
+    {
+      "id": "summary",
+      "type": "composer",
+      "title": "Sẵn sàng tái sử dụng",
+      "subtitle": "Component lồng nhau trong một template.",
+      "components": [
+        {
+          "type": "card",
+          "span": 7,
+          "height": 430,
+          "children": [
+            {
+              "type": "heading",
+              "text": "Một nguồn nội dung",
+              "height": 80
+            },
+            {
+              "type": "text",
+              "text": "Dùng chung JSON cho Workspace, Gallery và export.",
+              "height": 130
+            }
+          ]
+        },
+        {
+          "type": "metric",
+          "title": "Hoàn thành",
+          "value": "45",
+          "delta": "Số liệu minh họa",
+          "span": 5,
+          "height": 220
+        }
+      ]
+    }
+  ]
+}

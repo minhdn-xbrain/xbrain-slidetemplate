@@ -1,17 +1,20 @@
 # XBrain Presentation System
 
+HTML được tổ chức theo kiến trúc **Template as Code**: template/renderer định nghĩa bố cục; JSON cung cấp nội dung, cấu hình và dữ liệu. Khi thêm slide, tái sử dụng template qua JSON và giữ nội dung tách khỏi logic render.
+
 ## Ràng buộc
 
 - Giữ mã ứng dụng, CSS, SVG và dữ liệu mẫu trong một file HTML.
 - File phải mở trực tiếp bằng `file://`; CDN chỉ là phần nâng cao tùy chọn.
 - Giữ release `1.0.0` và JSON schema `1.0` trừ khi yêu cầu thay đổi version.
-- Duy trì khả năng đọc JSON schema `3.0` và bản nháp cũ.
-- Các selector `v3-*` còn được giữ để tương thích `customCss`; kiểm tra tác động trước khi đổi tên.
+- Dùng namespace `v1-*` cho selector, CSS variable và ID; lưu bản nháp bằng khóa `xbrain-v1-draft`.
+- Import document phải có `version: "1.0"`; từ chối version khác trước khi thay đổi deck.
 
 ## Thiết kế và sửa mã
 
 - Áp dụng SOLID bằng module có trách nhiệm rõ và interface nhỏ.
 - Mở rộng layout, diagram và component qua registry hiện có.
+- Khi sửa format JSON, template hoặc component, đọc `contracts/xbrain-deck-v1.schema.json` và cập nhật `tests/test_json_contract.py` tương ứng.
 - Ghi nhận chỉnh sửa qua `DeckStore`; render không được thay đổi lịch sử.
 - Truyền dependency trình duyệt vào module xử lý dữ liệu và lưu trữ.
 - Dùng event delegation cho thao tác UI; giữ implementation trong scope riêng.
@@ -22,6 +25,6 @@
 
 - Kiểm tra luồng bị ảnh hưởng bằng trình duyệt và đối chiếu với baseline.
 - Khi sửa state/editor: kiểm tra undo/redo và dữ liệu nhập không hợp lệ.
-- Khi sửa import/export: kiểm tra JSON cũ và mở lại HTML xuất bằng `file://`.
+- Khi sửa import/export: kiểm tra JSON v1 hợp lệ, version sai và mở lại HTML xuất bằng `file://`.
 - Khi sửa render: kiểm tra các loại liên quan, Gallery, bản in và fallback offline.
 - Báo rõ kiểm thử đã chạy, kết quả và phần chưa kiểm chứng.

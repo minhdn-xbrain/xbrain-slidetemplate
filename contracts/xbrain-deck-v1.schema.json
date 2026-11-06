@@ -1,0 +1,3193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:xbrain:presentation:deck:1.0",
+  "title": "XBrain Presentation — JSON authoring contract v1.0",
+  "description": "Canonical authoring format for release 1.0.0 and JSON schema 1.0. The importer requires version 1.0 for documents; raw slide arrays are normalized to a v1 document. Selectors and CSS variables use the v1 namespace. Validation does not sanitize author-provided HTML/SVG/CSS or prove visual fit.",
+  "$comment": "The HTML runtime remains a standalone file and does not fetch or automatically enforce this schema.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0"
+    },
+    "releaseVersion": {
+      "const": "1.0.0"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "preset": {
+          "type": "string"
+        },
+        "tokens": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "type": "string"
+            },
+            "ink": {
+              "type": "string"
+            },
+            "teal": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "datasets": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/dataset"
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "customCss": {
+      "type": "string"
+    },
+    "savedAt": {
+      "type": "string"
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 400,
+      "items": {
+        "$ref": "#/$defs/slide"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "slides"
+  ],
+  "$defs": {
+    "row": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "description": "A data row: string, number, or mapping. Named fields belong to the dataset, not the slide schema."
+    },
+    "dataset": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/row"
+          }
+        },
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/datasetDefinition"
+        }
+      ],
+      "description": "Inline rows, serialized JSON/CSV text, or a typed source definition."
+    },
+    "datasetDefinition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "json",
+            "csv",
+            "tsv",
+            "yaml",
+            "yml",
+            "markdown",
+            "html",
+            "svg",
+            "text"
+          ]
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "json",
+            "csv",
+            "tsv",
+            "yaml",
+            "yml",
+            "markdown",
+            "html",
+            "svg",
+            "text"
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/row"
+              }
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "data": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/row"
+              }
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "value"
+          ]
+        },
+        {
+          "required": [
+            "data"
+          ]
+        },
+        {
+          "required": [
+            "url"
+          ]
+        }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "csv",
+                  "tsv",
+                  "yaml",
+                  "yml",
+                  "markdown",
+                  "html",
+                  "svg",
+                  "text"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "data": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "not": {
+                  "required": [
+                    "type"
+                  ]
+                }
+              },
+              {
+                "properties": {
+                  "format": {
+                    "enum": [
+                      "csv",
+                      "tsv",
+                      "yaml",
+                      "yml",
+                      "markdown",
+                      "html",
+                      "svg",
+                      "text"
+                    ]
+                  }
+                },
+                "required": [
+                  "format"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string"
+              },
+              "data": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "dataReference": {
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "$ref"
+      ]
+    },
+    "transform": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string",
+              "minLength": 1
+            },
+            "eq": {},
+            "ne": {},
+            "gt": {
+              "type": "number"
+            },
+            "lt": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "field"
+          ]
+        },
+        "sortBy": {
+          "type": "string"
+        },
+        "order": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000
+        },
+        "groupBy": {
+          "type": "string"
+        },
+        "aggregateField": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Applied in order: filter, sort, limit, group and sum. aggregateField defaults to value."
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "x"
+          ]
+        },
+        {
+          "required": [
+            "y"
+          ]
+        }
+      ],
+      "description": "Absolute pixels in the composer scene; x or y activates positioning. Missing coordinate defaults to 0; width/height default to 520/340."
+    },
+    "node": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "desc": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "value": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "edge": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "from",
+        "to"
+      ],
+      "description": "Accepted graph metadata; current native diagram renderers do not use edges to route connections."
+    },
+    "tableColumn": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "label"
+          ]
+        }
+      ]
+    },
+    "item": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            },
+            "when": {
+              "type": "string"
+            },
+            "value": {
+              "type": [
+                "string",
+                "number"
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "chartVariant": {
+      "type": "string",
+      "enum": [
+        "bar",
+        "bar-horizontal",
+        "grouped-bar",
+        "stacked-bar",
+        "line",
+        "area",
+        "step-line",
+        "lollipop",
+        "dot-plot",
+        "waterfall",
+        "donut",
+        "pie",
+        "radar",
+        "scatter",
+        "bubble",
+        "heatmap",
+        "histogram",
+        "pareto",
+        "gauge",
+        "bullet",
+        "progress-ring",
+        "sparkline",
+        "treemap",
+        "funnel-chart",
+        "slope",
+        "waffle",
+        "range-bar",
+        "dumbbell",
+        "marimekko"
+      ]
+    },
+    "diagramVariant": {
+      "type": "string",
+      "enum": [
+        "bar",
+        "bar-horizontal",
+        "grouped-bar",
+        "stacked-bar",
+        "line",
+        "area",
+        "step-line",
+        "lollipop",
+        "dot-plot",
+        "waterfall",
+        "donut",
+        "pie",
+        "radar",
+        "scatter",
+        "bubble",
+        "heatmap",
+        "histogram",
+        "pareto",
+        "gauge",
+        "bullet",
+        "progress-ring",
+        "sparkline",
+        "treemap",
+        "funnel-chart",
+        "slope",
+        "waffle",
+        "range-bar",
+        "dumbbell",
+        "marimekko",
+        "flowchart",
+        "decision-tree",
+        "process-pipeline",
+        "chevrons",
+        "zigzag",
+        "value-chain",
+        "service-blueprint",
+        "swimlane",
+        "sequence",
+        "state-machine",
+        "critical-path",
+        "dependency",
+        "kanban",
+        "bpmn",
+        "release-train",
+        "customer-journey",
+        "learner-journey",
+        "roadmap",
+        "milestones",
+        "timeline",
+        "gantt",
+        "lifecycle",
+        "cycle",
+        "fishbone",
+        "bowtie",
+        "org-chart",
+        "tree",
+        "mindmap",
+        "hub-spoke",
+        "ecosystem",
+        "stakeholder",
+        "network",
+        "architecture",
+        "c4",
+        "layered",
+        "cloud",
+        "pyramid",
+        "funnel",
+        "venn",
+        "concentric",
+        "nested-circle",
+        "sankey",
+        "swot",
+        "pestel",
+        "bcg",
+        "ansoff",
+        "risk-matrix",
+        "priority",
+        "raci",
+        "decision-matrix",
+        "capability-map",
+        "balanced-scorecard",
+        "comparison-matrix",
+        "quadrant",
+        "portfolio",
+        "okrs",
+        "radial-tree"
+      ]
+    },
+    "componentType": {
+      "type": "string",
+      "enum": [
+        "title",
+        "heading",
+        "text",
+        "paragraph",
+        "markdown",
+        "html",
+        "svg",
+        "image",
+        "link",
+        "metric",
+        "kpi",
+        "badge",
+        "callout",
+        "quote",
+        "rule",
+        "divider",
+        "progress",
+        "list",
+        "table",
+        "icon",
+        "chips",
+        "tags",
+        "legend",
+        "source",
+        "footnote",
+        "numbered-steps",
+        "timeline",
+        "image-card",
+        "link-card",
+        "avatar",
+        "stat-grid",
+        "scorecard",
+        "rating",
+        "button",
+        "video",
+        "iframe",
+        "shape",
+        "spacer",
+        "chart-card",
+        "code",
+        "chart",
+        "diagram",
+        "mermaid",
+        "echarts",
+        "grid",
+        "columns",
+        "row",
+        "stack",
+        "card",
+        "group"
+      ]
+    },
+    "component": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/componentType"
+        },
+        "span": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "minHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "position": {
+          "$ref": "#/$defs/position"
+        },
+        "style": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "dataRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset": {
+          "$ref": "#/$defs/dataset"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/dataset"
+            },
+            {
+              "$ref": "#/$defs/dataReference"
+            }
+          ]
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item"
+          }
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/edge"
+          }
+        },
+        "columns": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tableColumn"
+              }
+            }
+          ]
+        },
+        "maxNodes": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 30
+        },
+        "value": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "options": {
+          "type": "object"
+        },
+        "option": {
+          "type": "object"
+        },
+        "variant": {
+          "type": "string"
+        },
+        "fallback": {
+          "$ref": "#/$defs/chartVariant"
+        },
+        "title": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "delta": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "assetRef": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "center": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string"
+        },
+        "html": {
+          "type": "string"
+        },
+        "initials": {
+          "type": "string"
+        },
+        "markdown": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "poster": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string"
+        },
+        "svg": {
+          "type": "string"
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "radius": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "description": "One registered composer component. Children/components recurse through this same contract. Fields are optional unless explicitly required; renderer defaults still apply.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "chart",
+                  "chart-card"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "$ref": "#/$defs/chartVariant"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "diagram"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "$ref": "#/$defs/diagramVariant"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "table"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "columns": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/tableColumn"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "grid",
+                  "columns",
+                  "row",
+                  "stack",
+                  "card",
+                  "group"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "columns": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 6
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "rating"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 5
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "progress"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "stat-grid",
+                  "scorecard"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    }
+                  },
+                  "additionalProperties": true,
+                  "required": [
+                    "label",
+                    "value"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "content-cover": {
+      "type": "object",
+      "properties": {
+        "badge": {
+          "type": "string"
+        },
+        "titleLine1": {
+          "type": "string"
+        },
+        "titleLine2": {
+          "type": "string"
+        },
+        "titleLine3": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "presenter": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "1. Cover Slide (Bìa Trình Chiếu)",
+      "description": "Content for the cover template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-agenda": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "leftHeadline": {
+          "type": "string"
+        },
+        "leftSummary": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "num": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "tag": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "2. Agenda Slide (Mục Lục & Lộ Trình)",
+      "description": "Content for the agenda template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-section-divider": {
+      "type": "object",
+      "properties": {
+        "sectionNumber": {
+          "type": "string"
+        },
+        "categoryLabel": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "3. Section Divider (Chuyển Chương)",
+      "description": "Content for the section-divider template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-closing": {
+      "type": "object",
+      "properties": {
+        "headline": {
+          "type": "string"
+        },
+        "subheadline": {
+          "type": "string"
+        },
+        "contactName": {
+          "type": "string"
+        },
+        "contactRole": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "4. Closing / Thank You (Kết Thúc)",
+      "description": "Content for the closing template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-title-body": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "missionLabel": {
+          "type": "string"
+        },
+        "missionText": {
+          "type": "string"
+        },
+        "visionLabel": {
+          "type": "string"
+        },
+        "visionText": {
+          "type": "string"
+        },
+        "pillars": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "5. Title + Body Content (Tầm Nhìn & Sứ Mệnh)",
+      "description": "Content for the title-body template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-two-column": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "num": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rightTitle": {
+          "type": "string"
+        },
+        "rightBody": {
+          "type": "string"
+        },
+        "rightMetrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "val": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "6. Two-Column Content (Context & Rationale)",
+      "description": "Content for the two-column template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-text-image": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "leadParagraph": {
+          "type": "string"
+        },
+        "bodyParagraph": {
+          "type": "string"
+        },
+        "imageCaption": {
+          "type": "string"
+        },
+        "highlights": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "7. Text + Image (Who We Are & Lab Thực Chiến)",
+      "description": "Content for the text-image template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-three-card": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "card1Title": {
+          "type": "string"
+        },
+        "card1Body": {
+          "type": "string"
+        },
+        "card2Title": {
+          "type": "string"
+        },
+        "card2Body": {
+          "type": "string"
+        },
+        "card3Title": {
+          "type": "string"
+        },
+        "card3Body": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "8. Three-Card Layout (3 Giá Trị Cốt Lõi)",
+      "description": "Content for the three-card template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-four-quadrant": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "quadrants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "num": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              },
+              "icon": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "9. Four-Quadrant Layout (4 Mục Tiêu Chương Trình)",
+      "description": "Content for the four-quadrant template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-quote": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "quoteVN": {
+          "type": "string"
+        },
+        "quoteEN": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "highlightStat": {
+          "type": "string"
+        },
+        "highlightLabel": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "10. Quote / Key Takeaway (Tuyên Ngôn Thương Hiệu)",
+      "description": "Content for the quote template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-kpi-dashboard": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "primaryKpi1Val": {
+          "type": "string"
+        },
+        "primaryKpi1Label": {
+          "type": "string"
+        },
+        "primaryKpi1Sub": {
+          "type": "string"
+        },
+        "primaryKpi2Val": {
+          "type": "string"
+        },
+        "primaryKpi2Label": {
+          "type": "string"
+        },
+        "primaryKpi2Sub": {
+          "type": "string"
+        },
+        "secondaryKpis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "val": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "badge": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "11. KPI Dashboard (Chỉ Số Tuyển Sinh & Đào Tạo)",
+      "description": "Content for the kpi-dashboard template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-charts": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "barChartTitle": {
+          "type": "string"
+        },
+        "barData": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "pre": {
+                "type": "number"
+              },
+              "post": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "doughnutData": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              },
+              "color": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "barChartSubtitle": {
+          "type": "string"
+        },
+        "doughnutTitle": {
+          "type": "string"
+        },
+        "doughnutSubtitle": {
+          "type": "string"
+        },
+        "keyInsightTitle": {
+          "type": "string"
+        },
+        "keyInsightBody": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "12. Charts & Data Visualization (Biểu Đồ Năng Lực)",
+      "description": "Content for the charts template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-data-table": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "metaPills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "val": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "string"
+              },
+              "module": {
+                "type": "string"
+              },
+              "deliverables": {
+                "type": "string"
+              },
+              "assessment": {
+                "type": "string"
+              },
+              "badgeColor": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "13. Data Table (Khung Chương Trình Đào Tạo)",
+      "description": "Content for the data-table template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-timeline": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "string"
+              },
+              "phase": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "deliverable": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "14. Timeline / Roadmap (Lộ Trình Triển Khai Năm)",
+      "description": "Content for the timeline template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-comparison": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "leftHeader": {
+          "type": "string"
+        },
+        "leftSub": {
+          "type": "string"
+        },
+        "leftItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "rightHeader": {
+          "type": "string"
+        },
+        "rightSub": {
+          "type": "string"
+        },
+        "rightItems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "bottomBannerTitle": {
+          "type": "string"
+        },
+        "bottomBenefits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "15. Comparison / Two-Pane (Cam Kết & Đầu Ra)",
+      "description": "Content for the comparison template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-track-architecture": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "cloudopsTitle": {
+          "type": "string"
+        },
+        "cloudopsDesc": {
+          "type": "string"
+        },
+        "cloudopsModules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "devopsTitle": {
+          "type": "string"
+        },
+        "devopsDesc": {
+          "type": "string"
+        },
+        "devopsModules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pedagogyTitle": {
+          "type": "string"
+        },
+        "pedagogyLayers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "nextSteps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "16. Track Deep-Dive & Learning Approach (Bonus)",
+      "description": "Content for the track-architecture template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-process-flow": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "17. Process Flow",
+      "description": "Content for the process-flow template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-conversion-funnel": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "18. Conversion Funnel",
+      "description": "Content for the conversion-funnel template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-cycle-loop": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "center": {
+          "type": "string"
+        },
+        "centerSub": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "19. Continuous Improvement Cycle",
+      "description": "Content for the cycle-loop template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-strategy-pyramid": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "short": {
+                "type": "string"
+              },
+              "callout": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "20. Strategy Pyramid",
+      "description": "Content for the strategy-pyramid template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-decision-matrix": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "21. Decision Matrix",
+      "description": "Content for the decision-matrix template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-org-chart": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "rootTitle": {
+          "type": "string"
+        },
+        "rootDesc": {
+          "type": "string"
+        },
+        "teams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "output": {
+                "type": "string"
+              },
+              "metric": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "22. Organization / Governance",
+      "description": "Content for the org-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-swimlane": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lanes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "23. Swimlane Plan",
+      "description": "Content for the swimlane template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-hub-spoke": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "center": {
+          "type": "string"
+        },
+        "centerSub": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "24. Hub & Spoke",
+      "description": "Content for the hub-spoke template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-learner-journey": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "channel": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "metric": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "25. Learner Journey",
+      "description": "Content for the learner-journey template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-layered-architecture": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "tag": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "26. Layered Architecture",
+      "description": "Content for the layered-architecture template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-sankey-flow": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "to": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "from",
+              "to",
+              "value"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "27. Sankey / Allocation Flow",
+      "description": "Content for the sankey-flow template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-heatmap": {
+      "type": "object",
+      "properties": {
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "28. Capability Heatmap",
+      "description": "Content for the heatmap template. Omitted fields use renderer defaults; unknown field names are rejected."
+    },
+    "content-composer": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "sectionTag": {
+          "type": "string"
+        },
+        "kicker": {
+          "type": "string"
+        },
+        "footer": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "slide": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "cover",
+            "agenda",
+            "section-divider",
+            "closing",
+            "title-body",
+            "two-column",
+            "text-image",
+            "three-card",
+            "four-quadrant",
+            "quote",
+            "kpi-dashboard",
+            "charts",
+            "data-table",
+            "timeline",
+            "comparison",
+            "track-architecture",
+            "process-flow",
+            "conversion-funnel",
+            "cycle-loop",
+            "strategy-pyramid",
+            "decision-matrix",
+            "org-chart",
+            "swimlane",
+            "hub-spoke",
+            "learner-journey",
+            "layered-architecture",
+            "sankey-flow",
+            "heatmap",
+            "composer"
+          ]
+        },
+        "group": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ]
+        },
+        "layoutName": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object"
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "layout": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "freeform"
+          ]
+        },
+        "background": {
+          "type": "string"
+        },
+        "variant": {
+          "type": "string",
+          "enum": [
+            "white",
+            "dark",
+            "orange"
+          ]
+        },
+        "section": {
+          "type": "string"
+        },
+        "customCss": {
+          "type": "string"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "cover"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-cover"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "agenda"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-agenda"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "section-divider"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-section-divider"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "closing"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-closing"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "title-body"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-title-body"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "two-column"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-two-column"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "text-image"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-text-image"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "three-card"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-three-card"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "four-quadrant"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-four-quadrant"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "quote"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-quote"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "kpi-dashboard"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-kpi-dashboard"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "charts"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-charts"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "data-table"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-data-table"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "timeline"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-timeline"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "comparison"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-comparison"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "track-architecture"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-track-architecture"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "process-flow"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-process-flow"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "conversion-funnel"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-conversion-funnel"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "cycle-loop"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-cycle-loop"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "strategy-pyramid"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-strategy-pyramid"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "decision-matrix"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-decision-matrix"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "org-chart"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-org-chart"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "swimlane"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-swimlane"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "hub-spoke"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-hub-spoke"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "learner-journey"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-learner-journey"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "layered-architecture"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-layered-architecture"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "sankey-flow"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-sankey-flow"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "heatmap"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-heatmap"
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "composer"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-composer"
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "components"
+                ]
+              },
+              {
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "required": [
+                      "components"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "description": "A registered template or composer. id/group/layoutName are optional at authoring time and supplied by the importer. IDs should be unique within a deck."
+    }
+  }
+}
