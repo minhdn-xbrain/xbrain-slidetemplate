@@ -102,6 +102,9 @@
       "propertyNames": {
         "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
       }
+    },
+    "chrome": {
+      "$ref": "#/$defs/chrome"
     }
   },
   "additionalProperties": false,
@@ -3473,6 +3476,9 @@
         "css": {
           "$ref": "#/$defs/code",
           "description": "CSS added with the slide."
+        },
+        "chrome": {
+          "$ref": "#/$defs/chrome"
         }
       },
       "additionalProperties": false,
@@ -4816,6 +4822,9 @@
         "css": {
           "$ref": "#/$defs/code",
           "description": "CSS added with the slide."
+        },
+        "chrome": {
+          "$ref": "#/$defs/chrome"
         }
       },
       "additionalProperties": false,
@@ -4930,6 +4939,9 @@
         "css": {
           "$ref": "#/$defs/code",
           "description": "CSS added with the slide."
+        },
+        "chrome": {
+          "$ref": "#/$defs/chrome"
         }
       },
       "additionalProperties": false,
@@ -4938,6 +4950,22 @@
         "content"
       ],
       "description": "Slide using a layout from the document \"layouts\" map; only allowed when the document defines layouts."
+    },
+    "chrome": {
+      "type": "object",
+      "description": "Header/footer text shared by the standard slide frame. Deck-level values apply to every slide; a slide-level object overrides them for that slide.",
+      "properties": {
+        "headerLabel": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

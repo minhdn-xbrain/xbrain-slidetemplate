@@ -254,6 +254,17 @@ class JsonContractTest(unittest.TestCase):
         self.assertInvalid({"version": "1.0", "helpers": [], "slides": [{"type": "cover", "content": {}}]})
         self.assertInvalid({"version": "1.0", "slides": [{"type": "one-off", "content": {}, "render": "", "titel": "x"}]})
 
+    def test_header_footer_chrome(self):
+        chrome = {"headerLabel": "XBrain · Q3 Review", "website": "www.xbrain.com.vn", "address": "Da Nang"}
+        self.assertValid({"version": "1.0", "chrome": chrome, "slides": [
+            {"type": "title-body", "content": {"sectionTag": "INTRO"}, "chrome": {"website": "xbrain.vn"}},
+            {"type": "one-off", "content": {}, "render": "return '';", "chrome": {"address": "Ha Noi"}},
+        ]})
+        for bad in [{"footer": "x"}, {"website": 1}, []]:
+            with self.subTest(chrome=bad):
+                self.assertInvalid({"version": "1.0", "chrome": bad, "slides": [{"type": "cover", "content": {}}]})
+                self.assertInvalid({"version": "1.0", "slides": [{"type": "quote", "content": {}, "chrome": bad}]})
+
     def test_template_as_code_runtime(self):
         result = self.source["templateAsCode"]
         version_error = "Expected JSON schema version 1.0"
