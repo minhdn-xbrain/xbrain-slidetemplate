@@ -1,0 +1,3874 @@
+{
+  "$schema": "../../contracts/xbrain-deck-v1.schema.json",
+  "version": "1.0",
+  "releaseVersion": "1.0.0",
+  "metadata": {
+    "name": "PROJECT PARADOX — 42 slide stress test",
+    "note": "Synthetic/deterministic model. PPTX có nhánh click; JSON XBrain chỉ bao gồm bản đồ nhánh trực quan; xem ghi chú tương thích."
+  },
+  "theme": {
+    "preset": "dark",
+    "tokens": {
+      "primary": "#38E0D0",
+      "ink": "#EAF7FF",
+      "teal": "#38E0D0"
+    }
+  },
+  "datasets": {
+    "cityDistricts": [
+      {
+        "label": "Bắc Bến",
+        "populationM": 1.8,
+        "vulnerability": 0.78
+      },
+      {
+        "label": "Đông Lưới",
+        "populationM": 1.7,
+        "vulnerability": 1.13
+      },
+      {
+        "label": "Lõi Trung Tâm",
+        "populationM": 2.3,
+        "vulnerability": 0.67
+      },
+      {
+        "label": "Tây Sinh Thái",
+        "populationM": 1.4,
+        "vulnerability": 0.89
+      },
+      {
+        "label": "Nam Cảng",
+        "populationM": 1.6,
+        "vulnerability": 1.31
+      },
+      {
+        "label": "Vành Đai",
+        "populationM": 2.0,
+        "vulnerability": 1.18
+      },
+      {
+        "label": "Đảo Nổi",
+        "populationM": 1.6,
+        "vulnerability": 1.24
+      }
+    ],
+    "scenarioSummary": [
+      {
+        "label": "A",
+        "id": "A",
+        "name": "LŨ ĐÔ THỊ",
+        "subtitle": "Mưa cực đoan 380 mm / 72 giờ",
+        "accent": "#39DAD3",
+        "mitigationPct": 34.0,
+        "loadGWh": 397.186,
+        "shedGWh": 16.651,
+        "servedGWh": 380.535,
+        "avoidedShedGWh": 5.661,
+        "residualShedGWh": 10.99,
+        "waterDemandM3": 6316716.0,
+        "waterGapM3": 279587.0,
+        "mobilityMinPct": 78.2,
+        "hospitalPeakPct": 85.2,
+        "digitalMinPct": 98.8,
+        "costBn": 165.007,
+        "costAvoidedBn": 56.102,
+        "costResidualBn": 108.905,
+        "evacuees": 418624,
+        "equityGapPp": 4.7,
+        "energyMixGWh": {
+          "Lưới trung tâm": 167.4355,
+          "Mặt trời": 91.3284,
+          "Gió": 68.4963,
+          "Pin phân tán": 34.2482,
+          "Microgrid": 19.0268
+        },
+        "actions": [
+          "Mở hồ trữ nước theo ngưỡng dự báo",
+          "Ưu tiên hành lang cấp cứu không ngập",
+          "Định tuyến metro tránh nút giao trũng"
+        ],
+        "drivers": {
+          "rain": 1.8,
+          "energy": 0.62,
+          "heat": 0.1,
+          "water": 0.72,
+          "mobility": 1.52,
+          "digital": 0.08,
+          "health": 0.86
+        }
+      },
+      {
+        "label": "B",
+        "id": "B",
+        "name": "ĐỨT GÃY LƯỚI ĐIỆN",
+        "subtitle": "Siêu bão làm suy giảm nguồn cấp",
+        "accent": "#FFBF74",
+        "mitigationPct": 42.0,
+        "loadGWh": 415.911,
+        "shedGWh": 44.204,
+        "servedGWh": 371.707,
+        "avoidedShedGWh": 18.566,
+        "residualShedGWh": 25.638,
+        "waterDemandM3": 6333587.0,
+        "waterGapM3": 253005.0,
+        "mobilityMinPct": 84.5,
+        "hospitalPeakPct": 85.5,
+        "digitalMinPct": 95.3,
+        "costBn": 215.347,
+        "costAvoidedBn": 90.446,
+        "costResidualBn": 124.901,
+        "evacuees": 210304,
+        "equityGapPp": 12.9,
+        "energyMixGWh": {
+          "Lưới trung tâm": 163.551,
+          "Mặt trời": 89.2096,
+          "Gió": 66.9072,
+          "Pin phân tán": 33.4536,
+          "Microgrid": 18.5853
+        },
+        "actions": [
+          "Tách lưới thành 7 đảo năng lượng",
+          "Xả pin ưu tiên bệnh viện và bơm nước",
+          "Khôi phục phụ tải theo cấp quan trọng"
+        ],
+        "drivers": {
+          "rain": 0.68,
+          "energy": 2.1,
+          "heat": 0.2,
+          "water": 0.6,
+          "mobility": 1.1,
+          "digital": 0.35,
+          "health": 0.86
+        }
+      },
+      {
+        "label": "C",
+        "id": "C",
+        "name": "ĐẢO NHIỆT CỰC HẠN",
+        "subtitle": "Sóng nhiệt 47°C kéo dài",
+        "accent": "#FF7F82",
+        "mitigationPct": 30.0,
+        "loadGWh": 442.399,
+        "shedGWh": 19.147,
+        "servedGWh": 423.253,
+        "avoidedShedGWh": 5.744,
+        "residualShedGWh": 13.403,
+        "waterDemandM3": 6644965.0,
+        "waterGapM3": 303198.0,
+        "mobilityMinPct": 92.7,
+        "hospitalPeakPct": 108.4,
+        "digitalMinPct": 99.3,
+        "costBn": 214.495,
+        "costAvoidedBn": 64.349,
+        "costResidualBn": 150.147,
+        "evacuees": 69440,
+        "equityGapPp": 4.9,
+        "energyMixGWh": {
+          "Lưới trung tâm": 186.2312,
+          "Mặt trời": 101.5806,
+          "Gió": 76.1855,
+          "Pin phân tán": 38.0927,
+          "Microgrid": 21.1626
+        },
+        "actions": [
+          "Mở hành lang trú nóng công cộng",
+          "Tối ưu lịch làm mát theo giờ cao điểm",
+          "Ưu tiên y tế cộng đồng rủi ro cao"
+        ],
+        "drivers": {
+          "rain": 0.08,
+          "energy": 0.83,
+          "heat": 2.05,
+          "water": 0.73,
+          "mobility": 0.58,
+          "digital": 0.04,
+          "health": 1.58
+        }
+      },
+      {
+        "label": "D",
+        "id": "D",
+        "name": "MẤT TIN CẬY DỮ LIỆU",
+        "subtitle": "Mạng cảm biến và điều phối gián đoạn",
+        "accent": "#B998FF",
+        "mitigationPct": 38.0,
+        "loadGWh": 402.831,
+        "shedGWh": 25.631,
+        "servedGWh": 377.2,
+        "avoidedShedGWh": 9.74,
+        "residualShedGWh": 15.891,
+        "waterDemandM3": 6351819.0,
+        "waterGapM3": 334537.0,
+        "mobilityMinPct": 82.3,
+        "hospitalPeakPct": 87.0,
+        "digitalMinPct": 72.3,
+        "costBn": 225.516,
+        "costAvoidedBn": 85.696,
+        "costResidualBn": 139.82,
+        "evacuees": 113584,
+        "equityGapPp": 7.6,
+        "energyMixGWh": {
+          "Lưới trung tâm": 165.968,
+          "Mặt trời": 90.528,
+          "Gió": 67.896,
+          "Pin phân tán": 33.948,
+          "Microgrid": 18.86
+        },
+        "actions": [
+          "Chuyển sang chế độ vận hành thủ công",
+          "Đối soát tín hiệu qua nguồn độc lập",
+          "Khôi phục dịch vụ ưu tiên theo lớp"
+        ],
+        "drivers": {
+          "rain": 0.25,
+          "energy": 0.81,
+          "heat": 0.31,
+          "water": 0.58,
+          "mobility": 0.77,
+          "digital": 2.15,
+          "health": 0.92
+        }
+      },
+      {
+        "label": "E",
+        "id": "E",
+        "name": "KHỦNG HOẢNG NƯỚC",
+        "subtitle": "Ô nhiễm nguồn và đứt tuyến ống",
+        "accent": "#69B7FF",
+        "mitigationPct": 45.0,
+        "loadGWh": 414.804,
+        "shedGWh": 9.191,
+        "servedGWh": 405.613,
+        "avoidedShedGWh": 4.136,
+        "residualShedGWh": 5.055,
+        "waterDemandM3": 6385646.0,
+        "waterGapM3": 804105.0,
+        "mobilityMinPct": 93.2,
+        "hospitalPeakPct": 96.1,
+        "digitalMinPct": 98.5,
+        "costBn": 107.406,
+        "costAvoidedBn": 48.333,
+        "costResidualBn": 59.073,
+        "evacuees": 91264,
+        "equityGapPp": 2.3,
+        "energyMixGWh": {
+          "Lưới trung tâm": 178.4698,
+          "Mặt trời": 97.3472,
+          "Gió": 73.0104,
+          "Pin phân tán": 36.5052,
+          "Microgrid": 20.2807
+        },
+        "actions": [
+          "Cô lập vùng nước không đạt chuẩn",
+          "Phân phối nước dự phòng theo nhu cầu",
+          "Tái sử dụng nước kỹ thuật tại chỗ"
+        ],
+        "drivers": {
+          "rain": 0.32,
+          "energy": 0.34,
+          "heat": 0.51,
+          "water": 2.18,
+          "mobility": 0.44,
+          "digital": 0.1,
+          "health": 1.16
+        }
+      },
+      {
+        "label": "F",
+        "id": "F",
+        "name": "CÚ SỐC DÂN SỐ",
+        "subtitle": "1,2 triệu lượt đến trong 72 giờ",
+        "accent": "#BDF47D",
+        "mitigationPct": 35.0,
+        "loadGWh": 408.162,
+        "shedGWh": 14.484,
+        "servedGWh": 393.678,
+        "avoidedShedGWh": 5.069,
+        "residualShedGWh": 9.415,
+        "waterDemandM3": 6566029.0,
+        "waterGapM3": 400089.0,
+        "mobilityMinPct": 83.9,
+        "hospitalPeakPct": 99.2,
+        "digitalMinPct": 97.0,
+        "costBn": 182.358,
+        "costAvoidedBn": 63.825,
+        "costResidualBn": 118.533,
+        "evacuees": 372000,
+        "equityGapPp": 4.0,
+        "energyMixGWh": {
+          "Lưới trung tâm": 173.2181,
+          "Mặt trời": 94.4826,
+          "Gió": 70.862,
+          "Pin phân tán": 35.431,
+          "Microgrid": 19.6839
+        },
+        "actions": [
+          "Kích hoạt cụm tiếp nhận phân tán",
+          "Mở trường học thành điểm hỗ trợ",
+          "Tăng chuyến vận tải ngoài cao điểm"
+        ],
+        "drivers": {
+          "rain": 0.08,
+          "energy": 0.64,
+          "heat": 0.49,
+          "water": 0.98,
+          "mobility": 1.38,
+          "digital": 0.22,
+          "health": 1.55
+        }
+      }
+    ],
+    "scenario_A_timeline": [
+      {
+        "hour": 0.0,
+        "intensity": 0.162,
+        "demandGW": 5.505,
+        "shedGW": 0.091,
+        "servedGW": 5.414,
+        "waterDemandM3": 87577.88,
+        "waterGapM3": 1531.736,
+        "mobilityPct": 95.626,
+        "hospitalPct": 71.615,
+        "digitalPct": 99.634,
+        "costBn": 0.91
+      },
+      {
+        "hour": 6.0,
+        "intensity": 0.287,
+        "demandGW": 5.3,
+        "shedGW": 0.139,
+        "servedGW": 5.162,
+        "waterDemandM3": 87637.903,
+        "waterGapM3": 2443.947,
+        "mobilityPct": 93.026,
+        "hospitalPct": 73.631,
+        "digitalPct": 99.507,
+        "costBn": 1.429
+      },
+      {
+        "hour": 12.0,
+        "intensity": 0.497,
+        "demandGW": 5.653,
+        "shedGW": 0.24,
+        "servedGW": 5.413,
+        "waterDemandM3": 87739.415,
+        "waterGapM3": 3989.547,
+        "mobilityPct": 88.628,
+        "hospitalPct": 77.039,
+        "digitalPct": 99.291,
+        "costBn": 2.362
+      },
+      {
+        "hour": 18.0,
+        "intensity": 0.756,
+        "demandGW": 5.507,
+        "shedGW": 0.344,
+        "servedGW": 5.163,
+        "waterDemandM3": 87863.675,
+        "waterGapM3": 5886.354,
+        "mobilityPct": 83.245,
+        "hospitalPct": 81.212,
+        "digitalPct": 99.026,
+        "costBn": 3.45
+      },
+      {
+        "hour": 24.0,
+        "intensity": 0.956,
+        "demandGW": 5.855,
+        "shedGW": 0.456,
+        "servedGW": 5.399,
+        "waterDemandM3": 87959.917,
+        "waterGapM3": 7359.146,
+        "mobilityPct": 79.076,
+        "hospitalPct": 84.444,
+        "digitalPct": 98.821,
+        "costBn": 4.378
+      },
+      {
+        "hour": 30.0,
+        "intensity": 0.989,
+        "demandGW": 5.609,
+        "shedGW": 0.451,
+        "servedGW": 5.158,
+        "waterDemandM3": 87975.818,
+        "waterGapM3": 7602.784,
+        "mobilityPct": 78.387,
+        "hospitalPct": 84.978,
+        "digitalPct": 98.788,
+        "costBn": 4.468
+      },
+      {
+        "hour": 36.0,
+        "intensity": 0.835,
+        "demandGW": 5.802,
+        "shedGW": 0.398,
+        "servedGW": 5.404,
+        "waterDemandM3": 87901.889,
+        "waterGapM3": 6470.763,
+        "mobilityPct": 81.59,
+        "hospitalPct": 82.495,
+        "digitalPct": 98.945,
+        "costBn": 3.844
+      },
+      {
+        "hour": 42.0,
+        "intensity": 0.582,
+        "demandGW": 5.431,
+        "shedGW": 0.266,
+        "servedGW": 5.164,
+        "waterDemandM3": 87780.289,
+        "waterGapM3": 4612.897,
+        "mobilityPct": 86.858,
+        "hospitalPct": 78.412,
+        "digitalPct": 99.204,
+        "costBn": 2.699
+      },
+      {
+        "hour": 48.0,
+        "intensity": 0.348,
+        "demandGW": 5.587,
+        "shedGW": 0.172,
+        "servedGW": 5.415,
+        "waterDemandM3": 87667.323,
+        "waterGapM3": 2891.523,
+        "mobilityPct": 91.751,
+        "hospitalPct": 74.619,
+        "digitalPct": 99.444,
+        "costBn": 1.712
+      },
+      {
+        "hour": 54.0,
+        "intensity": 0.194,
+        "demandGW": 5.26,
+        "shedGW": 0.1,
+        "servedGW": 5.16,
+        "waterDemandM3": 87593.459,
+        "waterGapM3": 1768.384,
+        "mobilityPct": 94.951,
+        "hospitalPct": 72.138,
+        "digitalPct": 99.601,
+        "costBn": 1.036
+      },
+      {
+        "hour": 60.0,
+        "intensity": 0.119,
+        "demandGW": 5.486,
+        "shedGW": 0.072,
+        "servedGW": 5.414,
+        "waterDemandM3": 87557.275,
+        "waterGapM3": 1218.874,
+        "mobilityPct": 96.519,
+        "hospitalPct": 70.923,
+        "digitalPct": 99.678,
+        "costBn": 0.727
+      },
+      {
+        "hour": 66.0,
+        "intensity": 0.091,
+        "demandGW": 5.214,
+        "shedGW": 0.057,
+        "servedGW": 5.157,
+        "waterDemandM3": 87543.636,
+        "waterGapM3": 1011.863,
+        "mobilityPct": 97.11,
+        "hospitalPct": 70.465,
+        "digitalPct": 99.707,
+        "costBn": 0.597
+      },
+      {
+        "hour": 72.0,
+        "intensity": 0.082,
+        "demandGW": 5.47,
+        "shedGW": 0.057,
+        "servedGW": 5.414,
+        "waterDemandM3": 87539.625,
+        "waterGapM3": 951.0,
+        "mobilityPct": 97.283,
+        "hospitalPct": 70.331,
+        "digitalPct": 99.716,
+        "costBn": 0.569
+      }
+    ],
+    "scenario_B_timeline": [
+      {
+        "hour": 0.0,
+        "intensity": 0.127,
+        "demandGW": 5.558,
+        "shedGW": 0.167,
+        "servedGW": 5.392,
+        "waterDemandM3": 87622.609,
+        "waterGapM3": 1176.47,
+        "mobilityPct": 97.159,
+        "hospitalPct": 71.097,
+        "digitalPct": 99.229,
+        "costBn": 0.917
+      },
+      {
+        "hour": 6.0,
+        "intensity": 0.214,
+        "demandGW": 5.382,
+        "shedGW": 0.256,
+        "servedGW": 5.126,
+        "waterDemandM3": 87705.656,
+        "waterGapM3": 1737.577,
+        "mobilityPct": 95.912,
+        "hospitalPct": 72.517,
+        "digitalPct": 98.843,
+        "costBn": 1.368
+      },
+      {
+        "hour": 12.0,
+        "intensity": 0.382,
+        "demandGW": 5.806,
+        "shedGW": 0.475,
+        "servedGW": 5.331,
+        "waterDemandM3": 87867.602,
+        "waterGapM3": 2834.819,
+        "mobilityPct": 93.48,
+        "hospitalPct": 75.286,
+        "digitalPct": 98.089,
+        "costBn": 2.367
+      },
+      {
+        "hour": 18.0,
+        "intensity": 0.626,
+        "demandGW": 5.784,
+        "shedGW": 0.761,
+        "servedGW": 5.023,
+        "waterDemandM3": 88102.604,
+        "waterGapM3": 4434.209,
+        "mobilityPct": 89.951,
+        "hospitalPct": 79.305,
+        "digitalPct": 96.995,
+        "costBn": 3.731
+      },
+      {
+        "hour": 24.0,
+        "intensity": 0.871,
+        "demandGW": 6.283,
+        "shedGW": 1.14,
+        "servedGW": 5.143,
+        "waterDemandM3": 88338.217,
+        "waterGapM3": 6046.283,
+        "mobilityPct": 86.412,
+        "hospitalPct": 83.335,
+        "digitalPct": 95.898,
+        "costBn": 5.348
+      },
+      {
+        "hour": 30.0,
+        "intensity": 0.997,
+        "demandGW": 6.146,
+        "shedGW": 1.274,
+        "servedGW": 4.872,
+        "waterDemandM3": 88459.771,
+        "waterGapM3": 6881.303,
+        "mobilityPct": 84.587,
+        "hospitalPct": 85.413,
+        "digitalPct": 95.333,
+        "costBn": 6.015
+      },
+      {
+        "hour": 36.0,
+        "intensity": 0.932,
+        "demandGW": 6.342,
+        "shedGW": 1.23,
+        "servedGW": 5.113,
+        "waterDemandM3": 88396.744,
+        "waterGapM3": 6448.053,
+        "mobilityPct": 85.533,
+        "hospitalPct": 84.335,
+        "digitalPct": 95.626,
+        "costBn": 5.737
+      },
+      {
+        "hour": 42.0,
+        "intensity": 0.713,
+        "demandGW": 5.869,
+        "shedGW": 0.877,
+        "servedGW": 4.993,
+        "waterDemandM3": 88186.535,
+        "waterGapM3": 5007.489,
+        "mobilityPct": 88.69,
+        "hospitalPct": 80.741,
+        "digitalPct": 96.604,
+        "costBn": 4.255
+      },
+      {
+        "hour": 48.0,
+        "intensity": 0.457,
+        "demandGW": 5.88,
+        "shedGW": 0.571,
+        "servedGW": 5.308,
+        "waterDemandM3": 87939.918,
+        "waterGapM3": 3326.088,
+        "mobilityPct": 92.394,
+        "hospitalPct": 76.523,
+        "digitalPct": 97.752,
+        "costBn": 2.809
+      },
+      {
+        "hour": 54.0,
+        "intensity": 0.26,
+        "demandGW": 5.427,
+        "shedGW": 0.309,
+        "servedGW": 5.118,
+        "waterDemandM3": 87750.025,
+        "waterGapM3": 2037.793,
+        "mobilityPct": 95.245,
+        "hospitalPct": 73.276,
+        "digitalPct": 98.636,
+        "costBn": 1.623
+      },
+      {
+        "hour": 60.0,
+        "intensity": 0.149,
+        "demandGW": 5.579,
+        "shedGW": 0.191,
+        "servedGW": 5.388,
+        "waterDemandM3": 87643.054,
+        "waterGapM3": 1314.509,
+        "mobilityPct": 96.852,
+        "hospitalPct": 71.446,
+        "digitalPct": 99.134,
+        "costBn": 1.036
+      },
+      {
+        "hour": 66.0,
+        "intensity": 0.101,
+        "demandGW": 5.272,
+        "shedGW": 0.13,
+        "servedGW": 5.143,
+        "waterDemandM3": 87597.192,
+        "waterGapM3": 1004.952,
+        "mobilityPct": 97.54,
+        "hospitalPct": 70.662,
+        "digitalPct": 99.348,
+        "costBn": 0.754
+      },
+      {
+        "hour": 72.0,
+        "intensity": 0.085,
+        "demandGW": 5.517,
+        "shedGW": 0.118,
+        "servedGW": 5.399,
+        "waterDemandM3": 87581.943,
+        "waterGapM3": 902.094,
+        "mobilityPct": 97.769,
+        "hospitalPct": 70.401,
+        "digitalPct": 99.419,
+        "costBn": 0.683
+      }
+    ],
+    "scenario_C_timeline": [
+      {
+        "hour": 0.0,
+        "intensity": 0.106,
+        "demandGW": 5.617,
+        "shedGW": 0.068,
+        "servedGW": 5.549,
+        "waterDemandM3": 88545.34,
+        "waterGapM3": 1140.962,
+        "mobilityPct": 98.333,
+        "hospitalPct": 73.175,
+        "digitalPct": 99.746,
+        "costBn": 0.455
+      },
+      {
+        "hour": 6.0,
+        "intensity": 0.162,
+        "demandGW": 5.454,
+        "shedGW": 0.089,
+        "servedGW": 5.365,
+        "waterDemandM3": 89096.535,
+        "waterGapM3": 1565.507,
+        "mobilityPct": 97.982,
+        "hospitalPct": 75.377,
+        "digitalPct": 99.717,
+        "costBn": 0.572
+      },
+      {
+        "hour": 12.0,
+        "intensity": 0.287,
+        "demandGW": 5.93,
+        "shedGW": 0.154,
+        "servedGW": 5.776,
+        "waterDemandM3": 90327.003,
+        "waterGapM3": 2531.88,
+        "mobilityPct": 97.197,
+        "hospitalPct": 80.292,
+        "digitalPct": 99.653,
+        "costBn": 0.879
+      },
+      {
+        "hour": 18.0,
+        "intensity": 0.497,
+        "demandGW": 6.035,
+        "shedGW": 0.254,
+        "servedGW": 5.781,
+        "waterDemandM3": 92408.007,
+        "waterGapM3": 4224.815,
+        "mobilityPct": 95.87,
+        "hospitalPct": 88.603,
+        "digitalPct": 99.545,
+        "costBn": 1.375
+      },
+      {
+        "hour": 24.0,
+        "intensity": 0.756,
+        "demandGW": 6.742,
+        "shedGW": 0.416,
+        "servedGW": 6.325,
+        "waterDemandM3": 94955.336,
+        "waterGapM3": 6397.332,
+        "mobilityPct": 94.245,
+        "hospitalPct": 98.778,
+        "digitalPct": 99.413,
+        "costBn": 4.99
+      },
+      {
+        "hour": 30.0,
+        "intensity": 0.956,
+        "demandGW": 6.828,
+        "shedGW": 0.526,
+        "servedGW": 6.302,
+        "waterDemandM3": 96928.296,
+        "waterGapM3": 8155.8,
+        "mobilityPct": 92.987,
+        "hospitalPct": 106.658,
+        "digitalPct": 99.311,
+        "costBn": 8.104
+      },
+      {
+        "hour": 36.0,
+        "intensity": 0.989,
+        "demandGW": 7.145,
+        "shedGW": 0.568,
+        "servedGW": 6.577,
+        "waterDemandM3": 97254.26,
+        "waterGapM3": 8452.696,
+        "mobilityPct": 92.779,
+        "hospitalPct": 107.96,
+        "digitalPct": 99.294,
+        "costBn": 8.684
+      },
+      {
+        "hour": 42.0,
+        "intensity": 0.835,
+        "demandGW": 6.619,
+        "shedGW": 0.449,
+        "servedGW": 6.17,
+        "waterDemandM3": 95738.728,
+        "waterGapM3": 7087.636,
+        "mobilityPct": 93.746,
+        "hospitalPct": 101.907,
+        "digitalPct": 99.372,
+        "costBn": 6.196
+      },
+      {
+        "hour": 48.0,
+        "intensity": 0.582,
+        "demandGW": 6.442,
+        "shedGW": 0.312,
+        "servedGW": 6.129,
+        "waterDemandM3": 93245.932,
+        "waterGapM3": 4927.273,
+        "mobilityPct": 95.335,
+        "hospitalPct": 91.95,
+        "digitalPct": 99.502,
+        "costBn": 2.269
+      },
+      {
+        "hour": 54.0,
+        "intensity": 0.348,
+        "demandGW": 5.776,
+        "shedGW": 0.177,
+        "servedGW": 5.599,
+        "waterDemandM3": 90930.116,
+        "waterGapM3": 3014.947,
+        "mobilityPct": 96.812,
+        "hospitalPct": 82.7,
+        "digitalPct": 99.622,
+        "costBn": 1.006
+      },
+      {
+        "hour": 60.0,
+        "intensity": 0.194,
+        "demandGW": 5.77,
+        "shedGW": 0.109,
+        "servedGW": 5.661,
+        "waterDemandM3": 89415.907,
+        "waterGapM3": 1813.859,
+        "mobilityPct": 97.778,
+        "hospitalPct": 76.652,
+        "digitalPct": 99.701,
+        "costBn": 0.659
+      },
+      {
+        "hour": 66.0,
+        "intensity": 0.119,
+        "demandGW": 5.38,
+        "shedGW": 0.07,
+        "servedGW": 5.31,
+        "waterDemandM3": 88674.132,
+        "waterGapM3": 1239.698,
+        "mobilityPct": 98.251,
+        "hospitalPct": 73.69,
+        "digitalPct": 99.739,
+        "costBn": 0.476
+      },
+      {
+        "hour": 72.0,
+        "intensity": 0.091,
+        "demandGW": 5.591,
+        "shedGW": 0.061,
+        "servedGW": 5.53,
+        "waterDemandM3": 88394.532,
+        "waterGapM3": 1025.705,
+        "mobilityPct": 98.429,
+        "hospitalPct": 72.573,
+        "digitalPct": 99.754,
+        "costBn": 0.42
+      }
+    ],
+    "scenario_D_timeline": [
+      {
+        "hour": 0.0,
+        "intensity": 0.162,
+        "demandGW": 5.532,
+        "shedGW": 0.13,
+        "servedGW": 5.401,
+        "waterDemandM3": 87741.427,
+        "waterGapM3": 1778.252,
+        "mobilityPct": 96.294,
+        "hospitalPct": 71.918,
+        "digitalPct": 95.346,
+        "costBn": 1.185
+      },
+      {
+        "hour": 6.0,
+        "intensity": 0.287,
+        "demandGW": 5.347,
+        "shedGW": 0.206,
+        "servedGW": 5.14,
+        "waterDemandM3": 87927.498,
+        "waterGapM3": 2884.381,
+        "mobilityPct": 94.208,
+        "hospitalPct": 74.167,
+        "digitalPct": 91.914,
+        "costBn": 1.911
+      },
+      {
+        "hour": 12.0,
+        "intensity": 0.497,
+        "demandGW": 5.734,
+        "shedGW": 0.368,
+        "servedGW": 5.366,
+        "waterDemandM3": 88242.186,
+        "waterGapM3": 4765.719,
+        "mobilityPct": 90.68,
+        "hospitalPct": 77.97,
+        "digitalPct": 86.109,
+        "costBn": 3.226
+      },
+      {
+        "hour": 18.0,
+        "intensity": 0.756,
+        "demandGW": 5.63,
+        "shedGW": 0.536,
+        "servedGW": 5.093,
+        "waterDemandM3": 88627.392,
+        "waterGapM3": 7086.804,
+        "mobilityPct": 86.362,
+        "hospitalPct": 82.625,
+        "digitalPct": 79.003,
+        "costBn": 4.759
+      },
+      {
+        "hour": 24.0,
+        "intensity": 0.956,
+        "demandGW": 6.01,
+        "shedGW": 0.718,
+        "servedGW": 5.292,
+        "waterDemandM3": 88925.742,
+        "waterGapM3": 8898.274,
+        "mobilityPct": 83.017,
+        "hospitalPct": 86.231,
+        "digitalPct": 73.5,
+        "costBn": 6.084
+      },
+      {
+        "hour": 30.0,
+        "intensity": 0.989,
+        "demandGW": 5.77,
+        "shedGW": 0.712,
+        "servedGW": 5.058,
+        "waterDemandM3": 88975.034,
+        "waterGapM3": 9198.712,
+        "mobilityPct": 82.465,
+        "hospitalPct": 86.826,
+        "digitalPct": 72.591,
+        "costBn": 6.207
+      },
+      {
+        "hour": 36.0,
+        "intensity": 0.835,
+        "demandGW": 5.938,
+        "shedGW": 0.623,
+        "servedGW": 5.315,
+        "waterDemandM3": 88745.856,
+        "waterGapM3": 7804.638,
+        "mobilityPct": 85.034,
+        "hospitalPct": 84.057,
+        "digitalPct": 76.818,
+        "costBn": 5.324
+      },
+      {
+        "hour": 42.0,
+        "intensity": 0.582,
+        "demandGW": 5.525,
+        "shedGW": 0.411,
+        "servedGW": 5.114,
+        "waterDemandM3": 88368.897,
+        "waterGapM3": 5527.016,
+        "mobilityPct": 89.26,
+        "hospitalPct": 79.501,
+        "digitalPct": 83.772,
+        "costBn": 3.697
+      },
+      {
+        "hour": 48.0,
+        "intensity": 0.348,
+        "demandGW": 5.644,
+        "shedGW": 0.26,
+        "servedGW": 5.384,
+        "waterDemandM3": 88018.701,
+        "waterGapM3": 3428.254,
+        "mobilityPct": 93.185,
+        "hospitalPct": 75.269,
+        "digitalPct": 90.232,
+        "costBn": 2.31
+      },
+      {
+        "hour": 54.0,
+        "intensity": 0.194,
+        "demandGW": 5.291,
+        "shedGW": 0.145,
+        "servedGW": 5.146,
+        "waterDemandM3": 87789.723,
+        "waterGapM3": 2064.903,
+        "mobilityPct": 95.752,
+        "hospitalPct": 72.501,
+        "digitalPct": 94.456,
+        "costBn": 1.361
+      },
+      {
+        "hour": 60.0,
+        "intensity": 0.119,
+        "demandGW": 5.506,
+        "shedGW": 0.101,
+        "servedGW": 5.405,
+        "waterDemandM3": 87677.552,
+        "waterGapM3": 1399.608,
+        "mobilityPct": 97.01,
+        "hospitalPct": 71.146,
+        "digitalPct": 96.525,
+        "costBn": 0.928
+      },
+      {
+        "hour": 66.0,
+        "intensity": 0.091,
+        "demandGW": 5.229,
+        "shedGW": 0.078,
+        "servedGW": 5.15,
+        "waterDemandM3": 87635.271,
+        "waterGapM3": 1149.276,
+        "mobilityPct": 97.484,
+        "hospitalPct": 70.635,
+        "digitalPct": 97.305,
+        "costBn": 0.748
+      },
+      {
+        "hour": 72.0,
+        "intensity": 0.082,
+        "demandGW": 5.484,
+        "shedGW": 0.076,
+        "servedGW": 5.407,
+        "waterDemandM3": 87622.837,
+        "waterGapM3": 1075.707,
+        "mobilityPct": 97.623,
+        "hospitalPct": 70.485,
+        "digitalPct": 97.534,
+        "costBn": 0.709
+      }
+    ],
+    "scenario_E_timeline": [
+      {
+        "hour": 0.0,
+        "intensity": 0.127,
+        "demandGW": 5.554,
+        "shedGW": 0.048,
+        "servedGW": 5.506,
+        "waterDemandM3": 87812.653,
+        "waterGapM3": 3149.116,
+        "mobilityPct": 98.266,
+        "hospitalPct": 72.448,
+        "digitalPct": 99.637,
+        "costBn": 0.457
+      },
+      {
+        "hour": 6.0,
+        "intensity": 0.214,
+        "demandGW": 5.376,
+        "shedGW": 0.063,
+        "servedGW": 5.312,
+        "waterDemandM3": 88024.422,
+        "waterGapM3": 5056.362,
+        "mobilityPct": 97.768,
+        "hospitalPct": 74.784,
+        "digitalPct": 99.527,
+        "costBn": 0.612
+      },
+      {
+        "hour": 12.0,
+        "intensity": 0.382,
+        "demandGW": 5.794,
+        "shedGW": 0.103,
+        "servedGW": 5.691,
+        "waterDemandM3": 88437.385,
+        "waterGapM3": 8801.898,
+        "mobilityPct": 96.799,
+        "hospitalPct": 79.339,
+        "digitalPct": 99.311,
+        "costBn": 0.945
+      },
+      {
+        "hour": 18.0,
+        "intensity": 0.626,
+        "demandGW": 5.765,
+        "shedGW": 0.154,
+        "servedGW": 5.611,
+        "waterDemandM3": 89036.639,
+        "waterGapM3": 14298.89,
+        "mobilityPct": 95.391,
+        "hospitalPct": 85.948,
+        "digitalPct": 98.999,
+        "costBn": 1.406
+      },
+      {
+        "hour": 24.0,
+        "intensity": 0.871,
+        "demandGW": 6.255,
+        "shedGW": 0.222,
+        "servedGW": 6.033,
+        "waterDemandM3": 89637.452,
+        "waterGapM3": 19883.657,
+        "mobilityPct": 93.98,
+        "hospitalPct": 92.575,
+        "digitalPct": 98.685,
+        "costBn": 2.769
+      },
+      {
+        "hour": 30.0,
+        "intensity": 0.997,
+        "demandGW": 6.115,
+        "shedGW": 0.245,
+        "servedGW": 5.869,
+        "waterDemandM3": 89947.417,
+        "waterGapM3": 22793.654,
+        "mobilityPct": 93.252,
+        "hospitalPct": 95.993,
+        "digitalPct": 98.524,
+        "costBn": 4.129
+      },
+      {
+        "hour": 36.0,
+        "intensity": 0.932,
+        "demandGW": 6.313,
+        "shedGW": 0.238,
+        "servedGW": 6.075,
+        "waterDemandM3": 89786.697,
+        "waterGapM3": 21282.347,
+        "mobilityPct": 93.63,
+        "hospitalPct": 94.221,
+        "digitalPct": 98.607,
+        "costBn": 3.437
+      },
+      {
+        "hour": 42.0,
+        "intensity": 0.713,
+        "demandGW": 5.847,
+        "shedGW": 0.174,
+        "servedGW": 5.672,
+        "waterDemandM3": 89250.663,
+        "waterGapM3": 16279.88,
+        "mobilityPct": 94.889,
+        "hospitalPct": 88.309,
+        "digitalPct": 98.887,
+        "costBn": 1.579
+      },
+      {
+        "hour": 48.0,
+        "intensity": 0.457,
+        "demandGW": 5.865,
+        "shedGW": 0.121,
+        "servedGW": 5.745,
+        "waterDemandM3": 88621.791,
+        "waterGapM3": 10485.667,
+        "mobilityPct": 96.366,
+        "hospitalPct": 81.373,
+        "digitalPct": 99.215,
+        "costBn": 1.091
+      },
+      {
+        "hour": 54.0,
+        "intensity": 0.26,
+        "demandGW": 5.419,
+        "shedGW": 0.073,
+        "servedGW": 5.346,
+        "waterDemandM3": 88137.564,
+        "waterGapM3": 6079.09,
+        "mobilityPct": 97.503,
+        "hospitalPct": 76.032,
+        "digitalPct": 99.467,
+        "costBn": 0.699
+      },
+      {
+        "hour": 60.0,
+        "intensity": 0.149,
+        "demandGW": 5.574,
+        "shedGW": 0.052,
+        "servedGW": 5.522,
+        "waterDemandM3": 87864.788,
+        "waterGapM3": 3617.809,
+        "mobilityPct": 98.143,
+        "hospitalPct": 73.023,
+        "digitalPct": 99.61,
+        "costBn": 0.497
+      },
+      {
+        "hour": 66.0,
+        "intensity": 0.101,
+        "demandGW": 5.269,
+        "shedGW": 0.04,
+        "servedGW": 5.229,
+        "waterDemandM3": 87747.84,
+        "waterGapM3": 2567.221,
+        "mobilityPct": 98.418,
+        "hospitalPct": 71.733,
+        "digitalPct": 99.671,
+        "costBn": 0.402
+      },
+      {
+        "hour": 72.0,
+        "intensity": 0.085,
+        "demandGW": 5.514,
+        "shedGW": 0.039,
+        "servedGW": 5.475,
+        "waterDemandM3": 87708.953,
+        "waterGapM3": 2218.51,
+        "mobilityPct": 98.509,
+        "hospitalPct": 71.305,
+        "digitalPct": 99.691,
+        "costBn": 0.377
+      }
+    ],
+    "scenario_F_timeline": [
+      {
+        "hour": 0.0,
+        "intensity": 0.106,
+        "demandGW": 5.514,
+        "shedGW": 0.059,
+        "servedGW": 5.455,
+        "waterDemandM3": 88306.14,
+        "waterGapM3": 1431.494,
+        "mobilityPct": 97.396,
+        "hospitalPct": 72.199,
+        "digitalPct": 99.502,
+        "costBn": 0.582
+      },
+      {
+        "hour": 6.0,
+        "intensity": 0.162,
+        "demandGW": 5.296,
+        "shedGW": 0.075,
+        "servedGW": 5.22,
+        "waterDemandM3": 88731.208,
+        "waterGapM3": 2009.679,
+        "mobilityPct": 96.551,
+        "hospitalPct": 73.886,
+        "digitalPct": 99.344,
+        "costBn": 0.766
+      },
+      {
+        "hour": 12.0,
+        "intensity": 0.287,
+        "demandGW": 5.649,
+        "shedGW": 0.125,
+        "servedGW": 5.525,
+        "waterDemandM3": 89680.114,
+        "waterGapM3": 3320.148,
+        "mobilityPct": 94.663,
+        "hospitalPct": 77.651,
+        "digitalPct": 98.993,
+        "costBn": 1.211
+      },
+      {
+        "hour": 18.0,
+        "intensity": 0.497,
+        "demandGW": 5.548,
+        "shedGW": 0.196,
+        "servedGW": 5.351,
+        "waterDemandM3": 91284.933,
+        "waterGapM3": 5598.528,
+        "mobilityPct": 91.47,
+        "hospitalPct": 84.019,
+        "digitalPct": 98.399,
+        "costBn": 1.932
+      },
+      {
+        "hour": 24.0,
+        "intensity": 0.756,
+        "demandGW": 6.002,
+        "shedGW": 0.31,
+        "servedGW": 5.692,
+        "waterDemandM3": 93249.37,
+        "waterGapM3": 8493.666,
+        "mobilityPct": 87.562,
+        "hospitalPct": 91.814,
+        "digitalPct": 97.672,
+        "costBn": 3.487
+      },
+      {
+        "hour": 30.0,
+        "intensity": 0.956,
+        "demandGW": 5.892,
+        "shedGW": 0.379,
+        "servedGW": 5.513,
+        "waterDemandM3": 94770.868,
+        "waterGapM3": 10816.349,
+        "mobilityPct": 84.535,
+        "hospitalPct": 97.852,
+        "digitalPct": 97.109,
+        "costBn": 6.169
+      },
+      {
+        "hour": 36.0,
+        "intensity": 0.989,
+        "demandGW": 6.177,
+        "shedGW": 0.41,
+        "servedGW": 5.767,
+        "waterDemandM3": 95022.243,
+        "waterGapM3": 11206.842,
+        "mobilityPct": 84.035,
+        "hospitalPct": 98.849,
+        "digitalPct": 97.016,
+        "costBn": 6.666
+      },
+      {
+        "hour": 42.0,
+        "intensity": 0.835,
+        "demandGW": 5.801,
+        "shedGW": 0.329,
+        "servedGW": 5.473,
+        "waterDemandM3": 93853.503,
+        "waterGapM3": 9407.526,
+        "mobilityPct": 86.36,
+        "hospitalPct": 94.212,
+        "digitalPct": 97.448,
+        "costBn": 4.529
+      },
+      {
+        "hour": 48.0,
+        "intensity": 0.582,
+        "demandGW": 5.872,
+        "shedGW": 0.239,
+        "servedGW": 5.632,
+        "waterDemandM3": 91931.12,
+        "waterGapM3": 6537.959,
+        "mobilityPct": 90.184,
+        "hospitalPct": 86.583,
+        "digitalPct": 98.16,
+        "costBn": 2.261
+      },
+      {
+        "hour": 54.0,
+        "intensity": 0.348,
+        "demandGW": 5.435,
+        "shedGW": 0.141,
+        "servedGW": 5.294,
+        "waterDemandM3": 90145.22,
+        "waterGapM3": 3972.435,
+        "mobilityPct": 93.737,
+        "hospitalPct": 79.497,
+        "digitalPct": 98.821,
+        "costBn": 1.408
+      },
+      {
+        "hour": 60.0,
+        "intensity": 0.194,
+        "demandGW": 5.58,
+        "shedGW": 0.091,
+        "servedGW": 5.489,
+        "waterDemandM3": 88977.5,
+        "waterGapM3": 2347.195,
+        "mobilityPct": 96.061,
+        "hospitalPct": 74.863,
+        "digitalPct": 99.253,
+        "costBn": 0.888
+      },
+      {
+        "hour": 66.0,
+        "intensity": 0.119,
+        "demandGW": 5.263,
+        "shedGW": 0.061,
+        "servedGW": 5.203,
+        "waterDemandM3": 88405.461,
+        "waterGapM3": 1566.102,
+        "mobilityPct": 97.199,
+        "hospitalPct": 72.593,
+        "digitalPct": 99.465,
+        "costBn": 0.619
+      },
+      {
+        "hour": 72.0,
+        "intensity": 0.091,
+        "demandGW": 5.502,
+        "shedGW": 0.053,
+        "servedGW": 5.449,
+        "waterDemandM3": 88189.841,
+        "waterGapM3": 1274.254,
+        "mobilityPct": 97.628,
+        "hospitalPct": 71.737,
+        "digitalPct": 99.545,
+        "costBn": 0.529
+      }
+    ]
+  },
+  "slides": [
+    {
+      "id": "PX-01",
+      "type": "cover",
+      "group": "A",
+      "content": {
+        "badge": "STRESS TEST • SYSTEM SIMULATION • 42 SLIDES",
+        "titleLine1": "PROJECT",
+        "titleLine2": "PARADOX",
+        "titleLine3": "ĐÔ THỊ SỐNG / 2045",
+        "subtitle": "72 giờ khủng hoảng · 6 nhánh quyết định · hàng chục góc nhìn dữ liệu",
+        "presenter": "BẢN THỬ NGHIỆM PHI TUYẾN TÍNH",
+        "location": "MÔ HÌNH GIẢ LẬP / KHÔNG PHẢI DỰ BÁO",
+        "website": "SCENARIO ENGINE • VERSION 1.0"
+      }
+    },
+    {
+      "id": "PX-02",
+      "type": "agenda",
+      "group": "A",
+      "content": {
+        "sectionTag": "USER GUIDE / 02",
+        "title": "ĐÂY KHÔNG PHẢI DECK TUYẾN TÍNH",
+        "leftHeadline": "Chọn một tương lai. Quan sát chuỗi hệ quả.",
+        "leftSummary": "PPTX có liên kết điều hướng nội bộ: bắt đầu từ Hub ở slide 10, đi theo 6 nhánh A–F và trở về Hub bất cứ lúc nào.",
+        "items": [
+          {
+            "num": "01",
+            "title": "HIỂU HỆ",
+            "desc": "Kiến trúc + dữ liệu + giả định",
+            "tag": "03–09"
+          },
+          {
+            "num": "02",
+            "title": "CHỌN KHỦNG HOẢNG",
+            "desc": "6 kịch bản độc lập",
+            "tag": "10–35"
+          },
+          {
+            "num": "03",
+            "title": "SO SÁNH",
+            "desc": "Quyết định và kiểm chứng",
+            "tag": "36–42"
+          }
+        ],
+        "tocLabel": "BẢN ĐỒ ĐIỀU HƯỚNG",
+        "sidebarPartners": "SCENARIO LAB",
+        "sidebarNote": "Bấm các nhãn A–F trong PowerPoint để chuyển nhánh."
+      }
+    },
+    {
+      "id": "PX-03",
+      "type": "quote",
+      "group": "A",
+      "content": {
+        "sectionTag": "THESIS / 03",
+        "quoteVN": "Một thành phố không thất bại theo từng ngành. Nó thất bại theo chuỗi phụ thuộc.",
+        "quoteEN": "A city does not fail in silos. It fails through dependencies.",
+        "author": "PROJECT PARADOX",
+        "role": "Luận điểm thiết kế mô phỏng",
+        "highlightStat": "72H",
+        "highlightLabel": "Thời gian quan sát của 6 cú sốc"
+      }
+    },
+    {
+      "id": "PX-04",
+      "type": "kpi-dashboard",
+      "group": "A",
+      "content": {
+        "sectionTag": "SYSTEM / 04",
+        "title": "12,4 triệu người trên một hệ điều hành đô thị",
+        "primaryKpi1Val": "12,4M",
+        "primaryKpi1Label": "Cư dân giả lập",
+        "primaryKpi1Sub": "Tổng 7 quận",
+        "primaryKpi2Val": "72H",
+        "primaryKpi2Label": "Khung thời gian sự cố",
+        "primaryKpi2Sub": "Mỗi kịch bản mô phỏng 72 giờ",
+        "secondaryKpis": [
+          {
+            "val": "7",
+            "label": "Quận đô thị",
+            "color": "#38D9CE"
+          },
+          {
+            "val": "10.800",
+            "label": "Giường bệnh",
+            "color": "#FFB86A"
+          },
+          {
+            "val": "5,2 GW",
+            "label": "Nền tải điện",
+            "color": "#B49BFF"
+          },
+          {
+            "val": "2,1M m³",
+            "label": "Nhu cầu nước/ngày",
+            "color": "#8CB8FF"
+          }
+        ],
+        "segments": [
+          {
+            "title": "Mỗi chỉ số có mẫu số",
+            "desc": "GWh, m³, tỷ VND đều đối chiếu được",
+            "badge": "RECONCILE"
+          },
+          {
+            "title": "Các nhánh cùng mô hình",
+            "desc": "Cùng hệ số nền, cùng phương pháp tính",
+            "badge": "SINGLE SOURCE"
+          },
+          {
+            "title": "Không phải dự báo",
+            "desc": "Số được tạo để thử khả năng trình bày",
+            "badge": "SYNTHETIC"
+          }
+        ]
+      }
+    },
+    {
+      "id": "PX-05",
+      "type": "layered-architecture",
+      "group": "A",
+      "content": {
+        "sectionTag": "SYSTEM / 05",
+        "kicker": "MULTI-LAYER CITY",
+        "title": "Kiến trúc thành phố có 5 tầng phụ thuộc",
+        "subtitle": "Mô hình công năng, không phải bản vẽ kỹ thuật thi công.",
+        "tiers": [
+          {
+            "title": "1 · TRẢI NGHIỆM CƯ DÂN",
+            "desc": "Y tế · học tập · di chuyển · tiếp cận"
+          },
+          {
+            "title": "2 · LỚP DỊCH VỤ",
+            "desc": "Nước · điện · giao thông · y tế"
+          },
+          {
+            "title": "3 · LỚP ĐIỀU PHỐI",
+            "desc": "Digital twin · quyết định · chế độ dự phòng"
+          },
+          {
+            "title": "4 · HẠ TẦNG PHÂN TÁN",
+            "desc": "Microgrid · bể chứa · trạm trung chuyển"
+          },
+          {
+            "title": "5 · ĐỊA HÌNH / RỦI RO",
+            "desc": "Mực nước · nhiệt · dân số · phân bố rủi ro"
+          }
+        ],
+        "note": "Mỗi tầng phụ thuộc cả trực tiếp lẫn gián tiếp vào lớp dưới."
+      }
+    },
+    {
+      "id": "PX-06",
+      "type": "system-architecture",
+      "group": "A",
+      "content": {
+        "sectionTag": "SYSTEM / 06",
+        "kicker": "SERVICE DEPENDENCY GRAPH",
+        "title": "6 hệ tạo thành một mạng không tuyến tính",
+        "subtitle": "Các khối thể hiện phụ thuộc vận hành; không biểu diễn hệ thống CNTT thực.",
+        "zones": [
+          {
+            "title": "ĐIỀU KHIỂN",
+            "items": [
+              {
+                "title": "Trung tâm điều phối",
+                "desc": "Đặt ưu tiên cứu trợ"
+              },
+              {
+                "title": "Bộ máy mô phỏng",
+                "desc": "Tổng hợp tác động 72h"
+              }
+            ]
+          },
+          {
+            "title": "HẠ TẦNG",
+            "items": [
+              {
+                "title": "Điện",
+                "desc": "Nguồn và tích trữ"
+              },
+              {
+                "title": "Nước",
+                "desc": "Cung ứng và áp lực"
+              },
+              {
+                "title": "Giao thông",
+                "desc": "Năng lực luân chuyển"
+              }
+            ]
+          },
+          {
+            "title": "XÃ HỘI",
+            "items": [
+              {
+                "title": "Y tế",
+                "desc": "Nhu cầu / công suất"
+              },
+              {
+                "title": "Cư dân",
+                "desc": "Nhóm chịu rủi ro kép"
+              }
+            ]
+          }
+        ],
+        "note": "Mất điện có thể làm bơm nước ngừng, dữ liệu sai có thể làm chậm phản ứng giao thông."
+      }
+    },
+    {
+      "id": "PX-07",
+      "type": "data-table",
+      "group": "A",
+      "content": {
+        "sectionTag": "MODEL / 07",
+        "title": "Tất cả kịch bản dùng chung một bộ giả định nền",
+        "metaPills": [
+          {
+            "label": "ĐƠN VỊ",
+            "val": "SI + tỷ VND"
+          },
+          {
+            "label": "KỊCH BẢN",
+            "val": "6"
+          },
+          {
+            "label": "QUẬN",
+            "val": "7"
+          }
+        ],
+        "rows": [
+          {
+            "phase": "DÂN SỐ",
+            "duration": "12,4M",
+            "module": "7 quận",
+            "deliverables": "Cố định theo nền",
+            "assessment": "SUM=12,4M",
+            "badgeColor": "#3DD6CF"
+          },
+          {
+            "phase": "ĐIỆN",
+            "duration": "5,2 GW",
+            "module": "Nền tải",
+            "deliverables": "72 điểm giờ × tải",
+            "assessment": "TẢI=PHỤC VỤ+THIẾU",
+            "badgeColor": "#FFB867"
+          },
+          {
+            "phase": "NƯỚC",
+            "duration": "2,1M m³/d",
+            "module": "Nhu cầu nền",
+            "deliverables": "72 giờ × theo giờ",
+            "assessment": "NHU CẦU=ĐỦ+THIẾU",
+            "badgeColor": "#7DBAFF"
+          },
+          {
+            "phase": "Y TẾ",
+            "duration": "10.800",
+            "module": "Giường bệnh",
+            "deliverables": "Đỉnh cầu theo số giờ",
+            "assessment": "ÁP LỰC %",
+            "badgeColor": "#BEA3FF"
+          }
+        ],
+        "colPhase": "BIẾN",
+        "colDuration": "GIÁ TRỊ",
+        "colModule": "PHẠM VI",
+        "colLabs": "MÔ HÌNH",
+        "colOutput": "KIỂM TRA"
+      }
+    },
+    {
+      "id": "PX-08",
+      "type": "process-flow",
+      "group": "A",
+      "content": {
+        "sectionTag": "MODEL / 08",
+        "kicker": "DETERMINISTIC SIMULATION",
+        "title": "Từ cú sốc tới tác động có thể kiểm toán",
+        "subtitle": "Dữ liệu giả lập; trọng số do mô hình này quy định.",
+        "steps": [
+          {
+            "title": "01 / INPUT",
+            "desc": "Cường độ 6 driver theo từng nhánh"
+          },
+          {
+            "title": "02 / TIME",
+            "desc": "Hàm xung theo giờ trong 72 giờ"
+          },
+          {
+            "title": "03 / COUPLING",
+            "desc": "Tính tải điện, thiếu nước, di chuyển, y tế"
+          },
+          {
+            "title": "04 / SPATIAL",
+            "desc": "Phân bổ áp lực theo độ dễ tổn thương 7 quận"
+          },
+          {
+            "title": "05 / MITIGATION",
+            "desc": "So sánh tổn thất trước và sau can thiệp"
+          },
+          {
+            "title": "06 / AUDIT",
+            "desc": "Đối chiếu năng lượng và tổng chi phí"
+          }
+        ],
+        "note": "Phương trình và dữ liệu chi tiết lưu trong paradox_model.json."
+      }
+    },
+    {
+      "id": "PX-09",
+      "type": "heatmap",
+      "group": "A",
+      "content": {
+        "sectionTag": "MODEL / 09",
+        "kicker": "SPATIAL VULNERABILITY",
+        "title": "Cùng một cú sốc, mỗi quận chịu rủi ro khác nhau",
+        "subtitle": "Chỉ số giảm liên tục dịch vụ dự kiến tại đỉnh cú sốc (điểm %).",
+        "columns": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ],
+        "rows": [
+          {
+            "label": "Bắc Bến",
+            "values": [
+              6.3,
+              16.4,
+              6.5,
+              9.8,
+              3.4,
+              5.5
+            ]
+          },
+          {
+            "label": "Đông Lưới",
+            "values": [
+              8.9,
+              23.4,
+              9.2,
+              13.9,
+              4.6,
+              7.7
+            ]
+          },
+          {
+            "label": "Lõi Trung Tâm",
+            "values": [
+              5.5,
+              14.1,
+              5.7,
+              8.5,
+              3.0,
+              4.8
+            ]
+          },
+          {
+            "label": "Tây Sinh Thái",
+            "values": [
+              7.2,
+              18.6,
+              7.4,
+              11.1,
+              3.8,
+              6.2
+            ]
+          },
+          {
+            "label": "Nam Cảng",
+            "values": [
+              10.2,
+              27.1,
+              10.6,
+              16.1,
+              5.2,
+              8.8
+            ]
+          },
+          {
+            "label": "Vành Đai",
+            "values": [
+              9.3,
+              24.4,
+              9.6,
+              14.5,
+              4.8,
+              8.0
+            ]
+          },
+          {
+            "label": "Đảo Nổi",
+            "values": [
+              9.7,
+              25.7,
+              10.1,
+              15.2,
+              5.0,
+              8.4
+            ]
+          }
+        ],
+        "note": "Độ dễ tổn thương theo quận được giữ cố định qua 6 kịch bản."
+      }
+    },
+    {
+      "id": "PX-10",
+      "type": "decision-tree",
+      "group": "A",
+      "content": {
+        "sectionTag": "CHOOSE / 10",
+        "kicker": "NON-LINEAR NAVIGATION HUB",
+        "title": "CHỌN 1 TRONG 6 TƯƠNG LAI",
+        "subtitle": "Trong PPTX, chọn nút kịch bản để nhảy tới trang tương ứng.",
+        "root": {
+          "title": "THÀNH PHỐ / H+00",
+          "desc": "Một hệ thống. Sáu loại gián đoạn."
+        },
+        "branches": [
+          {
+            "label": "A",
+            "title": "LŨ ĐÔ THỊ",
+            "children": [
+              {
+                "label": "12",
+                "title": "Mưa cực đoan 380 mm / 72 giờ",
+                "desc": "Mở nhánh phân tích"
+              }
+            ]
+          },
+          {
+            "label": "B",
+            "title": "ĐỨT GÃY LƯỚI ĐIỆN",
+            "children": [
+              {
+                "label": "16",
+                "title": "Siêu bão làm suy giảm nguồn cấp",
+                "desc": "Mở nhánh phân tích"
+              }
+            ]
+          },
+          {
+            "label": "C",
+            "title": "ĐẢO NHIỆT CỰC HẠN",
+            "children": [
+              {
+                "label": "20",
+                "title": "Sóng nhiệt 47°C kéo dài",
+                "desc": "Mở nhánh phân tích"
+              }
+            ]
+          },
+          {
+            "label": "D",
+            "title": "MẤT TIN CẬY DỮ LIỆU",
+            "children": [
+              {
+                "label": "24",
+                "title": "Mạng cảm biến và điều phối gián đoạn",
+                "desc": "Mở nhánh phân tích"
+              }
+            ]
+          },
+          {
+            "label": "E",
+            "title": "KHỦNG HOẢNG NƯỚC",
+            "children": [
+              {
+                "label": "28",
+                "title": "Ô nhiễm nguồn và đứt tuyến ống",
+                "desc": "Mở nhánh phân tích"
+              }
+            ]
+          },
+          {
+            "label": "F",
+            "title": "CÚ SỐC DÂN SỐ",
+            "children": [
+              {
+                "label": "32",
+                "title": "1,2 triệu lượt đến trong 72 giờ",
+                "desc": "Mở nhánh phân tích"
+              }
+            ]
+          }
+        ],
+        "note": "Trong JSON XBrain, đây là bản đồ thị giác; tính năng nhảy trang tùy trình nhập."
+      }
+    },
+    {
+      "id": "PX-11",
+      "type": "sankey-flow",
+      "group": "A",
+      "content": {
+        "sectionTag": "BASE / 11",
+        "kicker": "ENERGY ACCOUNTING",
+        "title": "Không một GWh nào biến mất khỏi phép đối chiếu",
+        "subtitle": "Minh họa dòng cung năng lượng 72h với nhánh A.",
+        "sources": [
+          {
+            "label": "Lưới trung tâm"
+          },
+          {
+            "label": "Mặt trời"
+          },
+          {
+            "label": "Gió"
+          },
+          {
+            "label": "Pin phân tán"
+          },
+          {
+            "label": "Microgrid"
+          }
+        ],
+        "targets": [
+          {
+            "label": "Điện phục vụ"
+          }
+        ],
+        "links": [
+          {
+            "from": 0,
+            "to": 0,
+            "value": 167.4355
+          },
+          {
+            "from": 1,
+            "to": 0,
+            "value": 91.3284
+          },
+          {
+            "from": 2,
+            "to": 0,
+            "value": 68.4963
+          },
+          {
+            "from": 3,
+            "to": 0,
+            "value": 34.2482
+          },
+          {
+            "from": 4,
+            "to": 0,
+            "value": 19.0268
+          }
+        ],
+        "note": "Tổng nguồn=380.535 GWh; tải=397.186; thiếu=16.651. Sơ đồ chỉ thể hiện phần điện phục vụ."
+      }
+    },
+    {
+      "id": "PX-12",
+      "type": "section-divider",
+      "group": "B",
+      "content": {
+        "sectionNumber": "A",
+        "categoryLabel": "SCENARIO / BRANCH",
+        "title": "LŨ ĐÔ THỊ",
+        "subtitle": "Mưa cực đoan 380 mm / 72 giờ • Can thiệp giảm tổn thất giả định 34%"
+      }
+    },
+    {
+      "id": "PX-13",
+      "type": "composer",
+      "group": "B",
+      "content": {
+        "title": "A / DẤU VẾT TÁC ĐỘNG",
+        "subtitle": "Bốn thước đo liên kết + hai biểu đồ khác loại",
+        "sectionTag": "SCENARIO A / 02",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "metric",
+            "label": "THIẾU ĐIỆN / GWh",
+            "value": "16.7",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "THIẾU NƯỚC / 1.000 m³",
+            "value": "279.6",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "CHI PHÍ / tỷ VND",
+            "value": "165.0",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "ĐỈNH Y TẾ",
+            "value": "85.2%",
+            "span": 3
+          },
+          {
+            "type": "chart",
+            "variant": "stacked-bar",
+            "title": "Cân bằng cung – cầu điện",
+            "span": 6,
+            "data": [
+              {
+                "label": "Tải",
+                "value": 397.186
+              },
+              {
+                "label": "Phục vụ",
+                "value": 380.535
+              },
+              {
+                "label": "Thiếu",
+                "value": 16.651
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "heatmap",
+            "title": "Chênh lệch rủi ro 7 quận",
+            "span": 6,
+            "data": [
+              {
+                "label": "Bắc Bến",
+                "value": 6.34
+              },
+              {
+                "label": "Đông Lưới",
+                "value": 8.92
+              },
+              {
+                "label": "Lõi Trung Tâm",
+                "value": 5.53
+              },
+              {
+                "label": "Tây Sinh Thái",
+                "value": 7.15
+              },
+              {
+                "label": "Nam Cảng",
+                "value": 10.24
+              },
+              {
+                "label": "Vành Đai",
+                "value": 9.28
+              },
+              {
+                "label": "Đảo Nổi",
+                "value": 9.73
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "text",
+            "text": "Chỉ số trong các thẻ và biểu đồ có chung nguồn paradox_model.json. Dữ liệu hoàn toàn giả lập.",
+            "span": 12
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-14",
+      "type": "line-chart",
+      "group": "B",
+      "content": {
+        "sectionTag": "SCENARIO A / 03",
+        "kicker": "72H PROPAGATION",
+        "title": "A / ĐỘ TRỄ LAN TRUYỀN",
+        "subtitle": "Dòng thiếu điện trước và sau điều phối (GW).",
+        "unit": "GW",
+        "labels": [
+          "0h",
+          "6h",
+          "12h",
+          "18h",
+          "24h",
+          "30h",
+          "36h",
+          "42h",
+          "48h",
+          "54h",
+          "60h",
+          "66h",
+          "72h"
+        ],
+        "series": [
+          {
+            "name": "Trước điều phối",
+            "values": [
+              0.091,
+              0.139,
+              0.24,
+              0.344,
+              0.456,
+              0.451,
+              0.398,
+              0.266,
+              0.172,
+              0.1,
+              0.072,
+              0.057,
+              0.057
+            ]
+          },
+          {
+            "name": "Sau điều phối",
+            "values": [
+              0.06,
+              0.092,
+              0.158,
+              0.227,
+              0.301,
+              0.298,
+              0.263,
+              0.176,
+              0.114,
+              0.066,
+              0.048,
+              0.038,
+              0.038
+            ]
+          }
+        ],
+        "yMin": 0,
+        "yMax": 0.55,
+        "insightLabel": "TIẾT GIẢM GIẢ ĐỊNH",
+        "insightValue": "5.7 GWh",
+        "insightText": "Chênh lệch được tính bằng cùng hệ số can thiệp ở mọi giờ."
+      }
+    },
+    {
+      "id": "PX-15",
+      "type": "process-flow",
+      "group": "B",
+      "content": {
+        "sectionTag": "SCENARIO A / 04",
+        "kicker": "OPERATIONAL RESPONSE",
+        "title": "A / BA BƯỚC CẮT CHUỖI ĐỔ VỠ",
+        "subtitle": "Chiến lược phản ứng mang tính ý tưởng, không phải hướng dẫn vận hành hệ thống thật.",
+        "steps": [
+          {
+            "title": "01 / Mở hồ trữ nước theo ngưỡng dự báo",
+            "desc": "Kích hoạt và khoanh vùng áp lực hệ thống"
+          },
+          {
+            "title": "02 / Ưu tiên hành lang cấp cứu không ngập",
+            "desc": "Phân bổ khả năng đáp ứng cho dịch vụ cốt lõi"
+          },
+          {
+            "title": "03 / Định tuyến metro tránh nút giao trũng",
+            "desc": "Đánh giá lại mức gián đoạn và công bằng"
+          }
+        ],
+        "note": "Điện thiếu trước=16.651 GWh → sau=10.990 GWh. Trở về Hub (slide 10) bằng nút điều hướng trong PPTX."
+      }
+    },
+    {
+      "id": "PX-16",
+      "type": "section-divider",
+      "group": "C",
+      "content": {
+        "sectionNumber": "B",
+        "categoryLabel": "SCENARIO / BRANCH",
+        "title": "ĐỨT GÃY LƯỚI ĐIỆN",
+        "subtitle": "Siêu bão làm suy giảm nguồn cấp • Can thiệp giảm tổn thất giả định 42%"
+      }
+    },
+    {
+      "id": "PX-17",
+      "type": "composer",
+      "group": "C",
+      "content": {
+        "title": "B / DẤU VẾT TÁC ĐỘNG",
+        "subtitle": "Bốn thước đo liên kết + hai biểu đồ khác loại",
+        "sectionTag": "SCENARIO B / 02",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "metric",
+            "label": "THIẾU ĐIỆN / GWh",
+            "value": "44.2",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "THIẾU NƯỚC / 1.000 m³",
+            "value": "253.0",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "CHI PHÍ / tỷ VND",
+            "value": "215.3",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "ĐỈNH Y TẾ",
+            "value": "85.5%",
+            "span": 3
+          },
+          {
+            "type": "chart",
+            "variant": "waterfall",
+            "title": "Cân bằng cung – cầu điện",
+            "span": 6,
+            "data": [
+              {
+                "label": "Tải",
+                "value": 415.911
+              },
+              {
+                "label": "Phục vụ",
+                "value": 371.707
+              },
+              {
+                "label": "Thiếu",
+                "value": 44.204
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "gauge",
+            "title": "Chênh lệch rủi ro 7 quận",
+            "span": 6,
+            "data": [
+              {
+                "label": "Bắc Bến",
+                "value": 16.37
+              },
+              {
+                "label": "Đông Lưới",
+                "value": 23.44
+              },
+              {
+                "label": "Lõi Trung Tâm",
+                "value": 14.14
+              },
+              {
+                "label": "Tây Sinh Thái",
+                "value": 18.59
+              },
+              {
+                "label": "Nam Cảng",
+                "value": 27.08
+              },
+              {
+                "label": "Vành Đai",
+                "value": 24.45
+              },
+              {
+                "label": "Đảo Nổi",
+                "value": 25.66
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "text",
+            "text": "Chỉ số trong các thẻ và biểu đồ có chung nguồn paradox_model.json. Dữ liệu hoàn toàn giả lập.",
+            "span": 12
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-18",
+      "type": "line-chart",
+      "group": "C",
+      "content": {
+        "sectionTag": "SCENARIO B / 03",
+        "kicker": "72H PROPAGATION",
+        "title": "B / ĐỘ TRỄ LAN TRUYỀN",
+        "subtitle": "Dòng thiếu điện trước và sau điều phối (GW).",
+        "unit": "GW",
+        "labels": [
+          "0h",
+          "6h",
+          "12h",
+          "18h",
+          "24h",
+          "30h",
+          "36h",
+          "42h",
+          "48h",
+          "54h",
+          "60h",
+          "66h",
+          "72h"
+        ],
+        "series": [
+          {
+            "name": "Trước điều phối",
+            "values": [
+              0.167,
+              0.256,
+              0.475,
+              0.761,
+              1.14,
+              1.274,
+              1.23,
+              0.877,
+              0.571,
+              0.309,
+              0.191,
+              0.13,
+              0.118
+            ]
+          },
+          {
+            "name": "Sau điều phối",
+            "values": [
+              0.097,
+              0.148,
+              0.276,
+              0.441,
+              0.661,
+              0.739,
+              0.713,
+              0.509,
+              0.331,
+              0.179,
+              0.111,
+              0.075,
+              0.068
+            ]
+          }
+        ],
+        "yMin": 0,
+        "yMax": 1.53,
+        "insightLabel": "TIẾT GIẢM GIẢ ĐỊNH",
+        "insightValue": "18.6 GWh",
+        "insightText": "Chênh lệch được tính bằng cùng hệ số can thiệp ở mọi giờ."
+      }
+    },
+    {
+      "id": "PX-19",
+      "type": "process-flow",
+      "group": "C",
+      "content": {
+        "sectionTag": "SCENARIO B / 04",
+        "kicker": "OPERATIONAL RESPONSE",
+        "title": "B / BA BƯỚC CẮT CHUỖI ĐỔ VỠ",
+        "subtitle": "Chiến lược phản ứng mang tính ý tưởng, không phải hướng dẫn vận hành hệ thống thật.",
+        "steps": [
+          {
+            "title": "01 / Tách lưới thành 7 đảo năng lượng",
+            "desc": "Kích hoạt và khoanh vùng áp lực hệ thống"
+          },
+          {
+            "title": "02 / Xả pin ưu tiên bệnh viện và bơm nước",
+            "desc": "Phân bổ khả năng đáp ứng cho dịch vụ cốt lõi"
+          },
+          {
+            "title": "03 / Khôi phục phụ tải theo cấp quan trọng",
+            "desc": "Đánh giá lại mức gián đoạn và công bằng"
+          }
+        ],
+        "note": "Điện thiếu trước=44.204 GWh → sau=25.638 GWh. Trở về Hub (slide 10) bằng nút điều hướng trong PPTX."
+      }
+    },
+    {
+      "id": "PX-20",
+      "type": "section-divider",
+      "group": "D",
+      "content": {
+        "sectionNumber": "C",
+        "categoryLabel": "SCENARIO / BRANCH",
+        "title": "ĐẢO NHIỆT CỰC HẠN",
+        "subtitle": "Sóng nhiệt 47°C kéo dài • Can thiệp giảm tổn thất giả định 30%"
+      }
+    },
+    {
+      "id": "PX-21",
+      "type": "composer",
+      "group": "D",
+      "content": {
+        "title": "C / DẤU VẾT TÁC ĐỘNG",
+        "subtitle": "Bốn thước đo liên kết + hai biểu đồ khác loại",
+        "sectionTag": "SCENARIO C / 02",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "metric",
+            "label": "THIẾU ĐIỆN / GWh",
+            "value": "19.1",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "THIẾU NƯỚC / 1.000 m³",
+            "value": "303.2",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "CHI PHÍ / tỷ VND",
+            "value": "214.5",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "ĐỈNH Y TẾ",
+            "value": "108.4%",
+            "span": 3
+          },
+          {
+            "type": "chart",
+            "variant": "area",
+            "title": "Cân bằng cung – cầu điện",
+            "span": 6,
+            "data": [
+              {
+                "label": "Tải",
+                "value": 442.399
+              },
+              {
+                "label": "Phục vụ",
+                "value": 423.253
+              },
+              {
+                "label": "Thiếu",
+                "value": 19.147
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "bullet",
+            "title": "Chênh lệch rủi ro 7 quận",
+            "span": 6,
+            "data": [
+              {
+                "label": "Bắc Bến",
+                "value": 6.55
+              },
+              {
+                "label": "Đông Lưới",
+                "value": 9.21
+              },
+              {
+                "label": "Lõi Trung Tâm",
+                "value": 5.71
+              },
+              {
+                "label": "Tây Sinh Thái",
+                "value": 7.38
+              },
+              {
+                "label": "Nam Cảng",
+                "value": 10.58
+              },
+              {
+                "label": "Vành Đai",
+                "value": 9.59
+              },
+              {
+                "label": "Đảo Nổi",
+                "value": 10.05
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "text",
+            "text": "Chỉ số trong các thẻ và biểu đồ có chung nguồn paradox_model.json. Dữ liệu hoàn toàn giả lập.",
+            "span": 12
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-22",
+      "type": "line-chart",
+      "group": "D",
+      "content": {
+        "sectionTag": "SCENARIO C / 03",
+        "kicker": "72H PROPAGATION",
+        "title": "C / ĐỘ TRỄ LAN TRUYỀN",
+        "subtitle": "Dòng thiếu điện trước và sau điều phối (GW).",
+        "unit": "GW",
+        "labels": [
+          "0h",
+          "6h",
+          "12h",
+          "18h",
+          "24h",
+          "30h",
+          "36h",
+          "42h",
+          "48h",
+          "54h",
+          "60h",
+          "66h",
+          "72h"
+        ],
+        "series": [
+          {
+            "name": "Trước điều phối",
+            "values": [
+              0.068,
+              0.089,
+              0.154,
+              0.254,
+              0.416,
+              0.526,
+              0.568,
+              0.449,
+              0.312,
+              0.177,
+              0.109,
+              0.07,
+              0.061
+            ]
+          },
+          {
+            "name": "Sau điều phối",
+            "values": [
+              0.048,
+              0.062,
+              0.108,
+              0.178,
+              0.291,
+              0.368,
+              0.398,
+              0.314,
+              0.218,
+              0.124,
+              0.076,
+              0.049,
+              0.043
+            ]
+          }
+        ],
+        "yMin": 0,
+        "yMax": 0.68,
+        "insightLabel": "TIẾT GIẢM GIẢ ĐỊNH",
+        "insightValue": "5.7 GWh",
+        "insightText": "Chênh lệch được tính bằng cùng hệ số can thiệp ở mọi giờ."
+      }
+    },
+    {
+      "id": "PX-23",
+      "type": "process-flow",
+      "group": "D",
+      "content": {
+        "sectionTag": "SCENARIO C / 04",
+        "kicker": "OPERATIONAL RESPONSE",
+        "title": "C / BA BƯỚC CẮT CHUỖI ĐỔ VỠ",
+        "subtitle": "Chiến lược phản ứng mang tính ý tưởng, không phải hướng dẫn vận hành hệ thống thật.",
+        "steps": [
+          {
+            "title": "01 / Mở hành lang trú nóng công cộng",
+            "desc": "Kích hoạt và khoanh vùng áp lực hệ thống"
+          },
+          {
+            "title": "02 / Tối ưu lịch làm mát theo giờ cao điểm",
+            "desc": "Phân bổ khả năng đáp ứng cho dịch vụ cốt lõi"
+          },
+          {
+            "title": "03 / Ưu tiên y tế cộng đồng rủi ro cao",
+            "desc": "Đánh giá lại mức gián đoạn và công bằng"
+          }
+        ],
+        "note": "Điện thiếu trước=19.147 GWh → sau=13.403 GWh. Trở về Hub (slide 10) bằng nút điều hướng trong PPTX."
+      }
+    },
+    {
+      "id": "PX-24",
+      "type": "section-divider",
+      "group": "E",
+      "content": {
+        "sectionNumber": "D",
+        "categoryLabel": "SCENARIO / BRANCH",
+        "title": "MẤT TIN CẬY DỮ LIỆU",
+        "subtitle": "Mạng cảm biến và điều phối gián đoạn • Can thiệp giảm tổn thất giả định 38%"
+      }
+    },
+    {
+      "id": "PX-25",
+      "type": "composer",
+      "group": "E",
+      "content": {
+        "title": "D / DẤU VẾT TÁC ĐỘNG",
+        "subtitle": "Bốn thước đo liên kết + hai biểu đồ khác loại",
+        "sectionTag": "SCENARIO D / 02",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "metric",
+            "label": "THIẾU ĐIỆN / GWh",
+            "value": "25.6",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "THIẾU NƯỚC / 1.000 m³",
+            "value": "334.5",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "CHI PHÍ / tỷ VND",
+            "value": "225.5",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "ĐỈNH Y TẾ",
+            "value": "87.0%",
+            "span": 3
+          },
+          {
+            "type": "chart",
+            "variant": "donut",
+            "title": "Cân bằng cung – cầu điện",
+            "span": 6,
+            "data": [
+              {
+                "label": "Tải",
+                "value": 402.831
+              },
+              {
+                "label": "Phục vụ",
+                "value": 377.2
+              },
+              {
+                "label": "Thiếu",
+                "value": 25.631
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "scatter",
+            "title": "Chênh lệch rủi ro 7 quận",
+            "span": 6,
+            "data": [
+              {
+                "label": "Bắc Bến",
+                "value": 9.82
+              },
+              {
+                "label": "Đông Lưới",
+                "value": 13.95
+              },
+              {
+                "label": "Lõi Trung Tâm",
+                "value": 8.52
+              },
+              {
+                "label": "Tây Sinh Thái",
+                "value": 11.12
+              },
+              {
+                "label": "Nam Cảng",
+                "value": 16.08
+              },
+              {
+                "label": "Vành Đai",
+                "value": 14.54
+              },
+              {
+                "label": "Đảo Nổi",
+                "value": 15.25
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "text",
+            "text": "Chỉ số trong các thẻ và biểu đồ có chung nguồn paradox_model.json. Dữ liệu hoàn toàn giả lập.",
+            "span": 12
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-26",
+      "type": "line-chart",
+      "group": "E",
+      "content": {
+        "sectionTag": "SCENARIO D / 03",
+        "kicker": "72H PROPAGATION",
+        "title": "D / ĐỘ TRỄ LAN TRUYỀN",
+        "subtitle": "Dòng thiếu điện trước và sau điều phối (GW).",
+        "unit": "GW",
+        "labels": [
+          "0h",
+          "6h",
+          "12h",
+          "18h",
+          "24h",
+          "30h",
+          "36h",
+          "42h",
+          "48h",
+          "54h",
+          "60h",
+          "66h",
+          "72h"
+        ],
+        "series": [
+          {
+            "name": "Trước điều phối",
+            "values": [
+              0.13,
+              0.206,
+              0.368,
+              0.536,
+              0.718,
+              0.712,
+              0.623,
+              0.411,
+              0.26,
+              0.145,
+              0.101,
+              0.078,
+              0.076
+            ]
+          },
+          {
+            "name": "Sau điều phối",
+            "values": [
+              0.081,
+              0.128,
+              0.228,
+              0.332,
+              0.445,
+              0.441,
+              0.386,
+              0.255,
+              0.161,
+              0.09,
+              0.063,
+              0.048,
+              0.047
+            ]
+          }
+        ],
+        "yMin": 0,
+        "yMax": 0.86,
+        "insightLabel": "TIẾT GIẢM GIẢ ĐỊNH",
+        "insightValue": "9.7 GWh",
+        "insightText": "Chênh lệch được tính bằng cùng hệ số can thiệp ở mọi giờ."
+      }
+    },
+    {
+      "id": "PX-27",
+      "type": "process-flow",
+      "group": "E",
+      "content": {
+        "sectionTag": "SCENARIO D / 04",
+        "kicker": "OPERATIONAL RESPONSE",
+        "title": "D / BA BƯỚC CẮT CHUỖI ĐỔ VỠ",
+        "subtitle": "Chiến lược phản ứng mang tính ý tưởng, không phải hướng dẫn vận hành hệ thống thật.",
+        "steps": [
+          {
+            "title": "01 / Chuyển sang chế độ vận hành thủ công",
+            "desc": "Kích hoạt và khoanh vùng áp lực hệ thống"
+          },
+          {
+            "title": "02 / Đối soát tín hiệu qua nguồn độc lập",
+            "desc": "Phân bổ khả năng đáp ứng cho dịch vụ cốt lõi"
+          },
+          {
+            "title": "03 / Khôi phục dịch vụ ưu tiên theo lớp",
+            "desc": "Đánh giá lại mức gián đoạn và công bằng"
+          }
+        ],
+        "note": "Điện thiếu trước=25.631 GWh → sau=15.891 GWh. Trở về Hub (slide 10) bằng nút điều hướng trong PPTX."
+      }
+    },
+    {
+      "id": "PX-28",
+      "type": "section-divider",
+      "group": "B",
+      "content": {
+        "sectionNumber": "E",
+        "categoryLabel": "SCENARIO / BRANCH",
+        "title": "KHỦNG HOẢNG NƯỚC",
+        "subtitle": "Ô nhiễm nguồn và đứt tuyến ống • Can thiệp giảm tổn thất giả định 45%"
+      }
+    },
+    {
+      "id": "PX-29",
+      "type": "composer",
+      "group": "B",
+      "content": {
+        "title": "E / DẤU VẾT TÁC ĐỘNG",
+        "subtitle": "Bốn thước đo liên kết + hai biểu đồ khác loại",
+        "sectionTag": "SCENARIO E / 02",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "metric",
+            "label": "THIẾU ĐIỆN / GWh",
+            "value": "9.2",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "THIẾU NƯỚC / 1.000 m³",
+            "value": "804.1",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "CHI PHÍ / tỷ VND",
+            "value": "107.4",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "ĐỈNH Y TẾ",
+            "value": "96.1%",
+            "span": 3
+          },
+          {
+            "type": "chart",
+            "variant": "treemap",
+            "title": "Cân bằng cung – cầu điện",
+            "span": 6,
+            "data": [
+              {
+                "label": "Tải",
+                "value": 414.804
+              },
+              {
+                "label": "Phục vụ",
+                "value": 405.613
+              },
+              {
+                "label": "Thiếu",
+                "value": 9.191
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "dumbbell",
+            "title": "Chênh lệch rủi ro 7 quận",
+            "span": 6,
+            "data": [
+              {
+                "label": "Bắc Bến",
+                "value": 3.37
+              },
+              {
+                "label": "Đông Lưới",
+                "value": 4.61
+              },
+              {
+                "label": "Lõi Trung Tâm",
+                "value": 2.98
+              },
+              {
+                "label": "Tây Sinh Thái",
+                "value": 3.76
+              },
+              {
+                "label": "Nam Cảng",
+                "value": 5.25
+              },
+              {
+                "label": "Vành Đai",
+                "value": 4.79
+              },
+              {
+                "label": "Đảo Nổi",
+                "value": 5.0
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "text",
+            "text": "Chỉ số trong các thẻ và biểu đồ có chung nguồn paradox_model.json. Dữ liệu hoàn toàn giả lập.",
+            "span": 12
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-30",
+      "type": "line-chart",
+      "group": "B",
+      "content": {
+        "sectionTag": "SCENARIO E / 03",
+        "kicker": "72H PROPAGATION",
+        "title": "E / ĐỘ TRỄ LAN TRUYỀN",
+        "subtitle": "Dòng thiếu điện trước và sau điều phối (GW).",
+        "unit": "GW",
+        "labels": [
+          "0h",
+          "6h",
+          "12h",
+          "18h",
+          "24h",
+          "30h",
+          "36h",
+          "42h",
+          "48h",
+          "54h",
+          "60h",
+          "66h",
+          "72h"
+        ],
+        "series": [
+          {
+            "name": "Trước điều phối",
+            "values": [
+              0.048,
+              0.063,
+              0.103,
+              0.154,
+              0.222,
+              0.245,
+              0.238,
+              0.174,
+              0.121,
+              0.073,
+              0.052,
+              0.04,
+              0.039
+            ]
+          },
+          {
+            "name": "Sau điều phối",
+            "values": [
+              0.026,
+              0.035,
+              0.057,
+              0.085,
+              0.122,
+              0.135,
+              0.131,
+              0.096,
+              0.067,
+              0.04,
+              0.029,
+              0.022,
+              0.021
+            ]
+          }
+        ],
+        "yMin": 0,
+        "yMax": 0.29,
+        "insightLabel": "TIẾT GIẢM GIẢ ĐỊNH",
+        "insightValue": "4.1 GWh",
+        "insightText": "Chênh lệch được tính bằng cùng hệ số can thiệp ở mọi giờ."
+      }
+    },
+    {
+      "id": "PX-31",
+      "type": "process-flow",
+      "group": "B",
+      "content": {
+        "sectionTag": "SCENARIO E / 04",
+        "kicker": "OPERATIONAL RESPONSE",
+        "title": "E / BA BƯỚC CẮT CHUỖI ĐỔ VỠ",
+        "subtitle": "Chiến lược phản ứng mang tính ý tưởng, không phải hướng dẫn vận hành hệ thống thật.",
+        "steps": [
+          {
+            "title": "01 / Cô lập vùng nước không đạt chuẩn",
+            "desc": "Kích hoạt và khoanh vùng áp lực hệ thống"
+          },
+          {
+            "title": "02 / Phân phối nước dự phòng theo nhu cầu",
+            "desc": "Phân bổ khả năng đáp ứng cho dịch vụ cốt lõi"
+          },
+          {
+            "title": "03 / Tái sử dụng nước kỹ thuật tại chỗ",
+            "desc": "Đánh giá lại mức gián đoạn và công bằng"
+          }
+        ],
+        "note": "Điện thiếu trước=9.191 GWh → sau=5.055 GWh. Trở về Hub (slide 10) bằng nút điều hướng trong PPTX."
+      }
+    },
+    {
+      "id": "PX-32",
+      "type": "section-divider",
+      "group": "C",
+      "content": {
+        "sectionNumber": "F",
+        "categoryLabel": "SCENARIO / BRANCH",
+        "title": "CÚ SỐC DÂN SỐ",
+        "subtitle": "1,2 triệu lượt đến trong 72 giờ • Can thiệp giảm tổn thất giả định 35%"
+      }
+    },
+    {
+      "id": "PX-33",
+      "type": "composer",
+      "group": "C",
+      "content": {
+        "title": "F / DẤU VẾT TÁC ĐỘNG",
+        "subtitle": "Bốn thước đo liên kết + hai biểu đồ khác loại",
+        "sectionTag": "SCENARIO F / 02",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "metric",
+            "label": "THIẾU ĐIỆN / GWh",
+            "value": "14.5",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "THIẾU NƯỚC / 1.000 m³",
+            "value": "400.1",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "CHI PHÍ / tỷ VND",
+            "value": "182.4",
+            "span": 3
+          },
+          {
+            "type": "metric",
+            "label": "ĐỈNH Y TẾ",
+            "value": "99.2%",
+            "span": 3
+          },
+          {
+            "type": "chart",
+            "variant": "bubble",
+            "title": "Cân bằng cung – cầu điện",
+            "span": 6,
+            "data": [
+              {
+                "label": "Tải",
+                "value": 408.162
+              },
+              {
+                "label": "Phục vụ",
+                "value": 393.678
+              },
+              {
+                "label": "Thiếu",
+                "value": 14.484
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "funnel-chart",
+            "title": "Chênh lệch rủi ro 7 quận",
+            "span": 6,
+            "data": [
+              {
+                "label": "Bắc Bến",
+                "value": 5.49
+              },
+              {
+                "label": "Đông Lưới",
+                "value": 7.69
+              },
+              {
+                "label": "Lõi Trung Tâm",
+                "value": 4.8
+              },
+              {
+                "label": "Tây Sinh Thái",
+                "value": 6.18
+              },
+              {
+                "label": "Nam Cảng",
+                "value": 8.82
+              },
+              {
+                "label": "Vành Đai",
+                "value": 8.0
+              },
+              {
+                "label": "Đảo Nổi",
+                "value": 8.38
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "text",
+            "text": "Chỉ số trong các thẻ và biểu đồ có chung nguồn paradox_model.json. Dữ liệu hoàn toàn giả lập.",
+            "span": 12
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-34",
+      "type": "line-chart",
+      "group": "C",
+      "content": {
+        "sectionTag": "SCENARIO F / 03",
+        "kicker": "72H PROPAGATION",
+        "title": "F / ĐỘ TRỄ LAN TRUYỀN",
+        "subtitle": "Dòng thiếu điện trước và sau điều phối (GW).",
+        "unit": "GW",
+        "labels": [
+          "0h",
+          "6h",
+          "12h",
+          "18h",
+          "24h",
+          "30h",
+          "36h",
+          "42h",
+          "48h",
+          "54h",
+          "60h",
+          "66h",
+          "72h"
+        ],
+        "series": [
+          {
+            "name": "Trước điều phối",
+            "values": [
+              0.059,
+              0.075,
+              0.125,
+              0.196,
+              0.31,
+              0.379,
+              0.41,
+              0.329,
+              0.239,
+              0.141,
+              0.091,
+              0.061,
+              0.053
+            ]
+          },
+          {
+            "name": "Sau điều phối",
+            "values": [
+              0.038,
+              0.049,
+              0.081,
+              0.127,
+              0.202,
+              0.246,
+              0.267,
+              0.214,
+              0.155,
+              0.092,
+              0.059,
+              0.04,
+              0.034
+            ]
+          }
+        ],
+        "yMin": 0,
+        "yMax": 0.49,
+        "insightLabel": "TIẾT GIẢM GIẢ ĐỊNH",
+        "insightValue": "5.1 GWh",
+        "insightText": "Chênh lệch được tính bằng cùng hệ số can thiệp ở mọi giờ."
+      }
+    },
+    {
+      "id": "PX-35",
+      "type": "process-flow",
+      "group": "C",
+      "content": {
+        "sectionTag": "SCENARIO F / 04",
+        "kicker": "OPERATIONAL RESPONSE",
+        "title": "F / BA BƯỚC CẮT CHUỖI ĐỔ VỠ",
+        "subtitle": "Chiến lược phản ứng mang tính ý tưởng, không phải hướng dẫn vận hành hệ thống thật.",
+        "steps": [
+          {
+            "title": "01 / Kích hoạt cụm tiếp nhận phân tán",
+            "desc": "Kích hoạt và khoanh vùng áp lực hệ thống"
+          },
+          {
+            "title": "02 / Mở trường học thành điểm hỗ trợ",
+            "desc": "Phân bổ khả năng đáp ứng cho dịch vụ cốt lõi"
+          },
+          {
+            "title": "03 / Tăng chuyến vận tải ngoài cao điểm",
+            "desc": "Đánh giá lại mức gián đoạn và công bằng"
+          }
+        ],
+        "note": "Điện thiếu trước=14.484 GWh → sau=9.415 GWh. Trở về Hub (slide 10) bằng nút điều hướng trong PPTX."
+      }
+    },
+    {
+      "id": "PX-36",
+      "type": "decision-matrix",
+      "group": "A",
+      "content": {
+        "sectionTag": "SYNTHESIS / 36",
+        "kicker": "SCENARIO TRADEOFFS",
+        "title": "Không có một đáp án thắng trên mọi tiêu chí",
+        "subtitle": "Kết quả giả lập theo 72h; không dùng làm dự báo hay đề xuất đầu tư thực.",
+        "columns": [
+          "KỊCH BẢN",
+          "THIẾU ĐIỆN GWh",
+          "CHI PHÍ tỷ",
+          "ĐỈNH Y TẾ %",
+          "CHÊNH QUẬN đ%"
+        ],
+        "rows": [
+          {
+            "label": "A / LŨ ĐÔ THỊ",
+            "values": [
+              16.7,
+              165.0,
+              85.2,
+              4.7
+            ]
+          },
+          {
+            "label": "B / ĐỨT GÃY LƯỚI ĐIỆN",
+            "values": [
+              44.2,
+              215.3,
+              85.5,
+              12.9
+            ]
+          },
+          {
+            "label": "C / ĐẢO NHIỆT CỰC HẠN",
+            "values": [
+              19.1,
+              214.5,
+              108.4,
+              4.9
+            ]
+          },
+          {
+            "label": "D / MẤT TIN CẬY DỮ LIỆU",
+            "values": [
+              25.6,
+              225.5,
+              87.0,
+              7.6
+            ]
+          },
+          {
+            "label": "E / KHỦNG HOẢNG NƯỚC",
+            "values": [
+              9.2,
+              107.4,
+              96.1,
+              2.3
+            ]
+          },
+          {
+            "label": "F / CÚ SỐC DÂN SỐ",
+            "values": [
+              14.5,
+              182.4,
+              99.2,
+              4.0
+            ]
+          }
+        ],
+        "note": "So sánh tiêu chí độc lập; không cộng các đại lượng khác đơn vị."
+      }
+    },
+    {
+      "id": "PX-37",
+      "type": "radar-chart",
+      "group": "A",
+      "content": {
+        "sectionTag": "SYNTHESIS / 37",
+        "kicker": "COMPARATIVE RESILIENCE",
+        "title": "Radar 4 trục chuẩn hoá để so hình dạng rủi ro",
+        "subtitle": "100 = thuận lợi nhất trong 6 kịch bản; không thể cộng trực tiếp thành tổng điểm.",
+        "max": 100,
+        "axes": [
+          "Điện",
+          "Chi phí",
+          "Áp lực y tế",
+          "Chênh lệch quận"
+        ],
+        "series": [
+          {
+            "name": "A",
+            "values": [
+              78.7,
+              51.2,
+              100.0,
+              77.4
+            ]
+          },
+          {
+            "name": "B",
+            "values": [
+              0,
+              8.6,
+              98.7,
+              0
+            ]
+          },
+          {
+            "name": "C",
+            "values": [
+              71.6,
+              9.3,
+              0,
+              75.5
+            ]
+          },
+          {
+            "name": "D",
+            "values": [
+              53.0,
+              0,
+              92.2,
+              50.0
+            ]
+          },
+          {
+            "name": "E",
+            "values": [
+              100.0,
+              100.0,
+              53.0,
+              100.0
+            ]
+          },
+          {
+            "name": "F",
+            "values": [
+              84.9,
+              36.5,
+              39.7,
+              84.0
+            ]
+          }
+        ],
+        "axisHeader": "TRỤC",
+        "deltaHeader": "THANG ĐIỂM",
+        "note": "Chuẩn hoá min-max dựa trên đúng 6 kịch bản; radar không có ý nghĩa dự báo."
+      }
+    },
+    {
+      "id": "PX-38",
+      "type": "priority-matrix",
+      "group": "A",
+      "content": {
+        "sectionTag": "SYNTHESIS / 38",
+        "kicker": "EFFECTIVENESS × COST",
+        "title": "Trade-off giữa thiệt hại và khả năng giảm thiểu",
+        "subtitle": "Trục X: chi phí ban đầu giả lập; trục Y: tỷ lệ giảm thiệt hại.",
+        "xLabel": "CHI PHÍ MÔ PHỎNG / TỶ VND",
+        "yLabel": "HIỆU QUẢ / %",
+        "quadrantLabels": [
+          "ƯU TIÊN",
+          "CHỌN LỌC",
+          "CÂN NHẮC",
+          "TRÁNH"
+        ],
+        "items": [
+          {
+            "label": "A",
+            "x": 165.0,
+            "y": 34.0
+          },
+          {
+            "label": "B",
+            "x": 215.3,
+            "y": 42.0
+          },
+          {
+            "label": "C",
+            "x": 214.5,
+            "y": 30.0
+          },
+          {
+            "label": "D",
+            "x": 225.5,
+            "y": 38.0
+          },
+          {
+            "label": "E",
+            "x": 107.4,
+            "y": 45.0
+          },
+          {
+            "label": "F",
+            "x": 182.4,
+            "y": 35.0
+          }
+        ],
+        "note": "Đây là biểu đồ vị trí tương đối; không khẳng định hiệu quả chính sách."
+      }
+    },
+    {
+      "id": "PX-39",
+      "type": "composer",
+      "group": "E",
+      "content": {
+        "title": "VISUAL ATLAS I",
+        "subtitle": "6 biến thể biểu đồ trên cùng một hệ dữ liệu; minh hoạ độ khó của importer.",
+        "sectionTag": "VISUAL LAB / 39",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "chart",
+            "variant": "bar",
+            "title": "Chi phí 6 nhánh",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 165.007
+              },
+              {
+                "label": "B",
+                "value": 215.347
+              },
+              {
+                "label": "C",
+                "value": 214.495
+              },
+              {
+                "label": "D",
+                "value": 225.516
+              },
+              {
+                "label": "E",
+                "value": 107.406
+              },
+              {
+                "label": "F",
+                "value": 182.358
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "line",
+            "title": "Thiếu điện theo nhánh",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 16.651
+              },
+              {
+                "label": "B",
+                "value": 44.204
+              },
+              {
+                "label": "C",
+                "value": 19.147
+              },
+              {
+                "label": "D",
+                "value": 25.631
+              },
+              {
+                "label": "E",
+                "value": 9.191
+              },
+              {
+                "label": "F",
+                "value": 14.484
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "lollipop",
+            "title": "Mất liên tục",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 4.7
+              },
+              {
+                "label": "B",
+                "value": 12.9
+              },
+              {
+                "label": "C",
+                "value": 4.9
+              },
+              {
+                "label": "D",
+                "value": 7.6
+              },
+              {
+                "label": "E",
+                "value": 2.3
+              },
+              {
+                "label": "F",
+                "value": 4.0
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "radar",
+            "title": "Đỉnh y tế",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 85.2
+              },
+              {
+                "label": "B",
+                "value": 85.5
+              },
+              {
+                "label": "C",
+                "value": 108.4
+              },
+              {
+                "label": "D",
+                "value": 87.0
+              },
+              {
+                "label": "E",
+                "value": 96.1
+              },
+              {
+                "label": "F",
+                "value": 99.2
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "pareto",
+            "title": "Thiệt hại năng lượng",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 16.651
+              },
+              {
+                "label": "B",
+                "value": 44.204
+              },
+              {
+                "label": "C",
+                "value": 19.147
+              },
+              {
+                "label": "D",
+                "value": 25.631
+              },
+              {
+                "label": "E",
+                "value": 9.191
+              },
+              {
+                "label": "F",
+                "value": 14.484
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "waffle",
+            "title": "Tỷ lệ giảm chi phí",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 34.0
+              },
+              {
+                "label": "B",
+                "value": 42.0
+              },
+              {
+                "label": "C",
+                "value": 30.0
+              },
+              {
+                "label": "D",
+                "value": 38.0
+              },
+              {
+                "label": "E",
+                "value": 45.0
+              },
+              {
+                "label": "F",
+                "value": 35.0
+              }
+            ],
+            "options": {}
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-40",
+      "type": "composer",
+      "group": "E",
+      "content": {
+        "title": "VISUAL ATLAS II",
+        "subtitle": "6 biến thể biểu đồ trên cùng một hệ dữ liệu; minh hoạ độ khó của importer.",
+        "sectionTag": "VISUAL LAB / 40",
+        "kicker": "PROJECT PARADOX / DỮ LIỆU GIẢ LẬP",
+        "components": [
+          {
+            "type": "chart",
+            "variant": "scatter",
+            "title": "Chi phí × điện",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 165.007
+              },
+              {
+                "label": "B",
+                "value": 215.347
+              },
+              {
+                "label": "C",
+                "value": 214.495
+              },
+              {
+                "label": "D",
+                "value": 225.516
+              },
+              {
+                "label": "E",
+                "value": 107.406
+              },
+              {
+                "label": "F",
+                "value": 182.358
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "treemap",
+            "title": "Quy mô tác động",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 279587.0
+              },
+              {
+                "label": "B",
+                "value": 253005.0
+              },
+              {
+                "label": "C",
+                "value": 303198.0
+              },
+              {
+                "label": "D",
+                "value": 334537.0
+              },
+              {
+                "label": "E",
+                "value": 804105.0
+              },
+              {
+                "label": "F",
+                "value": 400089.0
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "funnel-chart",
+            "title": "Tiến trình ứng phó",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 16.651
+              },
+              {
+                "label": "B",
+                "value": 44.204
+              },
+              {
+                "label": "C",
+                "value": 19.147
+              },
+              {
+                "label": "D",
+                "value": 25.631
+              },
+              {
+                "label": "E",
+                "value": 9.191
+              },
+              {
+                "label": "F",
+                "value": 14.484
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "range-bar",
+            "title": "Vùng rủi ro",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 4.7
+              },
+              {
+                "label": "B",
+                "value": 12.9
+              },
+              {
+                "label": "C",
+                "value": 4.9
+              },
+              {
+                "label": "D",
+                "value": 7.6
+              },
+              {
+                "label": "E",
+                "value": 2.3
+              },
+              {
+                "label": "F",
+                "value": 4.0
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "dot-plot",
+            "title": "Chi phí sau can thiệp",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 108.905
+              },
+              {
+                "label": "B",
+                "value": 124.901
+              },
+              {
+                "label": "C",
+                "value": 150.147
+              },
+              {
+                "label": "D",
+                "value": 139.82
+              },
+              {
+                "label": "E",
+                "value": 59.073
+              },
+              {
+                "label": "F",
+                "value": 118.533
+              }
+            ],
+            "options": {}
+          },
+          {
+            "type": "chart",
+            "variant": "marimekko",
+            "title": "Cân đối nguồn",
+            "span": 4,
+            "data": [
+              {
+                "label": "A",
+                "value": 380.535
+              },
+              {
+                "label": "B",
+                "value": 371.707
+              },
+              {
+                "label": "C",
+                "value": 423.253
+              },
+              {
+                "label": "D",
+                "value": 377.2
+              },
+              {
+                "label": "E",
+                "value": 405.613
+              },
+              {
+                "label": "F",
+                "value": 393.678
+              }
+            ],
+            "options": {}
+          }
+        ],
+        "source": "Nguồn: mô hình giả lập nội bộ — xem paradox_model.json"
+      }
+    },
+    {
+      "id": "PX-41",
+      "type": "data-table",
+      "group": "E",
+      "content": {
+        "sectionTag": "AUDIT / 41",
+        "title": "Kiểm toán dữ liệu: 6/6 nhánh qua phép đối chiếu",
+        "metaPills": [
+          {
+            "label": "MÔ HÌNH",
+            "val": "DETERMINISTIC"
+          },
+          {
+            "label": "BẢO TOÀN ĐIỆN",
+            "val": "6/6"
+          },
+          {
+            "label": "SỐ LIỆU",
+            "val": "SYNTHETIC"
+          }
+        ],
+        "rows": [
+          {
+            "phase": "A",
+            "duration": "397.2",
+            "module": "380.5",
+            "deliverables": "16.7",
+            "assessment": "PASS",
+            "badgeColor": "#41D9CD"
+          },
+          {
+            "phase": "B",
+            "duration": "415.9",
+            "module": "371.7",
+            "deliverables": "44.2",
+            "assessment": "PASS",
+            "badgeColor": "#41D9CD"
+          },
+          {
+            "phase": "C",
+            "duration": "442.4",
+            "module": "423.3",
+            "deliverables": "19.1",
+            "assessment": "PASS",
+            "badgeColor": "#41D9CD"
+          },
+          {
+            "phase": "D",
+            "duration": "402.8",
+            "module": "377.2",
+            "deliverables": "25.6",
+            "assessment": "PASS",
+            "badgeColor": "#41D9CD"
+          },
+          {
+            "phase": "E",
+            "duration": "414.8",
+            "module": "405.6",
+            "deliverables": "9.2",
+            "assessment": "PASS",
+            "badgeColor": "#41D9CD"
+          },
+          {
+            "phase": "F",
+            "duration": "408.2",
+            "module": "393.7",
+            "deliverables": "14.5",
+            "assessment": "PASS",
+            "badgeColor": "#41D9CD"
+          }
+        ],
+        "colPhase": "NHÁNH",
+        "colDuration": "TẢI GWh",
+        "colModule": "PHỤC VỤ",
+        "colLabs": "THIẾU",
+        "colOutput": "CÂN BẰNG"
+      }
+    },
+    {
+      "id": "PX-42",
+      "type": "closing",
+      "group": "E",
+      "content": {
+        "headline": "TƯƠNG LAI KHÔNG CHỈ CÓ MỘT ĐƯỜNG ĐI",
+        "subheadline": "Sáu kịch bản khác nhau. Một mô hình dữ liệu xuyên suốt. Quyết định tốt cần biết hệ quả và giới hạn.",
+        "contactName": "PROJECT PARADOX",
+        "contactRole": "AI SLIDE STRESS TEST / PHI TUYẾN TÍNH",
+        "phone": "—",
+        "email": "—",
+        "address": "Mô hình hoàn toàn giả lập",
+        "website": "QA: paradox_audit.json",
+        "contactLabel": "DỮ LIỆU",
+        "channelsLabel": "KIỂM CHỨNG",
+        "locationLabel": "KHUNG MÔ PHỎNG"
+      }
+    }
+  ]
+}

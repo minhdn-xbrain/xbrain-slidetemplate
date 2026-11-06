@@ -1,0 +1,26 @@
+2026-11-06 Asia/Bangkok
+Audit did not modify source code or original fixture. Fixture SHA256 stayed unchanged.
+External wording edits in source were detected at completion; baseline and completion hashes are in manifest.json.
+Unittest, strict QA and minimized probes were re-run after the external edits with the same verdicts.
+
+Unittest invocation:
+LD_LIBRARY_PATH=/tmp/xbrain-paradox-audit/deps/usr/lib/x86_64-linux-gnu CHROME_PATH=/home/dangnhatminh/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome python3 -m unittest discover -s tests -p "test_*.py"
+
+Ran 41 tests in 4.408s
+OK (0 skipped)
+
+Read-only minimized probes:
+node docs/audits/paradox-2026-11-06/reproduce.mjs
+Exit 1, 6 expected FAIL findings and 1 PASS control, repeated with identical observations.
+
+CLI repair: 0 changes, exit 1 (25 errors remain).
+CLI strict QA: exit 1; 42 slides, 25 errors, 36 warnings, 1 info.
+CLI browser QA: measured=true, 0 additional pixel findings.
+CLI build baseline: exit 1; HTML written for inspection despite diagnostics.
+Build hash: bae91d2eca725182.
+
+Browser: 42 online and 42 offline slides captured via file://.
+UI probes: version rejection, malformed slide JSON, undo/redo, content editor, visual library search, toolbar geometry, QA dialogs, presentation arrow navigation and Escape.
+Exported app reopened via file:// offline: 42 slides; serialized deck identical.
+Studio print PDF: 42 pages, 1440 x 810 pt (16:9).
+Not covered: all 104 library variants, all keyboard/drag/drop actions, Safari/Firefox/mobile/projector, full brand PDF compliance.

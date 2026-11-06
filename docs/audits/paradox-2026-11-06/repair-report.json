@@ -1,0 +1,489 @@
+{
+  "ok": false,
+  "changes": [],
+  "diagnostics": [
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/9/content/branches",
+      "message": "decision-tree.branches has 6 items; the layout draws 3 — move the rest to another slide",
+      "limit": 3,
+      "actual": 6
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/13/content/labels",
+      "message": "line-chart.labels has 13 items; the layout draws 12 — move the rest to another slide",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/13/content/series/0/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/13/content/series/1/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/17/content/labels",
+      "message": "line-chart.labels has 13 items; the layout draws 12 — move the rest to another slide",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/17/content/series/0/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/17/content/series/1/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/21/content/labels",
+      "message": "line-chart.labels has 13 items; the layout draws 12 — move the rest to another slide",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/21/content/series/0/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/21/content/series/1/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/25/content/labels",
+      "message": "line-chart.labels has 13 items; the layout draws 12 — move the rest to another slide",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/25/content/series/0/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/25/content/series/1/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/29/content/labels",
+      "message": "line-chart.labels has 13 items; the layout draws 12 — move the rest to another slide",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/29/content/series/0/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/29/content/series/1/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/33/content/labels",
+      "message": "line-chart.labels has 13 items; the layout draws 12 — move the rest to another slide",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/33/content/series/0/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/33/content/series/1/values",
+      "message": "line-chart.series.values has 13 items; the layout draws 12",
+      "limit": 12,
+      "actual": 13
+    },
+    {
+      "code": "content.truncated",
+      "severity": "error",
+      "path": "/slides/36/content/series",
+      "message": "radar-chart.series has 6 items; the layout draws 2 — move the rest to another slide",
+      "limit": 2,
+      "actual": 6
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/9",
+      "message": "\"Một hệ thống. Sáu loại gián đoạn.\" needs 2 lines of ≈30 characters; the layout shows 1",
+      "text": "Một hệ thống. Sáu loại gián đoạn."
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/12/content/components/4",
+      "message": "chart \"stacked-bar\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "data.series-missing",
+      "severity": "warning",
+      "path": "/slides/12/content/components/4",
+      "message": "stacked-bar needs ≥2 numeric series fields per row (e.g. {label, A:1, B:2}); found value — drawn as one series",
+      "found": [
+        "value"
+      ]
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/12/content/components/5",
+      "message": "chart \"heatmap\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/14",
+      "message": "\"02 / Ưu tiên hành lang cấp cứu không ngập\" needs 3 lines of ≈21 characters; the layout shows 2",
+      "text": "02 / Ưu tiên hành lang cấp cứu không ngập"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/16/content/components/4",
+      "message": "chart \"waterfall\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/16/content/components/5",
+      "message": "chart \"gauge\" is drawn at 43% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "data.truncated",
+      "severity": "warning",
+      "path": "/slides/16/content/components/5",
+      "message": "gauge: showing the first 1 of 7 rows; aggregate (transform.groupBy/limit) or split the chart",
+      "rows": 7,
+      "max": 1
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/18",
+      "message": "\"03 / Khôi phục phụ tải theo cấp quan trọng\" needs 3 lines of ≈21 characters; the layout shows 2",
+      "text": "03 / Khôi phục phụ tải theo cấp quan trọng"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/20/content/components/4",
+      "message": "chart \"area\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/20/content/components/5",
+      "message": "chart \"bullet\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "data.field-missing",
+      "severity": "warning",
+      "path": "/slides/20/content/components/5",
+      "message": "bullet: rows without \"target\" (or options.target) are drawn without a target marker",
+      "field": "target"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/24/content/components/4",
+      "message": "chart \"donut\" is drawn at 43% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/24/content/components/5",
+      "message": "chart \"scatter\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "data.field-missing",
+      "severity": "error",
+      "path": "/slides/24/content/components/5",
+      "message": "scatter: rows need numeric \"x\" and \"y\" (or value) fields",
+      "field": "x"
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/26",
+      "message": "\"02 / Đối soát tín hiệu qua nguồn độc lập\" needs 3 lines of ≈21 characters; the layout shows 2",
+      "text": "02 / Đối soát tín hiệu qua nguồn độc lập"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/28/content/components/4",
+      "message": "chart \"treemap\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "text.hidden",
+      "severity": "info",
+      "path": "/slides/28/content/components/4",
+      "message": "treemap: 1 small tile(s) have no visible label (value kept in tooltip)"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/28/content/components/5",
+      "message": "chart \"dumbbell\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "data.field-missing",
+      "severity": "error",
+      "path": "/slides/28/content/components/5",
+      "message": "dumbbell: 7 row(s) without a numeric \"before\" (Bắc Bến, Đông Lưới, Lõi Trung Tâm, Tây Sinh Thái) are not drawn",
+      "field": "before",
+      "rows": [
+        "Bắc Bến",
+        "Đông Lưới",
+        "Lõi Trung Tâm",
+        "Tây Sinh Thái",
+        "Nam Cảng",
+        "Vành Đai",
+        "Đảo Nổi"
+      ]
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/32/content/components/4",
+      "message": "chart \"bubble\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "data.field-missing",
+      "severity": "error",
+      "path": "/slides/32/content/components/4",
+      "message": "bubble: rows need numeric \"x\" and \"y\" (or value) fields",
+      "field": "x"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/32/content/components/5",
+      "message": "chart \"funnel-chart\" is drawn at 42% scale (852×238px); labels fall below 6px — give it more width/height",
+      "scale": 0.4
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/35",
+      "message": "\"B / ĐỨT GÃY LƯỚI ĐIỆN\" needs 2 lines of ≈19 characters; the layout shows 1",
+      "text": "B / ĐỨT GÃY LƯỚI ĐIỆN"
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/35",
+      "message": "\"C / ĐẢO NHIỆT CỰC HẠN\" needs 2 lines of ≈19 characters; the layout shows 1",
+      "text": "C / ĐẢO NHIỆT CỰC HẠN"
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/35",
+      "message": "\"D / MẤT TIN CẬY DỮ LIỆU\" needs 2 lines of ≈19 characters; the layout shows 1",
+      "text": "D / MẤT TIN CẬY DỮ LIỆU"
+    },
+    {
+      "code": "text.truncated",
+      "severity": "warning",
+      "path": "/slides/35",
+      "message": "\"E / KHỦNG HOẢNG NƯỚC\" needs 2 lines of ≈19 characters; the layout shows 1",
+      "text": "E / KHỦNG HOẢNG NƯỚC"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/38/content/components/0",
+      "message": "chart \"bar\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/38/content/components/1",
+      "message": "chart \"line\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/38/content/components/2",
+      "message": "chart \"lollipop\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/38/content/components/3",
+      "message": "chart \"radar\" is drawn at 52% scale (560×310px); labels fall below 8px — give it more width/height",
+      "scale": 0.5
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/38/content/components/4",
+      "message": "chart \"pareto\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/38/content/components/5",
+      "message": "chart \"waffle\" is drawn at 52% scale (560×310px); labels fall below 8px — give it more width/height",
+      "scale": 0.5
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/39/content/components/0",
+      "message": "chart \"scatter\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "data.field-missing",
+      "severity": "error",
+      "path": "/slides/39/content/components/0",
+      "message": "scatter: rows need numeric \"x\" and \"y\" (or value) fields",
+      "field": "x"
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/39/content/components/1",
+      "message": "chart \"treemap\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/39/content/components/2",
+      "message": "chart \"funnel-chart\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/39/content/components/3",
+      "message": "chart \"range-bar\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "data.field-missing",
+      "severity": "error",
+      "path": "/slides/39/content/components/3",
+      "message": "range-bar: 6 row(s) without a numeric \"start\" (A, B, C, D) are not drawn",
+      "field": "start",
+      "rows": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ]
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/39/content/components/4",
+      "message": "chart \"dot-plot\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "layout.legibility",
+      "severity": "warning",
+      "path": "/slides/39/content/components/5",
+      "message": "chart \"marimekko\" is drawn at 57% scale (560×310px); labels fall below 9px — give it more width/height",
+      "scale": 0.6
+    },
+    {
+      "code": "data.series-missing",
+      "severity": "warning",
+      "path": "/slides/39/content/components/5",
+      "message": "marimekko needs ≥2 numeric series fields per row (e.g. {label, A:1, B:2}); found value — drawn as one series",
+      "found": [
+        "value"
+      ]
+    }
+  ],
+  "summary": {
+    "slides": 42,
+    "errors": 25,
+    "warnings": 36,
+    "info": 1,
+    "score": 81.69047619047619
+  },
+  "written": "/tmp/xbrain-paradox-audit/repaired.json"
+}

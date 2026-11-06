@@ -1,0 +1,16 @@
+{
+  "invalidNumeric": {
+    "actual": 0,
+    "modalHidden": true
+  },
+  "numericUndo": 0.55,
+  "numericRedo": 0,
+  "invalidSlideJSON": {
+    "preserves": true,
+    "error": "Lỗi cú pháp JSON: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+  },
+  "library": {
+    "text": "1/104 variants",
+    "cards": "CHART\nScatter\nscatter"
+  }
+}
