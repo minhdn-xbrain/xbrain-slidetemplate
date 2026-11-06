@@ -23,8 +23,8 @@ Có **19 nhóm vấn đề được xác nhận**, gồm lỗi renderer, lỗi c
 
 | Chế độ | Slide 01–14 | Slide 15–28 | Slide 29–42 |
 |---|---|---|---|
-| Online, Manrope/Nunito và CDN tải thành công | [Ảnh](../audits/paradox-2026-11-06/online-01-14.jpg) | [Ảnh](../audits/paradox-2026-11-06/online-15-28.jpg) | [Ảnh](../audits/paradox-2026-11-06/online-29-42.jpg) |
-| Offline, chặn toàn bộ HTTP/HTTPS | [Ảnh](../audits/paradox-2026-11-06/offline-01-14.jpg) | [Ảnh](../audits/paradox-2026-11-06/offline-15-28.jpg) | [Ảnh](../audits/paradox-2026-11-06/offline-29-42.jpg) |
+| Online, Manrope/Nunito và CDN tải thành công | [Ảnh](../audits/2026-11-06-paradox/online-01-14.jpg) | [Ảnh](../audits/2026-11-06-paradox/online-15-28.jpg) | [Ảnh](../audits/2026-11-06-paradox/online-29-42.jpg) |
+| Offline, chặn toàn bộ HTTP/HTTPS | [Ảnh](../audits/2026-11-06-paradox/offline-01-14.jpg) | [Ảnh](../audits/2026-11-06-paradox/offline-15-28.jpg) | [Ảnh](../audits/2026-11-06-paradox/offline-29-42.jpg) |
 
 ## Danh sách vấn đề và hướng xử lý
 
@@ -36,7 +36,7 @@ P0: có thể khiến người xem hiểu sai số liệu, cần xử lý trư�
 - **Nguyên nhân xác nhận:** `dgHeat` tại HTML:4222 dùng `slice(0,6)` và `Math.round(dgClamp(v,0,5))`. Mục `heatmap` trong `LAYOUT_CATALOG` không khai báo giới hạn này; schema nhận số bất kỳ. Bản tối giản một ô `27.1` vẫn ra `5` với `diagnostics: []`.
 - **Hướng sửa:** giữ nguyên giá trị hiển thị; tách miền màu khỏi số gốc; hỗ trợ miền/đơn vị dữ liệu rõ ràng và đủ 7 hàng hoặc báo quá giới hạn. Giữ hành vi thang năng lực cũ bằng cấu hình tương thích, không áp 0–5 cho mọi heatmap.
 - **Nghiệm thu:** đủ 42 ô, 7 quận; đọc được `23.4`, `27.1`; chú giải đúng đơn vị và không đè lên bảng; miền ngoài hợp đồng phải có diagnostic.
-- [Ảnh màn hình](../audits/paradox-2026-11-06/slide-09.png), [ảnh từ PDF](../audits/paradox-2026-11-06/print-9.png).
+- [Ảnh màn hình](../audits/2026-11-06-paradox/slide-09.png), [ảnh từ PDF](../audits/2026-11-06-paradox/print-9.png).
 
 ### F02 · P0 · Sankey mất Microgrid và sai tỷ lệ dòng — slide 11
 
@@ -44,7 +44,7 @@ P0: có thể khiến người xem hiểu sai số liệu, cần xử lý trư�
 - **Nguyên nhân:** `dgSankey`, HTML:4221, cắt nguồn còn 4, bỏ link đến nguồn bị cắt; độ rộng dùng `clamp(value,2,70)`, có sàn 10 px. Không có diagnostic cho trường hợp này.
 - **Hướng sửa:** ưu tiên tái sử dụng bộ Sankey của Composer với adapter dữ liệu từ `sources/targets/links`; chuẩn hoá độ rộng theo cùng một hệ số tỷ lệ. Không tự thêm quan hệ. Đưa giới hạn và kiểm tra tổng vào registry/QA.
 - **Nghiệm thu:** 5 nguồn, 5 link; tổng dòng đã vẽ khớp `380.5352` theo số nguồn đã làm tròn và khớp `380.535` trong dung sai đã khai báo; tỷ lệ độ rộng theo dữ liệu.
-- [Ảnh](../audits/paradox-2026-11-06/slide-11.png).
+- [Ảnh](../audits/2026-11-06-paradox/slide-11.png).
 
 ### F03 · P0 · Ma trận so sánh lệch tiêu đề cột — slide 36
 
@@ -52,7 +52,7 @@ P0: có thể khiến người xem hiểu sai số liệu, cần xử lý trư�
 - **Nguyên nhân:** fixture đưa 5 tiêu đề gồm cả cột nhãn, nhưng `dgMatrix` (HTML:4215) dành nhãn hàng ở ngoài rồi ánh xạ `columns[j]` vào `values[j]`; mỗi hàng chỉ có 4 giá trị. Validator không kiểm tra độ dài hai mảng.
 - **Hướng sửa:** trước mắt sửa bản deck sử dụng để `columns` chỉ chứa 4 tiêu chí số. Làm rõ hợp đồng cột nhãn; QA kiểm tra số giá trị/cột, giữ số `0` thay vì dùng `value || '—'`.
 - **Nghiệm thu:** số `16.7` nằm dưới **THIẾU ĐIỆN GWh**, `165.0` dưới **CHI PHÍ**; dữ liệu thiếu/thừa cột phải báo đúng JSON pointer.
-- [Ảnh](../audits/paradox-2026-11-06/slide-36.png).
+- [Ảnh](../audits/2026-11-06-paradox/slide-36.png).
 
 ### F04 · P0 · Sáu điểm bị ép về cùng trục X — slide 38
 
@@ -60,14 +60,14 @@ P0: có thể khiến người xem hiểu sai số liệu, cần xử lý trư�
 - **Nguyên nhân:** `dgPriority` tại HTML:4302–4303 kẹp X/Y vào 0–100. Fixture đưa X theo tỷ VND; schema chỉ yêu cầu `number`, không có ràng buộc miền hoặc diagnostic. Probe 2 điểm cho cùng `cx=1100`; đổi X sang 10 và 80 thì vị trí khác nhau.
 - **Hướng sửa:** cho deck này dùng scatter với `x=costBn`, `y=mitigationPct` và nhãn trục/đơn vị. Với template priority cũ, khai báo rõ miền 0–100 và báo ngoài miền; nếu mở rộng hỗ trợ miền tự chọn thì bổ sung schema tương thích và tick trục.
 - **Nghiệm thu:** sáu X khác nhau nằm đúng vị trí; giá trị ngoài miền không được kẹp im lặng.
-- [Ảnh](../audits/paradox-2026-11-06/slide-38.png).
+- [Ảnh](../audits/2026-11-06-paradox/slide-38.png).
 
 ### F05 · P1 · Hub sáu nhánh chỉ có A/B/C — slide 10
 
 - `dgDecisionTree` (HTML:4406) cắt 3 nhánh; D/E/F mất hoàn toàn. QA đã báo đúng giới hạn, nhưng Studio vẫn import/render một bản đồ không đầy đủ.
 - **Hướng sửa:** hỗ trợ bố cục 6 nhánh trong registry hiện có, hoặc thay bằng component phù hợp đủ 6 mục. Không chia hub thành hai slide làm mất khả năng nhìn tổng thể nếu còn phương án vừa khung.
 - **Nghiệm thu:** nhìn thấy đủ A–F và trang đích tương ứng; root không có dấu `…`.
-- [Ảnh](../audits/paradox-2026-11-06/slide-10.png).
+- [Ảnh](../audits/2026-11-06-paradox/slide-10.png).
 
 ### F06 · P1 · Mất mốc 72h, nhãn số làm tròn quá thô — slide 14/18/22/26/30/34
 
@@ -80,7 +80,7 @@ P0: có thể khiến người xem hiểu sai số liệu, cần xử lý trư�
 - `dgRadar` (HTML:4567) chỉ lấy 2 series; bảng bên cạnh cũng chỉ phục vụ hai chuỗi và chênh lệch. Deck yêu cầu so 6 kịch bản; QA đã báo giới hạn.
 - **Hướng sửa:** dùng radar hỗ trợ nhiều series hoặc small multiples có cùng miền/trục, đủ chú giải A–F; không đơn thuần tăng `slice` vì bảng và bảng màu vẫn cố định hai chuỗi.
 - **Nghiệm thu:** đủ 6 chuỗi, 4 trục và bảng/chú giải đồng bộ, không đánh đồng chênh lệch hai chuỗi với thang điểm chuẩn hoá.
-- [Ảnh](../audits/paradox-2026-11-06/slide-37.png).
+- [Ảnh](../audits/2026-11-06-paradox/slide-37.png).
 
 ### F08 · P1 · Variant không khớp dữ liệu — slide 13/17/21/25/29/33/40
 
@@ -95,7 +95,7 @@ P0: có thể khiến người xem hiểu sai số liệu, cần xử lý trư�
 | 40 / 4 · range-bar | Không có start/end → `No data` | Đổi dot/bar; chỉ dùng range khi có hai đầu khoảng thật |
 | 40 / 6 · marimekko | Chỉ có một series | Dùng bar hoặc chuẩn bị dữ liệu cấu phần thật |
 
-Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay tại component. Giữ fixture stress gốc để kiểm tra lỗi; không chữa dữ liệu bằng số bịa. [Slide 29](../audits/paradox-2026-11-06/slide-29.png), [slide 40](../audits/paradox-2026-11-06/slide-40.png).
+Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay tại component. Giữ fixture stress gốc để kiểm tra lỗi; không chữa dữ liệu bằng số bịa. [Slide 29](../audits/2026-11-06-paradox/slide-29.png), [slide 40](../audits/2026-11-06-paradox/slide-40.png).
 
 ### F09 · P0 · Chart đúng cú pháp nhưng sai ý nghĩa — slide 17/21/25/29/33/39/40
 
@@ -105,13 +105,13 @@ Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay t�
 - Slide 21 area nối các danh mục Tải/Phục vụ/Thiếu; slide 33 và 40 funnel coi quận/kịch bản độc lập là các bước, xuất hiện `265% of previous` ở slide 40. Đây là lựa chọn chart sai thông điệp của fixture, không phải sai thuật toán funnel.
 - Slide 39 waffle cộng các tỷ lệ giảm chi phí của sáu kịch bản độc lập rồi phân bổ 100 ô, khiến người xem dễ hiểu thành các phần của cùng tổng.
 - **Hướng sửa:** donut/treemap chỉ lấy các cấu phần không giao nhau; waterfall dùng Tải → trừ Thiếu → Phục vụ với dấu và `total` đúng hợp đồng. Dùng bar/dot để so quận hoặc kịch bản độc lập; hiển thị đơn vị và ghi chú chuyển đổi. Bổ sung kiểm tra quan hệ dữ liệu khi quan hệ được khai báo, không suy đoán từ tiêu đề.
-- **Nghiệm thu:** tất cả tổng/tỷ lệ đọc được từ chart đối chiếu với dataset; chart nào không đủ dữ liệu phải báo thiếu. [Slide 25](../audits/paradox-2026-11-06/slide-25.png), [slide 17](../audits/paradox-2026-11-06/slide-17.png).
+- **Nghiệm thu:** tất cả tổng/tỷ lệ đọc được từ chart đối chiếu với dataset; chart nào không đủ dữ liệu phải báo thiếu. [Slide 25](../audits/2026-11-06-paradox/slide-25.png), [slide 17](../audits/2026-11-06-paradox/slide-17.png).
 
 ### F10 · P0 · Studio và build strict vẽ khác dữ liệu — slide 25/33/40
 
 - `deckScatter` (HTML:4963–4966) trong lenient tự lấy X = `i+1` khi thiếu X, nên Studio vẫn hiện điểm. Compiler strict báo lỗi và hiện `No data`.
 - **Hướng sửa:** chart có dữ liệu một phần phải giữ cùng quy tắc “không tự tạo số” trong mọi chế độ. Nếu cho phép scatter danh mục/index, phải là lựa chọn được khai báo, có nhãn rõ. QA trong Studio phải cho biết kết quả chế độ xuất, không chỉ kết quả lenient.
-- **Nghiệm thu:** cùng JSON và cùng options cho cùng số mark/tọa độ; không xuất hiện X tự suy ra khi chưa khai báo. [Studio](../audits/paradox-2026-11-06/slide-25.png), [static strict](../audits/paradox-2026-11-06/static-25.png).
+- **Nghiệm thu:** cùng JSON và cùng options cho cùng số mark/tọa độ; không xuất hiện X tự suy ra khi chưa khai báo. [Studio](../audits/2026-11-06-paradox/slide-25.png), [static strict](../audits/2026-11-06-paradox/static-25.png).
 
 ### F11 · P1 · Theme làm tiêu đề Composer gần như biến mất — slide 13/17/21/25/29/33/39/40
 
@@ -119,7 +119,7 @@ Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay t�
 - `deckComposer` (HTML:5811–5814) lấy token `ink` nhưng nền mặc định vẫn trắng, trạng thái dark dựa vào `slide.variant`, bỏ qua `theme.preset` của fixture.
 - **Hướng sửa:** có một bộ resolve theme xác định foreground/background/logo theo preset và override, dùng chung renderer; kiểm tra tương phản. Định nghĩa rõ phạm vi theme với template legacy thay vì chỉ áp một phần token.
 - **Nghiệm thu:** tiêu đề đạt tỷ lệ tương phản ít nhất 3:1 cho chữ lớn, body ít nhất 4,5:1; kiểm tra cả nền sáng/tối và logo phù hợp. Nếu thay nhận diện, đọc Brand Guidelines PDF trước.
-- [Ảnh](../audits/paradox-2026-11-06/slide-13.png), [bản in](../audits/paradox-2026-11-06/print-13.png).
+- [Ảnh](../audits/2026-11-06-paradox/slide-13.png), [bản in](../audits/2026-11-06-paradox/print-13.png).
 
 ### F12 · P1 · Tên chart không hiện trong hình — toàn bộ 24 chart Composer
 
@@ -146,7 +146,7 @@ Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay t�
 - `openContentEditorModal` (HTML:7869) chỉ đọc `current.title/current.components`, trong khi fixture hợp lệ dùng `content.title/content.components`. Renderer hỗ trợ cả hai dạng. Lưu title mới tạo override ở cấp slide; undo/redo của thay đổi này đã hoạt động.
 - **Hướng sửa:** resolver chung xác định vị trí dữ liệu của Composer, form đọc/ghi cùng đường dẫn nguồn, không tạo hai nguồn khác nhau. Mọi cập nhật đi qua `DeckStore`.
 - **Nghiệm thu:** form hiển thị đúng title/subtitle và 7 component của slide 25; sửa metric, lưu, undo, redo, export/reimport đều nhất quán cho cả hai dạng JSON.
-- [Ảnh](../audits/paradox-2026-11-06/content-editor.png).
+- [Ảnh](../audits/2026-11-06-paradox/content-editor.png).
 
 ### F16 · P1 · Form dài đẩy cả tiêu đề và nút Lưu khỏi màn hình — slide 14
 
@@ -154,7 +154,7 @@ Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay t�
 - Wrapper dùng `max-h-[90vh]` (HTML:3580) nhưng stylesheet offline chỉ có utility `max-h-[85vh]`, không có lớp `90vh`. Khu vực fields cũng cần `min-height:0` để cuộn đúng trong flex.
 - **Hướng sửa:** dùng CSS `v1-*` được nhúng thật, giới hạn chiều cao modal, header/footer cố định trong flex và phần fields cuộn.
 - **Nghiệm thu:** title, Hủy, Lưu luôn trong viewport 1366×768/1440×900/1920×1080; sửa được trường cuối mà không phải kích hoạt nút bằng mã.
-- [Ảnh](../audits/paradox-2026-11-06/long-editor.png).
+- [Ảnh](../audits/2026-11-06-paradox/long-editor.png).
 
 ### F17 · P1 · Nhập số không hợp lệ bị âm thầm đổi thành 0
 
@@ -167,7 +167,7 @@ Mỗi variant cần có ví dụ dữ liệu hợp lệ và báo thiếu ngay t�
 - Ở 1440 px, `↻ Data` và `Trình Chiếu` ra ngoài màn hình; cạnh phải Trình Chiếu khoảng **1649,9 px**. 1366 px còn mất thêm một phần Visual Library. 1920 px hiển thị đủ.
 - **Hướng sửa:** bố trí nhóm thao tác chính gọn lại, menu cho thao tác phụ hoặc hàng cuộn có dấu hiệu rõ; giữ Trình Chiếu và xuất file truy cập được. Không yêu cầu người dùng thu nhỏ zoom trình duyệt.
 - **Nghiệm thu:** nút chính click và focus bằng bàn phím được ở cả ba viewport; không bị `overflow:hidden` của app cắt mất.
-- [1440 px](../audits/paradox-2026-11-06/studio-1440.png), [1366 px](../audits/paradox-2026-11-06/studio-1366.png).
+- [1440 px](../audits/2026-11-06-paradox/studio-1440.png), [1366 px](../audits/2026-11-06-paradox/studio-1366.png).
 
 ### F19 · P1 · QA không đưa đủ thông tin để sửa và còn bỏ lọt sai dữ liệu
 
@@ -243,7 +243,7 @@ Chạy từ thư mục repo:
 
 ```bash
 # Chỉ đọc runtime/fixture; hiện tại phải exit 1: 6 FAIL, 1 PASS control.
-node docs/audits/paradox-2026-11-06/reproduce.mjs
+node docs/audits/2026-11-06-paradox/reproduce.mjs
 
 # Báo cáo deck gốc, không sửa đầu vào.
 node tools/xbrain.mjs qa tests/fixtures/paradox_xbrain.json --json
@@ -262,9 +262,9 @@ Các lệnh repair/qa/build trên stress deck hiện exit 1 là **kết quả ph
 
 Trình duyệt của môi trường ban đầu thiếu Chrome ở đường dẫn MCP mặc định và thiếu `libnspr4/libnss3/libasound`. Đã dùng Chromium cục bộ, Playwright Core và thư viện giải nén trong `/tmp`; không thay môi trường dependency của repo. Lượt unittest đầu 40 pass/1 skip; sau khi cấu hình đầy đủ, **41 pass/0 skip**. Cú pháp tương đương trong AGENTS là `python -m unittest…`; máy này chỉ có `python3`.
 
-- [Log kiểm chứng](../audits/paradox-2026-11-06/validation.txt).
-- [Manifest: hash nguồn, viewport, phạm vi](../audits/paradox-2026-11-06/manifest.json).
-- [QA strict nguyên bản](../audits/paradox-2026-11-06/qa-original.json), [QA có browser](../audits/paradox-2026-11-06/qa-browser.json), [repair không thay đổi](../audits/paradox-2026-11-06/repair-report.json).
-- [Probe tối giản](../audits/paradox-2026-11-06/reproduce.mjs), [kết quả probe](../audits/paradox-2026-11-06/repro-results.json).
-- [Text/SVG boxes của 42 slide offline](../audits/paradox-2026-11-06/browser-slides.json), [đối chiếu online](../audits/paradox-2026-11-06/online-observations.json).
-- [Luồng UI, dialog QA và export roundtrip](../audits/paradox-2026-11-06/flows.json), [nhập số sai/JSON lỗi/Library](../audits/paradox-2026-11-06/editor-probes.json).
+- [Log kiểm chứng](../audits/2026-11-06-paradox/validation.txt).
+- [Manifest: hash nguồn, viewport, phạm vi](../audits/2026-11-06-paradox/manifest.json).
+- [QA strict nguyên bản](../audits/2026-11-06-paradox/qa-original.json), [QA có browser](../audits/2026-11-06-paradox/qa-browser.json), [repair không thay đổi](../audits/2026-11-06-paradox/repair-report.json).
+- [Probe tối giản](../audits/2026-11-06-paradox/reproduce.mjs), [kết quả probe](../audits/2026-11-06-paradox/repro-results.json).
+- [Text/SVG boxes của 42 slide offline](../audits/2026-11-06-paradox/browser-slides.json), [đối chiếu online](../audits/2026-11-06-paradox/online-observations.json).
+- [Luồng UI, dialog QA và export roundtrip](../audits/2026-11-06-paradox/flows.json), [nhập số sai/JSON lỗi/Library](../audits/2026-11-06-paradox/editor-probes.json).

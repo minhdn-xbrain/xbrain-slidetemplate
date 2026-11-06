@@ -10,7 +10,7 @@ Ran 41 tests in 4.408s
 OK (0 skipped)
 
 Read-only minimized probes:
-node docs/audits/paradox-2026-11-06/reproduce.mjs
+node docs/audits/2026-11-06-paradox/reproduce.mjs
 Exit 1, 6 expected FAIL findings and 1 PASS control, repeated with identical observations.
 
 CLI repair: 0 changes, exit 1 (25 errors remain).
