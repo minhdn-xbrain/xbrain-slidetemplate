@@ -2,7 +2,7 @@
 <!--
   XBrain Presentation System — Release Notes
   v1.0.0: Bản phát hành đầu tiên của XBrain Presentation as Code.
-           89 slide mẫu, 98 biến thể visualization, JSON-driven Composer,
+           107 slide mẫu, 104 biến thể visualization, JSON-driven Composer,
            shared datasets (JSON/CSV/TSV), diagram và component lồng nhau,
            chỉnh sửa nhanh, Gallery, trình chiếu fullscreen và xuất HTML/JSON/PDF.
   Release version: 1.0.0
@@ -21,7 +21,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>XBrain Presentation System v1.0.0 — Presentation as Code</title>
-  <meta name="description" content="v1.0.0: Bản phát hành đầu tiên của XBrain Presentation as Code — JSON-first, 89 slide mẫu, 98 biến thể visualization, diagram/component lồng nhau, chỉnh sửa nhanh và xuất HTML/JSON/PDF." />
+  <meta name="description" content="v1.0.0: Bản phát hành đầu tiên của XBrain Presentation as Code — JSON-first, 107 slide mẫu, 104 biến thể visualization, diagram/component lồng nhau, chỉnh sửa nhanh và xuất HTML/JSON/PDF." />
   <meta name="application-version" content="1.0.0" />
   <!-- Google Fonts: Manrope (Main Headline Font) & Nunito (Secondary Body Font) per PDF Pages 22-23 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3166,7 +3166,7 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
             <span class="font-heading font-bold text-white text-sm tracking-tight">Presentation as Code v1.0.0</span>
             <span class="text-[11px] font-heading font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#F97C00]/20 text-[#FF991D] border border-[#F97C00]/30">Dec 2025 Brand Guidelines</span>
           </div>
-          <p class="text-xs text-slate-400">v1.0.0: Bản phát hành đầu tiên · JSON-first · 89 slides · 98 visual variants</p>
+          <p class="text-xs text-slate-400">v1.0.0: Bản phát hành đầu tiên · JSON-first · 107 slides · 104 visual variants</p>
         </div>
       </div>
 
@@ -4612,13 +4612,13 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
 const DECK_COLORS=['#F97C00','#25AC9D','#007BC1','#85439A','#F6AF2F','#425453','#7FD7BB','#FE4A0B'];
 const DECK_DESCRIPTORS={
  chart: {
-  'bar':'Column chart','bar-horizontal':'Horizontal bar','grouped-bar':'Grouped columns','stacked-bar':'Stacked columns','line':'Line chart','area':'Area chart','step-line':'Step line','lollipop':'Lollipop','dot-plot':'Dot plot','waterfall':'Waterfall','donut':'Donut','pie':'Pie','radar':'Radar','scatter':'Scatter','bubble':'Bubble','heatmap':'Heatmap','histogram':'Histogram','pareto':'Pareto','gauge':'Gauge','bullet':'Bullet','progress-ring':'Progress ring','sparkline':'Sparkline','treemap':'Treemap','funnel-chart':'Funnel chart','slope':'Slope chart','waffle':'Waffle chart','range-bar':'Range bar','dumbbell':'Dumbbell','marimekko':'Mekko / composition'
+  'bar':'Column chart','bar-horizontal':'Horizontal bar','grouped-bar':'Grouped columns','stacked-bar':'Stacked columns','line':'Line chart','area':'Area chart','step-line':'Step line','lollipop':'Lollipop','dot-plot':'Dot plot','waterfall':'Waterfall','donut':'Donut','pie':'Pie','radar':'Radar','scatter':'Scatter','bubble':'Bubble','heatmap':'Heatmap','histogram':'Histogram','pareto':'Pareto','gauge':'Gauge','bullet':'Bullet','progress-ring':'Progress ring','sparkline':'Sparkline','treemap':'Treemap','funnel-chart':'Funnel chart','slope':'Slope chart','waffle':'Waffle chart','range-bar':'Range bar','dumbbell':'Dumbbell','marimekko':'Mekko / composition','combo':'Combo · bar + line','stacked-100':'100% stacked columns','diverging-bar':'Diverging bar'
  },
  flow: {
-  'flowchart':'Process flow','decision-tree':'Decision tree','process-pipeline':'Delivery pipeline','chevrons':'Chevron steps','zigzag':'Zigzag flow','value-chain':'Value chain','service-blueprint':'Service blueprint','swimlane':'Swimlane','sequence':'Sequence / messages','state-machine':'State machine','critical-path':'Critical path','dependency':'Dependency map','kanban':'Kanban board','bpmn':'BPMN-inspired flow','release-train':'Release train','customer-journey':'Customer journey','learner-journey':'Learner journey','roadmap':'Roadmap','milestones':'Milestones','timeline':'Timeline','gantt':'Gantt plan','lifecycle':'Lifecycle','cycle':'Cycle loop','fishbone':'Cause & effect','bowtie':'Bowtie risk'
+  'flowchart':'Process flow','decision-tree':'Decision tree','process-pipeline':'Delivery pipeline','chevrons':'Chevron steps','zigzag':'Zigzag flow','value-chain':'Value chain','service-blueprint':'Service blueprint','swimlane':'Swimlane','sequence':'Sequence / messages','state-machine':'State machine','critical-path':'Critical path','dependency':'Dependency map','kanban':'Kanban board','bpmn':'BPMN-inspired flow','release-train':'Release train','customer-journey':'Customer journey','learner-journey':'Learner journey','roadmap':'Roadmap','milestones':'Milestones','timeline':'Timeline','gantt':'Gantt plan','lifecycle':'Lifecycle','cycle':'Cycle loop','fishbone':'Cause & effect','bowtie':'Bowtie risk','vertical-timeline':'Vertical timeline'
  },
  structure: {
-  'org-chart':'Organization chart','tree':'Hierarchy tree','mindmap':'Mind map','hub-spoke':'Hub & spoke','ecosystem':'Ecosystem map','stakeholder':'Stakeholder map','network':'Network topology','architecture':'System architecture','c4':'C4 container map','layered':'Layered architecture','cloud':'Cloud reference','pyramid':'Strategy pyramid','funnel':'Conversion funnel','venn':'Venn diagram','concentric':'Concentric circles','nested-circle':'Nested circles','sankey':'Allocation / Sankey','swot':'SWOT','pestel':'PESTEL','bcg':'BCG 2×2','ansoff':'Ansoff matrix','risk-matrix':'Risk matrix','priority':'Priority matrix','raci':'RACI','decision-matrix':'Decision matrix','capability-map':'Capability map','balanced-scorecard':'Scorecard','comparison-matrix':'Comparison matrix','quadrant':'Four quadrants','portfolio':'Portfolio matrix','okrs':'OKR strategy tree','radial-tree':'Radial tree'
+  'org-chart':'Organization chart','tree':'Hierarchy tree','mindmap':'Mind map','hub-spoke':'Hub & spoke','ecosystem':'Ecosystem map','stakeholder':'Stakeholder map','network':'Network topology','architecture':'System architecture','c4':'C4 container map','layered':'Layered architecture','cloud':'Cloud reference','pyramid':'Strategy pyramid','funnel':'Conversion funnel','venn':'Venn diagram','concentric':'Concentric circles','nested-circle':'Nested circles','sankey':'Allocation / Sankey','swot':'SWOT','pestel':'PESTEL','bcg':'BCG 2×2','ansoff':'Ansoff matrix','risk-matrix':'Risk matrix','priority':'Priority matrix','raci':'RACI','decision-matrix':'Decision matrix','capability-map':'Capability map','balanced-scorecard':'Scorecard','comparison-matrix':'Comparison matrix','quadrant':'Four quadrants','portfolio':'Portfolio matrix','okrs':'OKR strategy tree','radial-tree':'Radial tree','pros-cons':'Pros & cons','iceberg':'Iceberg model'
  },
  mermaid: {
   'mermaid-flowchart':'Mermaid flowchart','mermaid-sequence':'Mermaid sequence','mermaid-erd':'Mermaid ERD','mermaid-state':'Mermaid state','mermaid-class':'Mermaid class','mermaid-gantt':'Mermaid Gantt','mermaid-journey':'Mermaid journey','mermaid-mindmap':'Mermaid mindmap','mermaid-pie':'Mermaid pie','mermaid-quadrant':'Mermaid quadrant','mermaid-timeline':'Mermaid timeline','mermaid-gitgraph':'Mermaid gitGraph'
@@ -4634,7 +4634,10 @@ const DECK_DEFAULT_CONFIG={version:'1.0',releaseVersion:'1.0.0',theme:{preset:'x
  intake:{type:'csv',value:'Stage,Value\nApplications,500\nShortlisted,280\nQualified,200\nCompleted,160'},
  delivery:{type:'tsv',value:'Quarter\tValue\nQ1\t18\nQ2\t30\nQ3\t43\nQ4\t56'},
  skills:{type:'json',value:[{label:'Cloud fundamentals',value:72},{label:'CI/CD',value:83},{label:'Containers',value:64},{label:'Infrastructure as Code',value:91},{label:'Observability',value:76}]},
- roadmap:{type:'json',value:[{label:'Discovery',start:0,end:18},{label:'Foundation',start:16,end:43},{label:'Labs',start:40,end:72},{label:'Capstone',start:69,end:94}]}
+ roadmap:{type:'json',value:[{label:'Discovery',start:0,end:18},{label:'Foundation',start:16,end:43},{label:'Labs',start:40,end:72},{label:'Capstone',start:69,end:94}]},
+ enrolment:{type:'csv',value:'Quarter,Value,Target\nQ1 2026,120,110\nQ2 2026,145,140\nQ3 2026,160,170\nQ4 2026,210,200'},
+ effortMix:{type:'json',value:[{label:'Foundation',Labs:40,Mentoring:25,Projects:35},{label:'CloudOps',Labs:55,Mentoring:20,Projects:25},{label:'DevOps',Labs:50,Mentoring:15,Projects:35},{label:'GenAI',Labs:35,Mentoring:25,Projects:40}]},
+ sentiment:{type:'json',value:[{label:'Hands-on labs',value:42},{label:'Mentor access',value:31},{label:'Pace of content',value:-12},{label:'Lab environment',value:18},{label:'Assessment clarity',value:-8},{label:'Career support',value:24}]}
  },assets:{},customCss:'',metadata:{name:'XBrain Presentation System v1.0.0',note:'All numeric examples are illustrative, not verified performance metrics.'}};
 let DECK_CONFIG=JSON.parse(JSON.stringify(DECK_DEFAULT_CONFIG));
 const DECK_DATA_CACHE=new Map();
@@ -4780,6 +4783,27 @@ function deckChart(c){
   let x=30,y=45,tot=vals.reduce((a,b)=>a+Math.max(0,b),0)||1,avail=920;data.slice(0,7).forEach((r,i)=>{let w=920*Math.max(0,r.value)/tot;if(i===data.length-1)w=Math.max(30,950-x);g+=deckRect(x,y,w-5,340,p[i%p.length],'none',5);g+=label(x+w/2,y+180,r.label.slice(0,12),deckClamp(w/9,11,22),'white');x+=w;});
  }else if(variant==='funnel-chart'){
   let n=Math.min(7,data.length);data.slice(0,n).forEach((r,i)=>{let top=860-i*80,bottom=top-68,y=23+i*(410/n),h=390/n;g+=`<polygon points="${500-top/2},${y} ${500+top/2},${y} ${500+bottom/2},${y+h-5} ${500-bottom/2},${y+h-5}" fill="${p[i%p.length]}"/>`;g+=label(500,y+h/2,r.label+' · '+r.value,19,'white');});
+ }else if(variant==='combo'){
+  // Bars = value; line = row.target (or row.line). Both share one scale.
+  const items=data.slice(0,10),line=items.map(r=>deckNum(r.raw?.target??r.raw?.Target??r.raw?.line,NaN)),top=Math.max(1,...items.map(r=>Math.abs(r.value)),...line.filter(Number.isFinite)),w=780/items.length,bw=w*.56,pts=[];
+  for(let i=0;i<4;i++)g+=deckLine(98,90+i*73.75,930,90+i*73.75,'#E7EEEA',1);g+=deckLine(98,385,930,385,'#B4C2BC',2);
+  items.forEach((r,i)=>{const cx=110+i*w+w/2-7,h=Math.max(0,r.value)/top*295;g+=deckRect(cx-bw/2,385-h,bw,h,'#F97C00','none',7);g+=label(cx,Math.max(60,385-h-11),r.value,16);g+=label(cx,410,r.label.slice(0,15),15);if(Number.isFinite(line[i]))pts.push([cx,385-line[i]/top*295]);});
+  if(pts.length>1)g+=`<polyline points="${pts.map(q=>q.join(',')).join(' ')}" fill="none" stroke="#25AC9D" stroke-width="5" stroke-linejoin="round"/>`;
+  pts.forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="9" fill="#fff" stroke="#25AC9D" stroke-width="4"/>`);
+  const names=c.options?.labels||['Actual','Target'];g+=deckRect(690,22,16,16,'#F97C00','none',3)+label(714,36,names[0],15,navy,'start')+deckRect(810,27,30,6,'#25AC9D','none',3)+label(848,36,names[1],15,navy,'start');
+ }else if(variant==='stacked-100'){
+  // Each numeric field of a row is one series; a single-value row splits into value / remainder.
+  const items=data.slice(0,8);let keys=[...new Set(items.flatMap(r=>Object.keys(r.raw||{}).filter(k=>typeof r.raw[k]==='number')))];
+  const multi=keys.length>1,parts=items.map(r=>multi?keys.map(k=>Math.max(0,deckNum(r.raw?.[k]))):[Math.max(0,r.value),Math.max(0,max-r.value)]);
+  if(!multi)keys=c.options?.labels||['Value','Remaining'];
+  const w=780/items.length,bw=w-18;
+  items.forEach((r,i)=>{const x=110+i*w,sum=parts[i].reduce((a,b)=>a+b,0)||1;let y=385;parts[i].forEach((v,j)=>{const h=v/sum*295;y-=h;g+=deckRect(x,y,bw,h,p[j%p.length],'none',0);if(h>26&&bw>46)g+=label(x+bw/2,y+h/2+6,Math.round(v/sum*100)+'%',15,'white');});g+=label(x+bw/2,410,r.label.slice(0,15),15);});
+  keys.slice(0,6).forEach((k,j)=>{g+=deckRect(110+j*150,30,16,16,p[j%p.length],'none',3)+label(132+j*150,44,String(k).slice(0,14),15,navy,'start');});
+ }else if(variant==='diverging-bar'){
+  // Negative values extend left (red-orange), positive values right (teal).
+  const items=data.slice(0,9),h=Math.min(40,300/items.length),gap=Math.min(16,90/items.length),cx=600,half=290,top=40;
+  g+=deckLine(cx,top-12,cx,top+items.length*(h+gap)-gap+12,navy,2);
+  items.forEach((r,i)=>{const y=top+i*(h+gap),wid=Math.abs(r.value)/max*half,neg=r.value<0;g+=label(30,y+h/2+6,r.label.slice(0,22),16,navy,'start');g+=deckRect(neg?cx-wid:cx,y,Math.max(2,wid),h,neg?'#FE4A0B':'#25AC9D','none',6);g+=label(neg?cx-wid-8:cx+wid+8,y+h/2+6,(r.value>0?'+':'')+r.value,16,navy,neg?'end':'start');});
  }else g+=label(500,220,'Unknown chart variant: '+variant,24);
  return g+deckEnd();
 }
@@ -4868,6 +4892,24 @@ function deckDiagram(c){
   s+=deckRect(416,194,168,82,'#425453')+deckText(500,242,'CORE EVENT',18,'white','middle',700);
   nodes.slice(0,3).forEach((it,i)=>s+=deckText(85,140+i*95,it.label.slice(0,20),18,'#425453','start'));
   nodes.slice(3,6).forEach((it,i)=>s+=deckText(925,140+i*95,it.label.slice(0,20),18,'#425453','end'));
+ }else if(variant==='vertical-timeline'){
+  // node.date / node.when label the left rail; node.desc is the second line.
+  const n=Math.min(6,nodes.length),rowH=420/n;s+=deckLine(200,30,200,30+rowH*n-20,'#D0DDD7',6);
+  nodes.slice(0,n).forEach((it,i)=>{const y=30+i*rowH+rowH/2-10;s+=deckRect(240,y-rowH/2+10,700,rowH-16,i%2?'#F5FAF7':'#FFF7EF','#DFE8E3',12,2);s+=`<circle cx="200" cy="${y}" r="15" fill="${P[i%P.length]}" stroke="white" stroke-width="5"/>`;s+=deckText(165,y+7,String(it.date||it.when||String(i+1).padStart(2,'0')).slice(0,12),18,P[i%P.length],'end',800);
+   s+=deckText(262,y+(it.desc?-2:7),it.label.slice(0,52),20,ink,'start',800);if(it.desc)s+=deckText(262,y+24,String(it.desc).slice(0,82),16,'#637473','start',600);});
+ }else if(variant==='pros-cons'){
+  // node.group:'con' marks a con; without groups the list is split in half.
+  const grouped=nodes.some(n=>n.group),half=Math.ceil(nodes.length/2),pros=grouped?nodes.filter(n=>n.group!=='con'):nodes.slice(0,half),cons=grouped?nodes.filter(n=>n.group==='con'):nodes.slice(half),heads=c.options?.labels||['PROS','CONS'];
+  [[pros,heads[0],'#25AC9D','#EAF7F2','+'],[cons,heads[1],'#FE4A0B','#FFF1EA','−']].forEach(([list,head,col,bg,sym],k)=>{const x=60+k*450;s+=deckRect(x,30,430,420,bg,'none',18)+deckRect(x,30,430,64,col,'none',18)+deckRect(x,70,430,24,col,'none',0)+deckText(x+215,72,head,22,'white','middle',800);
+   list.slice(0,5).forEach((it,i)=>{const y=118+i*64;s+=`<circle cx="${x+40}" cy="${y+18}" r="17" fill="${col}"/>`+deckText(x+40,y+26,sym,24,'white','middle',800)+deckText(x+72,y+(it.desc?16:25),it.label.slice(0,30),19,ink,'start',800);if(it.desc)s+=deckText(x+72,y+40,String(it.desc).slice(0,42),15,'#637473','start',600);});});
+ }else if(variant==='iceberg'){
+  // The first options.visible nodes (default 1) sit above the waterline; the rest below.
+  const vis=deckClamp(deckNum(c.options?.visible,1),1,3),top=nodes.slice(0,vis),deep=nodes.slice(vis,vis+5),cap=c.options?.labels||['VISIBLE','BELOW THE SURFACE'];
+  s+=deckRect(0,170,1000,310,'#E6F3F8','none',0)+deckLine(0,170,1000,170,'#007BC1',3,'10 8');
+  s+=`<polygon points="500,40 600,170 400,170" fill="#FFFFFF" stroke="#007BC1" stroke-width="4"/><polygon points="400,170 600,170 760,300 690,450 310,450 240,300" fill="#BFE0EE" stroke="#007BC1" stroke-width="4"/>`;
+  s+=deckText(40,150,cap[0],16,'#007BC1','start',800)+deckText(40,205,cap[1],16,'#007BC1','start',800);
+  top.forEach((it,i)=>{const y=82+i*36;s+=deckLine(540+i*8,y+40-i*24,640,y-6,'#007BC1',2)+deckText(650,y,it.label.slice(0,30),20,ink,'start',800);});
+  deep.forEach((it,i)=>s+=deckText(500,222+i*48,it.label.slice(0,28),19,ink,'middle',750));
  }else{
   s+=deckText(500,240,'Variant: '+variant,30,ink,'middle');
  }
@@ -5106,6 +5148,55 @@ deckAddExample('Architecture + metrics','Components can be combined into one sli
  {type:'diagram',variant:'layered',nodes:[{label:'Learning Portal'},{label:'Content & Labs'},{label:'Cloud Infrastructure'},{label:'Observability'}],span:8,minHeight:460},
  {type:'stack',span:4,minHeight:460,children:[deckMetric('Modules','24','Illustrative'),deckMetric('Tracks','03','Illustrative')]}
 ]);
+/* Chart & diagram template pack: copy one of these slides, then swap dataRef / nodes. */
+deckAddExample('Actual vs target · combo','Bars carry the actual value, the line carries row.target',[
+ {type:'chart-card',title:'Enrolment per quarter · illustrative',variant:'combo',dataRef:'enrolment',span:8,minHeight:470,options:{labels:['Actual','Target']}},
+ {type:'stack',span:4,minHeight:470,children:[deckMetric('Q4 actual','210','+5% vs target',12),deckCall('Q3 missed target by 10 learners; Q4 recovered after the second intake.','Reading the chart',12)]}
+]);
+deckAddExample('Effort mix · 100% stacked','Every numeric field of a row becomes one stacked series',[
+ {type:'chart',variant:'stacked-100',dataRef:'effortMix',span:12,minHeight:470}
+]);
+deckAddExample('Learner feedback · diverging','Net sentiment per topic: positive right, negative left',[
+ {type:'chart',variant:'diverging-bar',dataRef:'sentiment',span:8,minHeight:470,transform:{sortBy:'value',order:'desc'}},
+ {type:'stack',span:4,minHeight:470,children:[deckCall('Labs and mentor access drive satisfaction; pacing and assessment clarity need attention.','Takeaway',12),{type:'legend',items:[{label:'Net positive',color:'#25AC9D'},{label:'Net negative',color:'#FE4A0B'}],span:12,minHeight:90}]}
+]);
+deckAddExample('Program milestones · vertical timeline','Use node.date for the rail and node.desc for detail',[
+ deckVis('vertical-timeline',undefined,12,{nodes:[
+  {label:'Kick-off & discovery',date:'JAN',desc:'Stakeholder interviews and skill baseline'},
+  {label:'Foundation track',date:'FEB–MAR',desc:'Cloud fundamentals and Linux labs'},
+  {label:'Applied labs',date:'APR–JUN',desc:'CI/CD, containers and infrastructure as code'},
+  {label:'Capstone projects',date:'JUL–AUG',desc:'Team delivery with mentor reviews'},
+  {label:'Graduation & placement',date:'SEP',desc:'Demo day and partner interviews'}],minHeight:470})
+]);
+deckAddExample('Option review · pros & cons','Mark a node with group:"con" to place it on the right',[
+ deckVis('pros-cons',undefined,8,{options:{labels:['PROS · ƯU ĐIỂM','CONS · HẠN CHẾ']},nodes:[
+  {label:'Faster onboarding',desc:'Shared lab templates from day one'},
+  {label:'Lower cloud cost',desc:'Sandbox accounts auto-expire'},
+  {label:'Consistent grading',desc:'Same rubric across cohorts'},
+  {label:'Setup effort',desc:'Two weeks to build the templates',group:'con'},
+  {label:'Less flexibility',desc:'Custom stacks need approval',group:'con'}],minHeight:470}),
+ deckCall('Proceed with shared lab templates; budget two weeks of setup before the next intake.','Recommendation',4)
+]);
+deckAddExample('Root causes · iceberg','options.visible sets how many nodes sit above the waterline',[
+ deckVis('iceberg',undefined,12,{options:{visible:1,labels:['WHAT WE SEE','WHAT DRIVES IT']},nodes:['Low lab completion','Unclear lab instructions','No feedback loop','Environment setup friction','Scheduling conflicts'],minHeight:470})
+]);
+// Registry variants that had no sample slide yet.
+[
+ ['pie','Budget split · pie','Part-to-whole with few categories','tracks'],
+ ['bullet','Goal attainment · bullet','Bars against a fixed target marker','skills'],
+ ['slope','Before / after · slope','Change between two points in time','tracks'],
+ ['waffle','Composition · waffle','100-cell share of each category','tracks'],
+ ['sparkline','Trend glance · sparkline','Compact trend without axis labels','delivery'],
+ ['histogram','Score distribution · histogram','Frequency across value bands','skills']
+].forEach(([id,title,subtitle,ref])=>deckAddExample(title,subtitle,[deckVis(id,ref,12)]));
+[
+ ['hub-spoke','Partner ecosystem · hub & spoke','One centre with connected partners',['Universities','Cloud vendors','Employers','Mentors','Alumni','Community']],
+ ['lifecycle','Learner lifecycle','Repeatable stages for every cohort',['Attract','Enrol','Learn','Practise','Certify','Place']],
+ ['timeline','Delivery timeline','Horizontal milestones across the year',['Q1 plan','Q2 pilot','Q3 scale','Q4 review','Next year']],
+ ['raci','Responsibility matrix · RACI','Who is responsible, accountable, consulted, informed',['Plan','Train','Assess','Launch']],
+ ['bcg','Portfolio · BCG 2×2','Classify programmes by growth and share',['GenAI (Star)','Security (Question)','CloudOps (Cash cow)','Legacy ops (Dog)']],
+ ['bowtie','Risk bowtie','Causes on the left, consequences on the right',['Lab outage','Mentor shortage','Late content','Missed milestone','Lower NPS','Partner churn']]
+].forEach(([id,title,desc,labels])=>deckAddExample(title,desc,[deckVis(id,undefined,12,{nodes:labels.map((label,i)=>({id:'node-'+i,label})),maxNodes:12})]));
 slides.push(...DECK_DEMO_SLIDES);
 
 function deckOpenLibrary(){const m=document.getElementById('v1-visual-modal');m.classList.remove('hidden');deckFilterLibrary();}

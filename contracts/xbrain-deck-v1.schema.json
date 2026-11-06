@@ -574,7 +574,10 @@
         "waffle",
         "range-bar",
         "dumbbell",
-        "marimekko"
+        "marimekko",
+        "combo",
+        "stacked-100",
+        "diverging-bar"
       ]
     },
     "diagramVariant": {
@@ -609,6 +612,9 @@
         "range-bar",
         "dumbbell",
         "marimekko",
+        "combo",
+        "stacked-100",
+        "diverging-bar",
         "flowchart",
         "decision-tree",
         "process-pipeline",
@@ -634,6 +640,7 @@
         "cycle",
         "fishbone",
         "bowtie",
+        "vertical-timeline",
         "org-chart",
         "tree",
         "mindmap",
@@ -665,7 +672,9 @@
         "quadrant",
         "portfolio",
         "okrs",
-        "radial-tree"
+        "radial-tree",
+        "pros-cons",
+        "iceberg"
       ]
     },
     "componentType": {
