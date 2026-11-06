@@ -4099,7 +4099,6 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
       return typeof value === 'string' ? escapeHtml(value) : value;
     }
     /* XBrain v2 diagram engine: offline SVG, data-driven from slide.content. */
-    const DIAGRAM_TYPES=new Set(['process-flow','conversion-funnel','cycle-loop','strategy-pyramid','decision-matrix','org-chart','swimlane','hub-spoke','learner-journey','layered-architecture','sankey-flow','heatmap']);
     const DG_COLORS=['#F97C00','#25AC9D','#007BC1','#85439A','#F6AF2F','#425453'];
     const dgN=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
     const dgClamp=(v,min,max)=>Math.max(min,Math.min(max,dgN(v)));
@@ -4121,6 +4120,7 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
     function dgSankey(c){let left=(c.sources||[]).slice(0,4),right=(c.targets||[]).slice(0,4),links=(c.links||[]).slice(0,15),o='',Y=(i,n)=>56+i*(474/Math.max(1,n-1));links.forEach((l,i)=>{let a=Math.trunc(dgN(l.from,-1)),b=Math.trunc(dgN(l.to,-1));if(a<0||b<0||a>=left.length||b>=right.length)return;let y1=Y(a,left.length),y2=Y(b,right.length),width=Math.max(10,dgClamp(l.value,2,70)*1.4);o+=`<path d="M330 ${y1} C650 ${y1},1050 ${y2},1370 ${y2}" stroke="${DG_COLORS[a%5]}" stroke-width="${width}" stroke-opacity=".27" stroke-linecap="round" fill="none"/>`;});left.forEach((t,i)=>{let y=Y(i,left.length),k=DG_COLORS[i%5];o+=dgR(24,y-47,306,95,k,'none',16)+dgT(177,y+7,t.label,23,'white','middle',24,2);});right.forEach((t,i)=>{let y=Y(i,right.length);o+=dgR(1370,y-47,326,95,'white','#D6E3DC',16)+dgT(1533,y+7,t.label,22,'#425453','middle',26,2);});return o;}
     function dgHeat(c){let cols=(c.columns||[]).slice(0,7),rows=(c.rows||[]).slice(0,6),x0=318,y0=102,cw=182,ch=72,colors=['#F1F4F2','#DFEEE8','#B4E6D5','#7FD7BB','#25AC9D','#166C62'],o='';cols.forEach((t,j)=>{o+=dgT(x0+j*cw+cw/2,y0-26,t,20,'#566B65','middle',14,1);});rows.forEach((t,i)=>{let y=y0+i*84;o+=dgT(56,y+46,t.label,23,'#425453','start',20,1);(t.values||[]).slice(0,cols.length).forEach((v,j)=>{let n=Math.round(dgClamp(v,0,5)),x=x0+j*cw;o+=dgR(x+4,y,cw-11,ch,colors[n],'none',12)+dgT(x+cw/2,y+46,n,24,n>3?'white':'#425453','middle');});});o+=dgT(1180,577,'0 = Not ready      5 = Advanced',20,'#70827D','start',43,1,500);return o;}
     const DIAGRAM_RENDERERS = Object.freeze({'process-flow':dgProcess, 'conversion-funnel':dgFunnel, 'cycle-loop':dgCycle, 'strategy-pyramid':dgPyramid, 'decision-matrix':dgMatrix, 'org-chart':dgOrg, 'swimlane':dgSwim, 'hub-spoke':dgHub, 'learner-journey':dgJourney, 'layered-architecture':dgLayers, 'sankey-flow':dgSankey, 'heatmap':dgHeat});
+    const DIAGRAM_TYPES = new Set(Object.keys(DIAGRAM_RENDERERS));
     function renderDiagramSlide(slide,index){
       const content=escapedContent(slide.content||{});
       return dgPage(content,index,DIAGRAM_RENDERERS[slide.type](content));
@@ -4161,13 +4161,12 @@ const DECK_DEFAULT_CONFIG={version:'1.0',releaseVersion:'1.0.0',theme:{preset:'x
  },assets:{},customCss:'',metadata:{name:'XBrain Presentation System v1.0.0',note:'All numeric examples are illustrative, not verified performance metrics.'}};
 let DECK_CONFIG=JSON.parse(JSON.stringify(DECK_DEFAULT_CONFIG));
 const DECK_DATA_CACHE=new Map();
-const DECK_RUNTIME_WARNINGS=[];
 
 function deckSafe(s){return escapeHtml(String(s==null?'':s));}
 function deckNum(n,d=0){let x=Number(n);return Number.isFinite(x)?x:d;}
 function deckClamp(n,a,b){return Math.max(a,Math.min(b,n));}
 // DataResolver keeps format parsing, transforms and cache behind one interface.
-function createDataResolver({getConfig, cache, warnings, getYaml, fetchData}) {
+function createDataResolver({getConfig, cache, getYaml, fetchData}) {
 function deckCSV(text,delimiter=','){
  const out=[];let row=[],cell='',quoted=false;const t=String(text??'').replace(/^\uFEFF/,'');
  for(let i=0;i<t.length;i++){let c=t[i];if(c==='"'){if(quoted&&t[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}
@@ -4204,7 +4203,7 @@ function deckSource(key){
   if(format==='json')return typeof value==='string'?JSON.parse(value):value;
   if(format==='markdown'||format==='html'||format==='svg'||format==='text')return value;
   return value;
- }catch(e){warnings.push('Dataset parsing: '+e.message);return[];}
+ }catch(e){console.warn('Dataset parsing:',e.message);return[];}
 }
 function deckData(comp){let raw=comp.dataRef||comp.data?.$ref||comp.dataset||comp.data;
  if(raw&&typeof raw==='object'&&raw.$ref)raw=raw.$ref;
@@ -4238,9 +4237,9 @@ function deckRows(data){return(data||[]).map((r,i)=>{
   }
   return lines;
  }
- return {parseCSV:deckCSV, parseYAML:deckYAML, resolve:deckSource, data:deckData, rows:deckRows, reloadRemote};
+ return {data:deckData, rows:deckRows, reloadRemote};
 }
-const DataResolver = createDataResolver({getConfig:()=>DECK_CONFIG, cache:DECK_DATA_CACHE, warnings:DECK_RUNTIME_WARNINGS, getYaml:()=>window.jsyaml, fetchData:(...args)=>fetch(...args)});
+const DataResolver = createDataResolver({getConfig:()=>DECK_CONFIG, cache:DECK_DATA_CACHE, getYaml:()=>window.jsyaml, fetchData:(...args)=>fetch(...args)});
 const deckData=DataResolver.data, deckRows=DataResolver.rows;
 async function deckReloadRemote(){
  const lines=await DataResolver.reloadRemote();
@@ -4401,55 +4400,57 @@ function deckMarkdown(src){const raw=deckSafe(src||'');const lines=raw.split(/\r
  if(inList)out+='</ul>';return out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>');}
 function deckStyle(obj={}){return Object.entries(obj||{}).filter(([k,v])=>v!=null).map(([k,v])=>{let css=k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase());let value=typeof v==='number'&&/^(fontSize|width|height|margin|marginTop|padding|borderRadius|gap|minHeight|maxHeight|top|left)$/.test(k)?v+'px':String(v);return `${css}:${value.replace(/["<>]/g,'')}`;}).join(';');}
 function deckTable(c){let rows=deckData(c);if(!Array.isArray(rows))rows=[];let cols=c.columns||Object.keys(rows[0]||{}).slice(0,6);return `<table class="v3-table"><thead><tr>${cols.map(k=>`<th>${deckSafe(typeof k==='object'?k.label:k)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0,12).map(r=>`<tr>${cols.map(k=>`<td>${deckSafe(r?.[typeof k==='object'?k.key:k]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
+// Composer types share one render contract; aliases use the same renderer.
+const COMPONENT_RENDERERS = Object.fromEntries([
+  [['title','heading'], ({c,type,children,title,data,depth})=>{let content='';content=`<h2 class="v3-heading">${deckSafe(c.text||title)}</h2>`;;return content;}],
+  [['text','paragraph'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-text">${deckSafe(c.text??c.content??'')}</div>`;;return content;}],
+  [['markdown'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-markdown">${deckMarkdown(c.markdown||c.content||c.text)}</div>`;;return content;}],
+  [['html'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-raw">${String(c.html??c.content??'')}</div>`;;return content;}],
+  [['svg'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-svg-source">${String(c.svg??c.content??'')}</div>`;;return content;}],
+  [['image'], ({c,type,children,title,data,depth})=>{let content='';content=`<img class="v3-image" alt="${deckSafe(c.alt||'Image')}" src="${deckSafe(c.src||DECK_CONFIG.assets?.[c.assetRef]||'')}"/>`;;return content;}],
+  [['link'], ({c,type,children,title,data,depth})=>{let content='';content=`<a class="v3-link" href="${deckSafe(c.href||c.url||'#')}" target="_blank" rel="noopener noreferrer">${deckSafe(c.text||c.label||c.href||'Open link')} ↗</a>`;;return content;}],
+  [['metric','kpi'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-kpi"><span>${deckSafe(title)}</span><strong>${deckSafe(c.value??data[0]?.value??'—')}</strong><small>${deckSafe(c.delta||c.subtitle||'')}</small></div>`;;return content;}],
+  [['badge'], ({c,type,children,title,data,depth})=>{let content='';content=`<span class="v3-badge">${deckSafe(c.text||title)}</span>`;;return content;}],
+  [['callout'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-callout"><strong>${deckSafe(title)}</strong><p>${deckSafe(c.text||c.content||'')}</p></div>`;;return content;}],
+  [['quote'], ({c,type,children,title,data,depth})=>{let content='';content=`<blockquote class="v3-quote">“${deckSafe(c.text||c.content||'')}”<small>${deckSafe(c.author||'')}</small></blockquote>`;;return content;}],
+  [['rule','divider'], ({c,type,children,title,data,depth})=>{let content='';content='<hr class="v3-rule">';;return content;}],
+  [['progress'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-progress"><div class="v3-progress-head"><span>${deckSafe(title)}</span><b>${deckNum(c.value)}%</b></div><div class="v3-track"><div style="width:${deckClamp(deckNum(c.value),0,100)}%;background:${deckSafe(c.color||'#F97C00')}"></div></div></div>`;;return content;}],
+  [['list'], ({c,type,children,title,data,depth})=>{let content='';content=`<ul class="v3-list">${(c.items||data.map(d=>d.label)).map(v=>`<li>${deckSafe(typeof v==='string'?v:v.label||v.text||'')}</li>`).join('')}</ul>`;;return content;}],
+  [['table'], ({c,type,children,title,data,depth})=>{let content='';content=deckTable(c);;return content;}],
+  [['icon'], ({c,type,children,title,data,depth})=>{let content='';content=`<span class="v3-icon-symbol">${deckSafe(c.symbol||c.name||'◆')}</span>`;;return content;}],
+  [['chips','tags'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-chips">${(c.items||data.map(x=>x.label)).map((t,i)=>`<span style="border-color:${DECK_COLORS[i%DECK_COLORS.length]}">${deckSafe(typeof t==='string'?t:t.label||t.text||'')}</span>`).join('')}</div>`;;return content;}],
+  [['legend'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-legend">${(c.items||data).map((x,i)=>`<span><i style="background:${deckSafe(x.color||DECK_COLORS[i%DECK_COLORS.length])}"></i>${deckSafe(typeof x==='string'?x:x.label||'Item')}</span>`).join('')}</div>`;;return content;}],
+  [['source','footnote'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-footnote">${deckSafe(c.text||c.content||title)}</div>`;;return content;}],
+  [['numbered-steps'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-steps">${(c.items||DECK_SAMPLE_NODES.map(x=>x.label)).map((x,i)=>`<div><em>${String(i+1).padStart(2,'0')}</em><span>${deckSafe(typeof x==='string'?x:x.label||x.title||'')}</span></div>`).join('')}</div>`;;return content;}],
+  [['timeline'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-timeline">${(c.items||DECK_SAMPLE_NODES).map((x,i)=>`<div class="v3-time-item"><span>${deckSafe(x.date||x.when||String(i+1).padStart(2,'0'))}</span><strong>${deckSafe(typeof x==='string'?x:x.label||x.title||'')}</strong></div>`).join('')}</div>`;;return content;}],
+  [['image-card'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-imgcard"><img src="${deckSafe(c.src||DECK_CONFIG.assets?.[c.assetRef]||'')}" alt="${deckSafe(c.alt||'Slide photograph')}"/><strong>${deckSafe(title)}</strong><span>${deckSafe(c.text||'')}</span></div>`;;return content;}],
+  [['link-card'], ({c,type,children,title,data,depth})=>{let content='';content=`<a class="v3-nested-card v3-link-card" target="_blank" rel="noopener noreferrer" href="${deckSafe(c.href||c.url||'#')}"><strong>${deckSafe(title)}</strong><span>${deckSafe(c.text||c.href||'')}</span><b>↗</b></a>`;;return content;}],
+  [['avatar'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-avatar"><span>${deckSafe((c.initials||title||'XB').slice(0,3))}</span><strong>${deckSafe(title)}</strong><small>${deckSafe(c.text||c.role||'')}</small></div>`;;return content;}],
+  [['stat-grid'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-stat-grid">${(c.items||data).map((x,i)=>`<div><span>${deckSafe(x.label)}</span><strong>${deckSafe(x.value)}</strong></div>`).join('')}</div>`;;return content;}],
+  [['scorecard'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-scorecard"><strong>${deckSafe(title||'Scorecard')}</strong>${(c.items||data).map((x,i)=>`<div><span>${deckSafe(x.label)}</span><b>${deckSafe(x.value)}</b></div>`).join('')}</div>`;;return content;}],
+  [['rating'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-rating"><strong>${deckSafe(title)}</strong><span>${'★'.repeat(deckClamp(Math.round(deckNum(c.value)),0,5))}${'☆'.repeat(5-deckClamp(Math.round(deckNum(c.value)),0,5))}</span></div>`;;return content;}],
+  [['button'], ({c,type,children,title,data,depth})=>{let content='';content=`<a class="v3-action" href="${deckSafe(c.href||'#')}">${deckSafe(c.text||title||'View more')} ↗</a>`;;return content;}],
+  [['video'], ({c,type,children,title,data,depth})=>{let content='';content=`<video controls poster="${deckSafe(c.poster||'')}" src="${deckSafe(c.src||'')}" style="height:100%;width:100%;object-fit:contain"></video>`;;return content;}],
+  [['iframe'], ({c,type,children,title,data,depth})=>{let content='';content=`<iframe title="${deckSafe(title||'Embedded content')}" src="${deckSafe(c.src||'')}" style="width:100%;height:100%;border:0" loading="lazy"></iframe>`;;return content;}],
+  [['shape'], ({c,type,children,title,data,depth})=>{let content='';content=`<div style="width:100%;height:100%;background:${deckSafe(c.color||'#F97C00')};border-radius:${deckSafe(c.radius||'18px')}"></div>`;;return content;}],
+  [['spacer'], ({c,type,children,title,data,depth})=>{let content='';content='';;return content;}],
+  [['chart-card'], ({c,type,children,title,data,depth})=>{let content='';content=`<div class="v3-chart-card"><strong>${deckSafe(title)}</strong>${deckChart(c)}</div>`;;return content;}],
+  [['code'], ({c,type,children,title,data,depth})=>{let content='';content=`<pre class="v3-code">${deckSafe(c.code||c.text||'')}</pre>`;;return content;}],
+  [['chart'], ({c,type,children,title,data,depth})=>{let content='';content=deckChart(c);;return content;}],
+  [['diagram'], ({c,type,children,title,data,depth})=>{let content='';content=DECK_DESCRIPTORS.chart[c.variant]?deckChart(c):deckDiagram(c);;return content;}],
+  [['mermaid'], ({c,type,children,title,data,depth})=>{let content='';{
+   const source=String(c.source||'flowchart LR\n A[Start] --> B[End]');
+   content=`<div class="v3-library v3-mermaid" data-source="${deckSafe(encodeURIComponent(source))}"><div class="v3-fallback">${deckDiagram({...c,variant:'flowchart'})}</div><div class="v3-enhanced"></div></div>`;};return content;}],
+  [['echarts'], ({c,type,children,title,data,depth})=>{let content='';{
+   const cfg=JSON.stringify(c.options||c.option||{});content=`<div class="v3-library v3-echarts" data-option="${deckSafe(encodeURIComponent(cfg))}"><div class="v3-fallback">${deckChart({...c,variant:c.fallback||'bar'})}</div><div class="v3-enhanced"></div></div>`;};return content;}],
+  [['grid','columns','row','stack','card','group'], ({c,type,children,title,data,depth})=>{let content='';{
+   const cls=type==='row'?'v3-row':type==='stack'?'v3-stack':type==='card'?'v3-nested-card':'v3-nested-grid';const ncols=deckClamp(Number(c.columns)||2,1,6);
+   content=`<div class="${cls}" style="${type==='grid'||type==='columns'?'grid-template-columns:repeat('+ncols+',minmax(0,1fr));':''}">${children.map(x=>deckComponent(x,depth+1)).join('')}</div>`;};return content;}]
+].flatMap(([names,render])=>names.map(name=>[name,render])));
 function deckComponent(c,depth=0){
  if(!c||depth>7)return'';let type=c.type||'text',children=c.children||c.components||[];let title=c.title||c.label||'',data=deckRows(deckData(c));
- let content='';switch(type){
-  case 'title': case 'heading':content=`<h2 class="v3-heading">${deckSafe(c.text||title)}</h2>`;break;
-  case 'text': case 'paragraph':content=`<div class="v3-text">${deckSafe(c.text??c.content??'')}</div>`;break;
-  case 'markdown':content=`<div class="v3-markdown">${deckMarkdown(c.markdown||c.content||c.text)}</div>`;break;
-  case 'html':content=`<div class="v3-raw">${String(c.html??c.content??'')}</div>`;break;
-  case 'svg':content=`<div class="v3-svg-source">${String(c.svg??c.content??'')}</div>`;break;
-  case 'image':content=`<img class="v3-image" alt="${deckSafe(c.alt||'Image')}" src="${deckSafe(c.src||DECK_CONFIG.assets?.[c.assetRef]||'')}"/>`;break;
-  case 'link':content=`<a class="v3-link" href="${deckSafe(c.href||c.url||'#')}" target="_blank" rel="noopener noreferrer">${deckSafe(c.text||c.label||c.href||'Open link')} ↗</a>`;break;
-  case 'metric':case 'kpi':content=`<div class="v3-kpi"><span>${deckSafe(title)}</span><strong>${deckSafe(c.value??data[0]?.value??'—')}</strong><small>${deckSafe(c.delta||c.subtitle||'')}</small></div>`;break;
-  case 'badge':content=`<span class="v3-badge">${deckSafe(c.text||title)}</span>`;break;
-  case 'callout':content=`<div class="v3-callout"><strong>${deckSafe(title)}</strong><p>${deckSafe(c.text||c.content||'')}</p></div>`;break;
-  case 'quote':content=`<blockquote class="v3-quote">“${deckSafe(c.text||c.content||'')}”<small>${deckSafe(c.author||'')}</small></blockquote>`;break;
-  case 'rule':case 'divider':content='<hr class="v3-rule">';break;
-  case 'progress':content=`<div class="v3-progress"><div class="v3-progress-head"><span>${deckSafe(title)}</span><b>${deckNum(c.value)}%</b></div><div class="v3-track"><div style="width:${deckClamp(deckNum(c.value),0,100)}%;background:${deckSafe(c.color||'#F97C00')}"></div></div></div>`;break;
-  case 'list':content=`<ul class="v3-list">${(c.items||data.map(d=>d.label)).map(v=>`<li>${deckSafe(typeof v==='string'?v:v.label||v.text||'')}</li>`).join('')}</ul>`;break;
-  case 'table':content=deckTable(c);break;
-  case 'icon':content=`<span class="v3-icon-symbol">${deckSafe(c.symbol||c.name||'◆')}</span>`;break;
-  case 'chips':case 'tags':content=`<div class="v3-chips">${(c.items||data.map(x=>x.label)).map((t,i)=>`<span style="border-color:${DECK_COLORS[i%DECK_COLORS.length]}">${deckSafe(typeof t==='string'?t:t.label||t.text||'')}</span>`).join('')}</div>`;break;
-  case 'legend':content=`<div class="v3-legend">${(c.items||data).map((x,i)=>`<span><i style="background:${deckSafe(x.color||DECK_COLORS[i%DECK_COLORS.length])}"></i>${deckSafe(typeof x==='string'?x:x.label||'Item')}</span>`).join('')}</div>`;break;
-  case 'source':case 'footnote':content=`<div class="v3-footnote">${deckSafe(c.text||c.content||title)}</div>`;break;
-  case 'numbered-steps':content=`<div class="v3-steps">${(c.items||DECK_SAMPLE_NODES.map(x=>x.label)).map((x,i)=>`<div><em>${String(i+1).padStart(2,'0')}</em><span>${deckSafe(typeof x==='string'?x:x.label||x.title||'')}</span></div>`).join('')}</div>`;break;
-  case 'timeline':content=`<div class="v3-timeline">${(c.items||DECK_SAMPLE_NODES).map((x,i)=>`<div class="v3-time-item"><span>${deckSafe(x.date||x.when||String(i+1).padStart(2,'0'))}</span><strong>${deckSafe(typeof x==='string'?x:x.label||x.title||'')}</strong></div>`).join('')}</div>`;break;
-  case 'image-card':content=`<div class="v3-imgcard"><img src="${deckSafe(c.src||DECK_CONFIG.assets?.[c.assetRef]||'')}" alt="${deckSafe(c.alt||'Slide photograph')}"/><strong>${deckSafe(title)}</strong><span>${deckSafe(c.text||'')}</span></div>`;break;
-  case 'link-card':content=`<a class="v3-nested-card v3-link-card" target="_blank" rel="noopener noreferrer" href="${deckSafe(c.href||c.url||'#')}"><strong>${deckSafe(title)}</strong><span>${deckSafe(c.text||c.href||'')}</span><b>↗</b></a>`;break;
-  case 'avatar':content=`<div class="v3-avatar"><span>${deckSafe((c.initials||title||'XB').slice(0,3))}</span><strong>${deckSafe(title)}</strong><small>${deckSafe(c.text||c.role||'')}</small></div>`;break;
-  case 'stat-grid':content=`<div class="v3-stat-grid">${(c.items||data).map((x,i)=>`<div><span>${deckSafe(x.label)}</span><strong>${deckSafe(x.value)}</strong></div>`).join('')}</div>`;break;
-  case 'scorecard':content=`<div class="v3-scorecard"><strong>${deckSafe(title||'Scorecard')}</strong>${(c.items||data).map((x,i)=>`<div><span>${deckSafe(x.label)}</span><b>${deckSafe(x.value)}</b></div>`).join('')}</div>`;break;
-  case 'rating':content=`<div class="v3-rating"><strong>${deckSafe(title)}</strong><span>${'★'.repeat(deckClamp(Math.round(deckNum(c.value)),0,5))}${'☆'.repeat(5-deckClamp(Math.round(deckNum(c.value)),0,5))}</span></div>`;break;
-  case 'button':content=`<a class="v3-action" href="${deckSafe(c.href||'#')}">${deckSafe(c.text||title||'View more')} ↗</a>`;break;
-  case 'video':content=`<video controls poster="${deckSafe(c.poster||'')}" src="${deckSafe(c.src||'')}" style="height:100%;width:100%;object-fit:contain"></video>`;break;
-  case 'iframe':content=`<iframe title="${deckSafe(title||'Embedded content')}" src="${deckSafe(c.src||'')}" style="width:100%;height:100%;border:0" loading="lazy"></iframe>`;break;
-  case 'shape':content=`<div style="width:100%;height:100%;background:${deckSafe(c.color||'#F97C00')};border-radius:${deckSafe(c.radius||'18px')}"></div>`;break;
-  case 'spacer':content='';break;
-  case 'chart-card':content=`<div class="v3-chart-card"><strong>${deckSafe(title)}</strong>${deckChart(c)}</div>`;break;
-  case 'code':content=`<pre class="v3-code">${deckSafe(c.code||c.text||'')}</pre>`;break;
-  case 'chart':content=deckChart(c);break;
-  case 'diagram':content=DECK_DESCRIPTORS.chart[c.variant]?deckChart(c):deckDiagram(c);break;
-  case 'mermaid':{
-   const source=String(c.source||'flowchart LR\n A[Start] --> B[End]');
-   content=`<div class="v3-library v3-mermaid" data-source="${deckSafe(encodeURIComponent(source))}"><div class="v3-fallback">${deckDiagram({...c,variant:'flowchart'})}</div><div class="v3-enhanced"></div></div>`;break;}
-  case 'echarts':{
-   const cfg=JSON.stringify(c.options||c.option||{});content=`<div class="v3-library v3-echarts" data-option="${deckSafe(encodeURIComponent(cfg))}"><div class="v3-fallback">${deckChart({...c,variant:c.fallback||'bar'})}</div><div class="v3-enhanced"></div></div>`;break;}
-  case 'grid':case 'columns':case 'row':case 'stack':case 'card':case 'group':{
-   const cls=type==='row'?'v3-row':type==='stack'?'v3-stack':type==='card'?'v3-nested-card':'v3-nested-grid';const ncols=deckClamp(Number(c.columns)||2,1,6);
-   content=`<div class="${cls}" style="${type==='grid'||type==='columns'?'grid-template-columns:repeat('+ncols+',minmax(0,1fr));':''}">${children.map(x=>deckComponent(x,depth+1)).join('')}</div>`;break;}
-  default:content=`<div class="v3-callout">Unknown component: ${deckSafe(type)}</div>`;
- }
+ const renderer=COMPONENT_RENDERERS[type];
+ const content=renderer?renderer({c,type,children,title,data,depth}):`<div class="v3-callout">Unknown component: ${deckSafe(type)}</div>`;
  const style=deckStyle(c.style),pos=c.position||{},isAbs=pos.x!=null||pos.y!=null;let placement='';
  if(isAbs)placement=`position:absolute;left:${deckNum(pos.x)}px;top:${deckNum(pos.y)}px;width:${deckNum(pos.width,520)}px;height:${deckNum(pos.height,340)}px;`;
  else placement=`grid-column:span ${deckClamp(Number(c.span)||((type==='diagram'||type==='chart'||type==='mermaid'||type==='echarts')?12:6),1,12)};height:${deckNum(c.height??c.minHeight,180)}px;max-height:${deckNum(c.height??c.minHeight,180)}px;min-height:0;`;
