@@ -18,12 +18,14 @@
    node tools/xbrain.mjs pipeline deck.json -o deck.html   repair → qa → static build (+ .repaired.json, .qa.json)
 
  Options: --trusted (execute layouts/helpers; default untrusted) --lenient (allow legacy sample data)
+          --prefetch (fetch and embed dataset snapshots before entering the VM; explicit opt-in)
           --json (machine-readable output) --html <runtime.html> --timeout <ms>
  Exit code: 0 = no errors, 1 = errors remain, 2 = usage / IO / version problem.
 */
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -131,9 +133,56 @@ function report(result, flags, extra = '') {
   return `${formatDiagnostics(result.diagnostics || [])}\n${extra}${s.slides != null ? `slides ${s.slides} · ` : ''}errors ${s.errors ?? (result.diagnostics || []).filter(d => d.severity === 'error').length} · warnings ${s.warnings ?? (result.diagnostics || []).filter(d => d.severity === 'warning').length}${s.score != null ? ` · score ${Math.round(s.score)}` : ''}${result.hash ? ` · build ${result.hash}` : ''}\n`;
 }
 
-export function main(argv = process.argv.slice(2)) {
+// Network I/O stays outside node:vm. Only serializable snapshot text enters the runtime.
+export async function prefetchDeck(input, { fetchData = fetch } = {}) {
+  const deck = structuredClone(input);
+  if (Array.isArray(deck) || deck?.version !== '1.0') return deck; // version gate precedes all I/O
+  const cache = new Map();
+  for (const def of Object.values(deck.datasets || {})) {
+    if (!def || typeof def !== 'object' || !def.url || def.value !== undefined || def.data !== undefined) continue;
+    const url = new URL(def.url);
+    if (!['http:', 'https:'].includes(url.protocol)) throw new Error('prefetch requires an HTTP(S) dataset URL');
+    if (!cache.has(def.url)) {
+      const response = await fetchData(def.url, { signal: AbortSignal.timeout(15000) });
+      if (!response.ok) throw new Error(`prefetch ${def.url}: HTTP ${response.status}`);
+      const value = await response.text();
+      cache.set(def.url, { value, sha256: createHash('sha256').update(value).digest('hex') });
+    }
+    const { value, sha256 } = cache.get(def.url);
+    def.value = value;
+    // Persist the inferred format, so replaying the snapshot never depends on network headers.
+    def.type ??= def.format ?? (/\.csv(?:\?|$)/i.test(def.url) ? 'csv' : /\.tsv(?:\?|$)/i.test(def.url) ? 'tsv' : /\.ya?ml(?:\?|$)/i.test(def.url) ? 'yaml' : 'json');
+    def.snapshot = { sha256 };
+  }
+  return deck;
+}
+
+function addBrowserQA(result, measurement) {
+  const {available, error, diagnostics=[]} = measurement;
+  result.browser = {measured: !!available && !error, findings: diagnostics.length, ...(error ? {error} : {})};
+  if (!available) result.diagnostics.push({code:'qa.browser-unavailable',severity:'warning',path:'',message:'Browser QA skipped: set CHROME_PATH to a Chrome/Edge executable'});
+  else if (error) result.diagnostics.push({code:'qa.browser-failed',severity:'error',path:'',message:'Browser QA failed: '+error});
+  else result.diagnostics.push(...diagnostics);
+  const counts=severity=>result.diagnostics.filter(d=>d.severity===severity).length;
+  result.summary = {...result.summary,errors:counts('error'),warnings:counts('warning'),info:counts('info'),
+    score:Math.max(0,100-(counts('error')*25+counts('warning')*4)/Math.max(1,result.summary.slides))};
+  if(Array.isArray(result.slides))for(const slide of result.slides){
+    const base='/slides/'+slide.index,list=result.diagnostics.filter(d=>d.path===base||d.path.startsWith(base+'/'));
+    const n=severity=>list.filter(d=>d.severity===severity).length;
+    Object.assign(slide,{errors:n('error'),warnings:n('warning'),info:n('info'),score:Math.max(0,100-n('error')*25-n('warning')*4)});
+  }
+  result.ok=result.summary.errors===0;
+  return result;
+}
+
+export async function main(argv = process.argv.slice(2)) {
   const { _: [cmd, file], flags } = parseArgs(argv);
   const opts = { strict: !flags.lenient, trust: flags.trusted ? 'trusted' : 'untrusted' };
+  if (flags.prefetch && flags.offline) throw new Error('--prefetch and --offline cannot be combined');
+  const readInput = async () => {
+    const deck = readDeck(file);
+    return flags.prefetch ? prefetchDeck(deck) : deck;
+  };
   if (!cmd || cmd === 'help' || flags.help) { process.stdout.write(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\*\n?/, '') + '\n'); return 0; }
   const rt = loadRuntime({ htmlFile: flags.html || DEFAULT_HTML, trusted: !!flags.trusted, timeout: Number(flags.timeout) || 30000 });
   const staticHtml = (compiled, title) => rt.call('staticPage', compiled, { css: rt.parts.css, sprite: rt.parts.sprite, fonts: flags.offline ? '' : rt.parts.fonts, title });
@@ -149,59 +198,55 @@ export function main(argv = process.argv.slice(2)) {
       if (flags.write) { fs.writeFileSync(SCHEMA_FILE, text); process.stdout.write(`wrote ${path.relative(ROOT, SCHEMA_FILE)}\n`); } else write(flags.out, text);
       return 0;
     }
-    case 'validate': { const r = rt.call('validate', readDeck(file), opts); write(flags.out, report(r, flags)); return r.diagnostics.some(d => d.code === 'version.unsupported') ? 2 : errorsIn(r) ? 1 : 0; }
+    case 'validate': { const r = rt.call('validate', await readInput(), opts); write(flags.out, report(r, flags)); return r.diagnostics.some(d => d.code === 'version.unsupported') ? 2 : errorsIn(r) ? 1 : 0; }
     case 'qa': {
-      const deck = readDeck(file); const r = rt.call('qa', deck, opts); let extra = '';
+      const deck = await readInput(); const r = rt.call('qa', deck, opts);
       if (flags.browser) {
         const compiled = rt.call('compile', deck, opts);
-        const m = browserMeasure(staticHtml(compiled), rt.call('measureSource'));
-        if (!m.available) extra = 'browser QA skipped: no Chrome/Edge found (set CHROME_PATH)\n';
-        else if (m.error) extra = `browser QA failed: ${m.error}\n`;
-        else { r.diagnostics.push(...m.diagnostics); r.summary.warnings += m.diagnostics.length; r.browser = { measured: true, findings: m.diagnostics.length }; }
+        addBrowserQA(r,browserMeasure(staticHtml(compiled), rt.call('measureSource')));
       }
-      write(flags.out, report(r, flags, extra)); return r.diagnostics.some(d => d.code === 'version.unsupported') ? 2 : errorsIn(r) ? 1 : 0;
+      write(flags.out, report(r, flags)); return r.diagnostics.some(d => d.code === 'version.unsupported') ? 2 : errorsIn(r) ? 1 : 0;
     }
     case 'repair': {
-      const r = rt.call('repair', readDeck(file), opts);
+      const r = rt.call('repair', await readInput(), opts);
       if (flags.out) fs.writeFileSync(flags.out, JSON.stringify(r.document, null, 2) + '\n');
       const changes = r.changes.map(c => `+ ${c.action.padEnd(11)} ${c.path || '/'}  ${c.from !== undefined ? JSON.stringify(c.from) + ' → ' : ''}${c.to !== undefined ? JSON.stringify(c.to) + '  ' : ''}(${c.reason})`).join('\n');
       process.stdout.write(flags.json ? JSON.stringify(flags.out ? { ...r, document: undefined, written: flags.out } : r, null, 2) + '\n' : `${changes}${changes ? '\n' : ''}${report(r, {})}`);
       return r.diagnostics.some(d => d.code === 'version.unsupported') ? 2 : errorsIn(r) ? 1 : 0;
     }
-    case 'compile': { const r = rt.call('compile', readDeck(file), opts); write(flags.out, JSON.stringify(r, null, 2) + '\n'); if (flags.out) process.stdout.write(report(r, {})); return errorsIn(r) ? 1 : 0; }
+    case 'compile': { const r = rt.call('compile', await readInput(), opts); write(flags.out, JSON.stringify(r, null, 2) + '\n'); if (flags.out) process.stdout.write(report(r, {})); return errorsIn(r) ? 1 : 0; }
     case 'render': {
-      const deck = readDeck(file); const r = rt.call('compile', deck, opts); const n = Number(flags.slide ?? 1) - 1;
+      const deck = await readInput(); const r = rt.call('compile', deck, opts); const n = Number(flags.slide ?? 1) - 1;
       if (!r.slides[n]) throw Object.assign(new Error(`slide ${n + 1} does not exist (deck has ${r.slides.length})`), { exit: 2 });
       write(flags.out, staticHtml({ ...r, slides: [r.slides[n]] })); if (flags.out) process.stdout.write(report({ ...r, diagnostics: r.slides[n].diagnostics, summary: undefined }, {}));
       return errorsIn({ diagnostics: r.slides[n].diagnostics }) ? 1 : 0;
     }
     case 'build': {
-      const deck = readDeck(file); const r = rt.call('compile', deck, opts);
+      const deck = await readInput(); const r = rt.call('compile', deck, opts);
       if (!flags.out) throw Object.assign(new Error('build needs -o <file.html>'), { exit: 2 });
       write(flags.out, flags.app ? appHtml(deck) : staticHtml(r));
       process.stdout.write(report(r, {}, `wrote ${flags.out} (${flags.app ? 'editable app with embedded deck' : 'static, script-free slides'})\n`));
       return errorsIn(r) ? 1 : 0;
     }
     case 'pipeline': {
-      const deck = readDeck(file); const fixed = rt.call('repair', deck, opts);
+      const deck = await readInput(); const fixed = rt.call('repair', deck, opts);
       if (fixed.diagnostics.some(d => d.code === 'version.unsupported')) { process.stdout.write(report(fixed, flags)); return 2; }
       const compiled = rt.call('compile', fixed.document, opts);
       const out = flags.out || file.replace(/\.json$/i, '') + '.html';
       const base = out.replace(/\.html?$/i, '');
       write(out, staticHtml(compiled));
       fs.writeFileSync(base + '.repaired.json', JSON.stringify(fixed.document, null, 2) + '\n');
-      let measured = [];
-      if (flags.browser) { const m = browserMeasure(staticHtml(compiled), rt.call('measureSource')); measured = m.diagnostics || []; }
-      const qa = { ok: compiled.ok && !measured.length, hash: compiled.hash, changes: fixed.changes, summary: compiled.summary, diagnostics: [...compiled.diagnostics, ...measured] };
+      const qa = {ok:compiled.ok,hash:compiled.hash,changes:fixed.changes,summary:compiled.summary,diagnostics:compiled.diagnostics.slice()};
+      if(flags.browser)addBrowserQA(qa,browserMeasure(staticHtml(compiled),rt.call('measureSource')));
       fs.writeFileSync(base + '.qa.json', JSON.stringify(qa, null, 2) + '\n');
       process.stdout.write(flags.json ? JSON.stringify(qa, null, 2) + '\n' : `${fixed.changes.length} repair(s) applied\n${report(qa, {}, `wrote ${out}, ${base}.repaired.json, ${base}.qa.json\n`)}`);
-      return errorsIn(compiled) ? 1 : 0;
+      return errorsIn(qa) ? 1 : 0;
     }
     default: throw Object.assign(new Error(`unknown command "${cmd}" (run: node tools/xbrain.mjs help)`), { exit: 2 });
   }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  try { process.exitCode = main(); }
+  try { process.exitCode = await main(); }
   catch (e) { process.stderr.write(`xbrain: ${e.message}\n`); process.exitCode = e.exit || 2; }
 }

@@ -1,0 +1,480 @@
+{
+  "version": "1.0",
+  "releaseVersion": "1.0.0",
+  "datasets": {
+    "districts": [
+      {
+        "label": "District-00",
+        "value": 0
+      },
+      {
+        "label": "District-01",
+        "value": 1
+      },
+      {
+        "label": "District-02",
+        "value": 2
+      },
+      {
+        "label": "District-03",
+        "value": 3
+      },
+      {
+        "label": "District-04",
+        "value": 4
+      },
+      {
+        "label": "District-05",
+        "value": 5
+      },
+      {
+        "label": "District-06",
+        "value": 6
+      },
+      {
+        "label": "District-07",
+        "value": 7
+      },
+      {
+        "label": "District-08",
+        "value": 8
+      },
+      {
+        "label": "District-09",
+        "value": 9
+      },
+      {
+        "label": "District-10",
+        "value": 10
+      },
+      {
+        "label": "District-11",
+        "value": 11
+      },
+      {
+        "label": "District-12",
+        "value": 12
+      },
+      {
+        "label": "District-13",
+        "value": 13
+      },
+      {
+        "label": "District-14",
+        "value": 14
+      },
+      {
+        "label": "District-15",
+        "value": 15
+      },
+      {
+        "label": "District-16",
+        "value": 16
+      },
+      {
+        "label": "District-17",
+        "value": 17
+      },
+      {
+        "label": "District-18",
+        "value": 18
+      },
+      {
+        "label": "District-19",
+        "value": 19
+      },
+      {
+        "label": "District-20",
+        "value": 20
+      },
+      {
+        "label": "District-21",
+        "value": 21
+      },
+      {
+        "label": "District-22",
+        "value": 22
+      },
+      {
+        "label": "District-23",
+        "value": 23
+      },
+      {
+        "label": "District-24",
+        "value": 24
+      }
+    ],
+    "base": [
+      {
+        "label": "A",
+        "key": "a",
+        "before": 10,
+        "after": 20
+      },
+      {
+        "label": "B",
+        "key": "b",
+        "before": 8,
+        "after": 12
+      }
+    ],
+    "targets": [
+      {
+        "id": "a",
+        "target": 40
+      },
+      {
+        "id": "b",
+        "target": 24
+      }
+    ]
+  },
+  "slides": [
+    {
+      "type": "composer",
+      "id": "nested",
+      "title": "Recursive layout",
+      "components": [
+        {
+          "type": "columns",
+          "span": 12,
+          "children": [
+            {
+              "type": "card",
+              "children": [
+                {
+                  "type": "text",
+                  "text": "Đo chiều cao từ nội dung lồng nhau."
+                },
+                {
+                  "type": "chart",
+                  "variant": "bar",
+                  "data": [
+                    {
+                      "label": "Before",
+                      "value": 30
+                    },
+                    {
+                      "label": "After",
+                      "value": 60
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "card",
+              "children": [
+                {
+                  "type": "heading",
+                  "text": "Đường truyền kích thước"
+                },
+                {
+                  "type": "chart",
+                  "variant": "line",
+                  "data": [
+                    {
+                      "label": "Q1",
+                      "value": 20
+                    },
+                    {
+                      "label": "Q2",
+                      "value": 50
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "table",
+      "content": {
+        "title": "Paginated table",
+        "components": [
+          {
+            "type": "card",
+            "span": 12,
+            "children": [
+              {
+                "type": "stack",
+                "children": [
+                  {
+                    "type": "table",
+                    "dataRef": "districts",
+                    "columns": [
+                      "label",
+                      "value"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "composer",
+      "id": "flows",
+      "title": "Feedback and long edges",
+      "components": [
+        {
+          "type": "diagram",
+          "variant": "sankey",
+          "nodes": [
+            {
+              "id": "Grid",
+              "label": "Grid"
+            },
+            {
+              "id": "Solar",
+              "label": "Solar"
+            },
+            {
+              "id": "Storage",
+              "label": "Storage"
+            },
+            {
+              "id": "Load",
+              "label": "Load"
+            }
+          ],
+          "edges": [
+            {
+              "from": "Grid",
+              "to": "Solar",
+              "value": 12
+            },
+            {
+              "from": "Solar",
+              "to": "Storage",
+              "value": 9
+            },
+            {
+              "from": "Storage",
+              "to": "Load",
+              "value": 9
+            },
+            {
+              "from": "Grid",
+              "to": "Load",
+              "value": 3
+            },
+            {
+              "from": "Load",
+              "to": "Grid",
+              "value": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "dag",
+      "title": "Shared descendants",
+      "components": [
+        {
+          "type": "diagram",
+          "variant": "tree",
+          "nodes": [
+            {
+              "id": "Grid",
+              "label": "Grid"
+            },
+            {
+              "id": "Solar",
+              "label": "Solar"
+            },
+            {
+              "id": "Storage",
+              "label": "Storage"
+            },
+            {
+              "id": "Load",
+              "label": "Load"
+            }
+          ],
+          "edges": [
+            {
+              "from": "Grid",
+              "to": "Solar",
+              "value": 12
+            },
+            {
+              "from": "Solar",
+              "to": "Storage",
+              "value": 9
+            },
+            {
+              "from": "Storage",
+              "to": "Load",
+              "value": 9
+            },
+            {
+              "from": "Grid",
+              "to": "Load",
+              "value": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "scatter",
+      "title": "Crowded point labels",
+      "components": [
+        {
+          "type": "chart",
+          "variant": "scatter",
+          "data": [
+            {
+              "label": "Bắc Bến",
+              "x": 1,
+              "y": 2
+            },
+            {
+              "label": "Đông Lưới",
+              "x": 1,
+              "y": 2
+            },
+            {
+              "label": "Đảo Nổi",
+              "x": 1,
+              "y": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "radar",
+      "title": "Six series",
+      "components": [
+        {
+          "type": "chart",
+          "variant": "radar",
+          "data": [
+            {
+              "label": "Energy",
+              "Series 0": 20,
+              "Series 1": 25,
+              "Series 2": 30,
+              "Series 3": 35,
+              "Series 4": 40,
+              "Series 5": 45
+            },
+            {
+              "label": "Water",
+              "Series 0": 20,
+              "Series 1": 25,
+              "Series 2": 30,
+              "Series 3": 35,
+              "Series 4": 40,
+              "Series 5": 45
+            },
+            {
+              "label": "Transport",
+              "Series 0": 20,
+              "Series 1": 25,
+              "Series 2": 30,
+              "Series 3": 35,
+              "Series 4": 40,
+              "Series 5": 45
+            },
+            {
+              "label": "Health",
+              "Series 0": 20,
+              "Series 1": 25,
+              "Series 2": 30,
+              "Series 3": 35,
+              "Series 4": 40,
+              "Series 5": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "scoped",
+      "title": "Slide-scoped CSS",
+      "customCss": ".v1-text {color:#C30000} @media print {.v1-text{font-weight:800}}",
+      "components": [
+        {
+          "type": "text",
+          "text": "Only this slide is red."
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "unscoped",
+      "title": "Isolation control",
+      "components": [
+        {
+          "type": "text",
+          "text": "This slide retains its default color."
+        },
+        {
+          "type": "html",
+          "html": "<svg width=\"400\" height=\"90\" viewBox=\"0 0 500 150\"><title>Accessible equation</title><text x=\"20\" y=\"50\" font-size=\"25\">Đồ thị an toàn</text></svg><math><mfrac><mi>x</mi><mn>2</mn></mfrac></math>",
+          "height": 200
+        }
+      ]
+    },
+    {
+      "type": "composer",
+      "id": "pipeline",
+      "title": "Relational data pipeline",
+      "components": [
+        {
+          "type": "table",
+          "dataRef": "base",
+          "transform": {
+            "join": {
+              "leftKey": "key",
+              "rightDataset": "targets",
+              "rightKey": "id"
+            },
+            "derive": {
+              "delta": {
+                "op": "subtract",
+                "args": [
+                  {
+                    "field": "after"
+                  },
+                  {
+                    "field": "before"
+                  }
+                ]
+              },
+              "ratio": {
+                "op": "percent",
+                "args": [
+                  {
+                    "field": "after"
+                  },
+                  {
+                    "field": "target"
+                  }
+                ]
+              }
+            },
+            "select": [
+              "label",
+              "delta",
+              "ratio"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

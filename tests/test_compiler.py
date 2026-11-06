@@ -249,7 +249,9 @@ class CompilerTest(unittest.TestCase):
             f.write_text(json.dumps(deck), encoding="utf-8")
             code, out = cli("qa", f, "--browser", "--json")
         report = json.loads(out)
-        if not report.get("browser"):
+        browser = report.get("browser", {})
+        self.assertFalse(browser.get("error"), browser.get("error"))
+        if not browser.get("measured"):
             self.skipTest("no Chrome/Edge available for pixel QA")
         measured = [d for d in report["diagnostics"] if d["code"] == "layout.measured-overflow"]
         self.assertTrue(any(d["path"] == "/slides/0" for d in measured), measured)

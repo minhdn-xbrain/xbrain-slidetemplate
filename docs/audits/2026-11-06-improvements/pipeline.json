@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "hash": "769ce0da21af94b5",
+  "changes": [
+    {
+      "path": "/slides/1",
+      "action": "split-slide",
+      "reason": "deep pagination into 4 slides within the 642px scene",
+      "parts": 4
+    }
+  ],
+  "summary": {
+    "slides": 12,
+    "errors": 0,
+    "warnings": 0,
+    "info": 1,
+    "score": 100
+  },
+  "diagnostics": [
+    {
+      "code": "graph.cycle",
+      "severity": "info",
+      "path": "/slides/5/components/0",
+      "message": "1 feedback edge(s) routed outside the layered graph",
+      "edges": [
+        {
+          "from": "Load",
+          "to": "Grid"
+        }
+      ]
+    }
+  ],
+  "browser": {
+    "measured": true,
+    "findings": 0
+  }
+}

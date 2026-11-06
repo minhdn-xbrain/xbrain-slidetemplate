@@ -65,7 +65,7 @@ script = script.replace(/\}\)\(\);\s*$/, `
     } catch(error) { return {name,error:error.message}; }
   });
   xbSyncCustom({}); // drop fixture layouts so the registry checks below see only built-in layouts
-  globalThis.result={document:current,layouts:LAYOUT_CATALOG.map(x=>x.type),
+  globalThis.result={textMetrics:{d:XBText.width('d'),dd:XBText.width('đ'),D:XBText.width('D'),DD:XBText.width('Đ'),decomposed:XBText.width('a\\u0302\\u0301'),composed:XBText.width('ấ'),linePlain:XBText.lineHeight('abc'),lineVN:XBText.lineHeight('Tiếng Việt')},document:current,layouts:LAYOUT_CATALOG.map(x=>x.type),
     components:Object.keys(COMPONENT_RENDERERS),visuals:DECK_DESCRIPTORS,
     normalized:DeckModel.serialize(normalized.config,normalized.slides),rejectedVersions,
     draft:{empty:emptyDraft,saved:savedDraft,reads,keys:[...storage.keys()]},
@@ -190,6 +190,30 @@ class JsonContractTest(unittest.TestCase):
         ]:
             with self.subTest(component=component):
                 self.assertInvalid(self.deck(component))
+
+    def test_vietnamese_text_metrics_and_line_padding(self):
+        metrics = self.source['textMetrics']
+        self.assertEqual(metrics['d'], metrics['dd'])
+        self.assertEqual(metrics['D'], metrics['DD'])
+        self.assertEqual(metrics['composed'], metrics['decomposed'])
+        self.assertEqual(metrics['linePlain'], 1.18)
+        self.assertEqual(metrics['lineVN'], 1.28)
+
+    def test_relational_transforms_remain_v1_and_reject_executable_expressions(self):
+        comp = {"type": "table", "data": [{"label": "A", "one": 2}], "transform": {
+            "groupBy": "label", "agg": "avg", "offset": 0,
+            "select": ["label", "one"], "exclude": ["unused"],
+            "derive": {"delta": {"op": "subtract", "args": [{"field": "after"}, {"field": "before"}]}},
+            "join": {"leftKey": "id", "rightDataset": "other", "rightKey": "id", "prefix": "other_"}
+        }}
+        self.assertValid(self.deck(comp))
+        for transform in [{"agg": "median"}, {"offset": -1}, {"select": ["x", "x"]},
+                          {"derive": {"x": "process.exit()"}},
+                          {"derive": {"x": {"op": "eval", "args": [1, 2]}}},
+                          {"derive": {"x": {"op": "divide", "args": [1]}}},
+                          {"join": {"leftKey": "id", "rightDataset": "other"}}]:
+            self.assertInvalid(self.deck(comp | {"transform": transform}))
+        self.assertValid(self.deck({"type": "table", "data": {"url": "https://example.com/data.json", "value": [], "snapshot": {"sha256": "a" * 64}}}))
 
     def test_nested_components_and_aliases(self):
         self.assertValid({"version": "1.0", "slides": [{"type": "composer", "content": {

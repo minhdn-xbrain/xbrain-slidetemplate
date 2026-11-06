@@ -235,6 +235,19 @@
         "url": {
           "type": "string",
           "minLength": 1
+        },
+        "snapshot": {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "sha256"
+          ],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
@@ -388,10 +401,79 @@
         },
         "aggregateField": {
           "type": "string"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "agg": {
+          "enum": [
+            "sum",
+            "avg",
+            "min",
+            "max",
+            "count"
+          ]
+        },
+        "select": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "derive": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deriveExpression"
+          }
+        },
+        "join": {
+          "type": "object",
+          "properties": {
+            "leftKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rightDataset": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rightKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "prefix": {
+              "type": "string"
+            },
+            "select": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "leftKey",
+            "rightDataset",
+            "rightKey"
+          ],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
-      "description": "Applied in order: filter, sort, limit, group and sum. aggregateField defaults to value."
+      "description": "Applied in order: left join, derive, filter, sort, offset, limit, group, select, exclude. groupBy preserves all numeric series unless aggregateField selects a single value; agg defaults to sum. Join keys are type-sensitive and right keys must be unique. Derive entries evaluate in declaration order."
     },
     "position": {
       "type": "object",
@@ -5027,6 +5109,53 @@
         }
       },
       "additionalProperties": false
+    },
+    "deriveExpression": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "field"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "enum": [
+                "add",
+                "subtract",
+                "multiply",
+                "divide",
+                "percent"
+              ]
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/deriveExpression"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "op",
+            "args"
+          ],
+          "additionalProperties": false
+        }
+      ]
     }
   }
 }
