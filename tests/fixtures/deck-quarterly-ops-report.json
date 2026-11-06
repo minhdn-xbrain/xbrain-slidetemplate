@@ -1,0 +1,947 @@
+{
+  "$schema": "../../contracts/xbrain-deck-v1.schema.json",
+  "version": "1.0",
+  "releaseVersion": "1.0.0",
+  "metadata": {
+    "name": "Báo cáo vận hành Q3 · Chương trình đào tạo",
+    "note": "Dữ liệu minh họa · mọi số liệu trong deck là giả lập để kiểm thử template, không phải kết quả đã kiểm chứng."
+  },
+  "theme": {
+    "preset": "xbrain",
+    "tokens": {
+      "primary": "#F97C00",
+      "ink": "#425453",
+      "teal": "#25AC9D"
+    }
+  },
+  "chrome": {
+    "headerLabel": "BÁO CÁO VẬN HÀNH Q3"
+  },
+  "datasets": {
+    "weeklyActive": {
+      "format": "tsv",
+      "data": "Tuần\tActive\tLabs\nT1\t171\t110\nT2\t176\t124\nT3\t180\t139\nT4\t182\t151\nT5\t184\t166\nT6\t185\t178\nT7\t179\t183\nT8\t183\t197\nT9\t185\t211\nT10\t186\t224\nT11\t187\t236\nT12\t188\t249"
+    },
+    "q3Summary": {
+      "type": "yaml",
+      "value": "- label: Cohort đang chạy\n  value: 5\n- label: Mentor hoạt động\n  value: 18\n- label: Lab đã mở\n  value: 42\n- label: Ticket hỗ trợ\n  value: 137"
+    },
+    "funnel": "Stage,Value\nĐăng ký,620\nQua sàng lọc,388\nTest đầu vào,264\nNhập học,212\nĐang học,188",
+    "enrollment": [
+      {
+        "cohort": "K07",
+        "track": "CloudOps",
+        "applicants": 128,
+        "enrolled": 46,
+        "status": "Đang học"
+      },
+      {
+        "cohort": "K08",
+        "track": "DevOps",
+        "applicants": 112,
+        "enrolled": 41,
+        "status": "Đang học"
+      },
+      {
+        "cohort": "K09",
+        "track": "GenAI",
+        "applicants": 147,
+        "enrolled": 38,
+        "status": "Đang học"
+      },
+      {
+        "cohort": "K10",
+        "track": "CloudOps",
+        "applicants": 96,
+        "enrolled": 35,
+        "status": "Đang học"
+      },
+      {
+        "cohort": "K11",
+        "track": "DevOps",
+        "applicants": 84,
+        "enrolled": 28,
+        "status": "Đang học"
+      },
+      {
+        "cohort": "K06",
+        "track": "GenAI",
+        "applicants": 53,
+        "enrolled": 24,
+        "status": "Đã tốt nghiệp"
+      }
+    ],
+    "labScores": {
+      "type": "csv",
+      "value": "Module,Track,Score\nLinux cơ bản,CloudOps,86\nIAM & VPC,CloudOps,78\nEC2 & ASG,CloudOps,81\nS3 & CDN,CloudOps,74\nRDS backup,CloudOps,69\nGit flow,DevOps,88\nCI pipeline,DevOps,82\nDocker,DevOps,79\nK8s cơ bản,DevOps,71\nHelm,DevOps,66\nPrompt,GenAI,84\nRAG,GenAI,76\nAgent,GenAI,70\nEval,GenAI,73\nGuardrail,GenAI,68"
+    },
+    "incidents": {
+      "format": "yaml",
+      "data": "- label: Lab quota hết hạn\n  value: 21\n- label: Lỗi IAM role\n  value: 17\n- label: Image Docker lỗi\n  value: 9\n- label: Mạng VPN chập chờn\n  value: 6"
+    },
+    "mentorHours": {
+      "type": "tsv",
+      "value": "Kỳ\tThực tế\tKế hoạch\nTuần 1–2\t92\t96\nTuần 3–4\t104\t96\nTuần 5–6\t118\t110\nTuần 7–8\t101\t110\nTuần 9–10\t126\t120\nTuần 11–12\t131\t120"
+    },
+    "costs": {
+      "type": "json",
+      "value": [
+        {
+          "category": "Hạ tầng lab",
+          "item": "Compute",
+          "amount": 210
+        },
+        {
+          "category": "Hạ tầng lab",
+          "item": "Storage",
+          "amount": 60
+        },
+        {
+          "category": "Mentor",
+          "item": "Giờ dạy",
+          "amount": 240
+        },
+        {
+          "category": "Mentor",
+          "item": "Review",
+          "amount": 45
+        },
+        {
+          "category": "Nội dung",
+          "item": "Video",
+          "amount": 90
+        },
+        {
+          "category": "Vận hành",
+          "item": "Sự kiện",
+          "amount": 70
+        },
+        {
+          "category": "Vận hành",
+          "item": "Công cụ",
+          "amount": 35
+        }
+      ]
+    }
+  },
+  "assets": {},
+  "customCss": "",
+  "slides": [
+    {
+      "id": "q3-cover",
+      "type": "cover",
+      "content": {
+        "badge": "OPS REPORT · Q3",
+        "titleLine1": "Báo cáo vận hành",
+        "titleLine2": "Quý 3 · Chương trình",
+        "titleLine3": "đào tạo kỹ thuật",
+        "subtitle": "Dashboard dữ liệu: tuyển sinh, chất lượng học tập, vận hành lab và ngân sách. Dữ liệu minh họa.",
+        "presenter": "Nhóm Vận hành Chương trình",
+        "location": "Đà Nẵng, Việt Nam",
+        "website": "www.xbrain.com.vn"
+      }
+    },
+    {
+      "id": "q3-overview",
+      "type": "composer",
+      "title": "Toàn cảnh vận hành Q3",
+      "subtitle": "Học viên active tăng đều qua 12 tuần, đạt 188 ở tuần T12; tuần T7 giảm do nghỉ lễ.",
+      "layout": "auto",
+      "content": {
+        "sectionTag": "Q3 OVERVIEW",
+        "kicker": "DASHBOARD · TSV + YAML DATASET",
+        "footer": "Báo cáo vận hành Q3 · Chương trình đào tạo",
+        "source": "DỮ LIỆU MINH HỌA"
+      },
+      "components": [
+        {
+          "id": "kpi-row",
+          "type": "grid",
+          "columns": 4,
+          "span": 12,
+          "height": 185,
+          "children": [
+            {
+              "type": "metric",
+              "title": "Học viên active",
+              "dataRef": "weeklyActive",
+              "transform": {
+                "sortBy": "Active",
+                "order": "desc",
+                "limit": 1
+              },
+              "delta": "Đỉnh tuần T12 · minh họa",
+              "span": 1,
+              "height": 185
+            },
+            {
+              "type": "kpi",
+              "title": "Tỷ lệ chuyên cần",
+              "value": "89%",
+              "delta": "TB 3 track · +2 điểm so với Q2",
+              "span": 1,
+              "height": 185
+            },
+            {
+              "type": "kpi",
+              "title": "Hoàn thành lab",
+              "value": "83%",
+              "delta": "Mục tiêu 80%",
+              "span": 1,
+              "height": 185
+            },
+            {
+              "type": "metric",
+              "title": "CSAT học viên",
+              "value": "4.4/5",
+              "delta": "Khảo sát giữa kỳ",
+              "span": 1,
+              "height": 185
+            }
+          ]
+        },
+        {
+          "id": "active-trend",
+          "type": "chart-card",
+          "variant": "area",
+          "dataRef": "weeklyActive",
+          "transform": {
+            "limit": 12
+          },
+          "span": 8,
+          "height": 435,
+          "title": "Học viên active theo tuần (T1–T12)"
+        },
+        {
+          "id": "side-stack",
+          "type": "stack",
+          "span": 4,
+          "height": 435,
+          "children": [
+            {
+              "id": "summary-grid",
+              "type": "stat-grid",
+              "dataRef": "q3Summary",
+              "height": 285,
+              "style": {
+                "display": "block"
+              }
+            },
+            {
+              "type": "callout",
+              "title": "Điểm nhấn",
+              "text": "Tuần T7 giảm nhẹ do lịch nghỉ lễ; phục hồi từ T8.",
+              "height": 134
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q3-enrollment",
+      "type": "composer",
+      "title": "Tuyển sinh và chuyển đổi",
+      "subtitle": "Từ 620 hồ sơ đăng ký đến 188 học viên đang học trong 5 cohort.",
+      "content": {
+        "sectionTag": "ENROLLMENT",
+        "kicker": "CSV STRING · JSON ROWS · FILTER / SORT / GROUP",
+        "footer": "Báo cáo vận hành Q3 · Chương trình đào tạo",
+        "source": "DỮ LIỆU MINH HỌA"
+      },
+      "components": [
+        {
+          "id": "enroll-left",
+          "type": "stack",
+          "span": 5,
+          "height": 620,
+          "children": [
+            {
+              "id": "funnel",
+              "type": "chart",
+              "variant": "funnel-chart",
+              "data": {
+                "$ref": "datasets.funnel"
+              },
+              "height": 400
+            },
+            {
+              "type": "callout",
+              "title": "Chuyển đổi 34%",
+              "text": "Đăng ký → nhập học. Nút thắt ở test đầu vào.",
+              "height": 204
+            }
+          ]
+        },
+        {
+          "id": "enroll-right",
+          "type": "stack",
+          "span": 7,
+          "height": 620,
+          "children": [
+            {
+              "id": "active-cohorts",
+              "type": "table",
+              "dataRef": "enrollment",
+              "transform": {
+                "filter": {
+                  "field": "status",
+                  "eq": "Đang học"
+                },
+                "sortBy": "enrolled",
+                "order": "desc",
+                "limit": 4
+              },
+              "columns": [
+                {
+                  "key": "cohort",
+                  "label": "Cohort"
+                },
+                {
+                  "key": "track",
+                  "label": "Track"
+                },
+                {
+                  "key": "applicants",
+                  "label": "Ứng viên"
+                },
+                {
+                  "key": "enrolled",
+                  "label": "Nhập học"
+                },
+                {
+                  "key": "status",
+                  "label": "Trạng thái"
+                }
+              ],
+              "height": 345
+            },
+            {
+              "id": "track-mix",
+              "type": "chart",
+              "variant": "donut",
+              "dataRef": "enrollment",
+              "transform": {
+                "groupBy": "track",
+                "aggregateField": "enrolled"
+              },
+              "height": 259
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q3-quality",
+      "type": "composer",
+      "title": "Chất lượng học tập theo track",
+      "subtitle": "Top 4 module có điểm lab trung bình cao nhất của từng track (thang 100).",
+      "content": {
+        "sectionTag": "LEARNING QUALITY",
+        "kicker": "NESTED COLUMNS · CHART-CARD · FILTER + LIMIT",
+        "footer": "Báo cáo vận hành Q3 · Chương trình đào tạo",
+        "source": "DỮ LIỆU MINH HỌA"
+      },
+      "components": [
+        {
+          "id": "track-columns",
+          "type": "columns",
+          "columns": 3,
+          "span": 12,
+          "height": 380,
+          "children": [
+            {
+              "type": "chart-card",
+              "title": "CloudOps",
+              "variant": "bar",
+              "dataRef": "labScores",
+              "transform": {
+                "filter": {
+                  "field": "Track",
+                  "eq": "CloudOps"
+                },
+                "sortBy": "Score",
+                "order": "desc",
+                "limit": 4
+              },
+              "span": 1,
+              "height": 380
+            },
+            {
+              "type": "chart-card",
+              "title": "DevOps",
+              "variant": "lollipop",
+              "dataRef": "labScores",
+              "transform": {
+                "filter": {
+                  "field": "Track",
+                  "eq": "DevOps"
+                },
+                "sortBy": "Score",
+                "order": "desc",
+                "limit": 4
+              },
+              "span": 1,
+              "height": 380
+            },
+            {
+              "type": "chart-card",
+              "title": "GenAI",
+              "variant": "bar-horizontal",
+              "dataRef": "labScores",
+              "transform": {
+                "filter": {
+                  "field": "Track",
+                  "eq": "GenAI"
+                },
+                "sortBy": "Score",
+                "order": "desc",
+                "limit": 4
+              },
+              "span": 1,
+              "height": 380
+            }
+          ]
+        },
+        {
+          "id": "quality-kpis",
+          "type": "grid",
+          "columns": 3,
+          "span": 7,
+          "height": 220,
+          "children": [
+            {
+              "type": "kpi",
+              "title": "Điểm lab TB",
+              "value": "76",
+              "delta": "+4 so với Q2",
+              "span": 1,
+              "height": 220
+            },
+            {
+              "type": "kpi",
+              "title": "Module < 70",
+              "value": "3",
+              "delta": "Cần ôn tập",
+              "span": 1,
+              "height": 220
+            },
+            {
+              "type": "kpi",
+              "title": "Nộp đúng hạn",
+              "value": "88%",
+              "delta": "Mục tiêu 85%",
+              "span": 1,
+              "height": 220
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Hành động",
+          "text": "Bổ sung buổi review cho RDS backup, Helm và Guardrail (điểm < 70).",
+          "span": 5,
+          "height": 220
+        }
+      ]
+    },
+    {
+      "id": "q3-incidents",
+      "type": "composer",
+      "title": "Quy trình xử lý sự cố lab",
+      "subtitle": "Luồng tiếp nhận ticket và mức đáp ứng SLA trong quý.",
+      "content": {
+        "sectionTag": "LAB OPERATIONS",
+        "kicker": "MERMAID + SVG FALLBACK · YAML DATASET",
+        "footer": "Báo cáo vận hành Q3 · Chương trình đào tạo",
+        "source": "DỮ LIỆU MINH HỌA"
+      },
+      "components": [
+        {
+          "id": "incident-flow",
+          "type": "mermaid",
+          "source": "flowchart LR\n A[Tiếp nhận ticket] --> B[Phân loại P1-P3]\n B --> C{Ảnh hưởng lab?}\n C -->|Có| D[Khôi phục môi trường]\n C -->|Không| E[Hỗ trợ 1-1]\n D --> F[Post-mortem]\n E --> F",
+          "nodes": [
+            {
+              "id": "a",
+              "label": "Tiếp nhận",
+              "desc": "Form + chat"
+            },
+            {
+              "id": "b",
+              "label": "Phân loại P1–P3",
+              "desc": "Trong 15 phút"
+            },
+            {
+              "id": "c",
+              "label": "Khôi phục lab",
+              "desc": "Script IaC"
+            },
+            {
+              "id": "d",
+              "label": "Post-mortem",
+              "desc": "Ghi bài học"
+            }
+          ],
+          "span": 8,
+          "height": 320
+        },
+        {
+          "id": "sla-stack",
+          "type": "stack",
+          "span": 4,
+          "height": 320,
+          "children": [
+            {
+              "type": "progress",
+              "title": "Phản hồi < 15 phút",
+              "value": 92,
+              "height": 96,
+              "style": {
+                "padding": "10px 22px"
+              }
+            },
+            {
+              "type": "progress",
+              "title": "Xử lý P1 < 4 giờ",
+              "value": 81,
+              "color": "#425453",
+              "height": 96,
+              "style": {
+                "padding": "10px 22px"
+              }
+            },
+            {
+              "type": "progress",
+              "title": "Ticket đóng trong tuần",
+              "value": 74,
+              "color": "#25AC9D",
+              "height": 96,
+              "style": {
+                "padding": "10px 22px"
+              }
+            }
+          ]
+        },
+        {
+          "id": "incident-notes",
+          "type": "markdown",
+          "markdown": "### Nhận định\n- **53 ticket** liên quan lab, giảm 12% so với Q2\n- Quota hết hạn là nguyên nhân số 1\n- Đề xuất tự động gia hạn quota theo `cohort`",
+          "span": 7,
+          "height": 300
+        },
+        {
+          "id": "incident-top",
+          "type": "table",
+          "dataRef": "incidents",
+          "transform": {
+            "sortBy": "value",
+            "order": "desc",
+            "limit": 3
+          },
+          "columns": [
+            {
+              "key": "label",
+              "label": "Nguyên nhân"
+            },
+            {
+              "key": "value",
+              "label": "Ticket"
+            }
+          ],
+          "span": 5,
+          "height": 300
+        }
+      ]
+    },
+    {
+      "id": "q3-resources",
+      "type": "composer",
+      "title": "Giờ mentor, chi phí và rủi ro",
+      "subtitle": "Bố cục freeform: ECharts (tùy chọn) với fallback SVG, treemap chi phí và ma trận rủi ro.",
+      "layout": "freeform",
+      "content": {
+        "sectionTag": "RESOURCES",
+        "kicker": "FREEFORM · ECHARTS OPTIONS · GROUP BY",
+        "footer": "Báo cáo vận hành Q3 · Chương trình đào tạo",
+        "source": "DỮ LIỆU MINH HỌA · ĐƠN VỊ: GIỜ / TRIỆU ĐỒNG"
+      },
+      "components": [
+        {
+          "id": "mentor-echarts",
+          "type": "echarts",
+          "fallback": "bar",
+          "dataRef": "mentorHours",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1060,
+            "height": 420
+          },
+          "options": {
+            "color": [
+              "#F97C00",
+              "#425453"
+            ],
+            "tooltip": {
+              "trigger": "axis"
+            },
+            "legend": {
+              "top": 6,
+              "data": [
+                "Thực tế",
+                "Kế hoạch"
+              ]
+            },
+            "grid": {
+              "left": 60,
+              "right": 30,
+              "top": 56,
+              "bottom": 40
+            },
+            "xAxis": {
+              "type": "category",
+              "data": [
+                "Tuần 1–2",
+                "Tuần 3–4",
+                "Tuần 5–6",
+                "Tuần 7–8",
+                "Tuần 9–10",
+                "Tuần 11–12"
+              ]
+            },
+            "yAxis": {
+              "type": "value",
+              "name": "giờ"
+            },
+            "series": [
+              {
+                "name": "Thực tế",
+                "type": "bar",
+                "barWidth": 26,
+                "data": [
+                  92,
+                  104,
+                  118,
+                  101,
+                  126,
+                  131
+                ]
+              },
+              {
+                "name": "Kế hoạch",
+                "type": "line",
+                "step": "middle",
+                "lineStyle": {
+                  "width": 3,
+                  "type": "dashed"
+                },
+                "data": [
+                  96,
+                  96,
+                  110,
+                  110,
+                  120,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "mentor-callout",
+          "type": "callout",
+          "title": "Giờ mentor vượt kế hoạch 3%",
+          "text": "Tổng 672 giờ thực tế so với 652 giờ kế hoạch; tuần 7–8 thiếu hụt nhiều nhất do mentor nghỉ phép.",
+          "position": {
+            "x": 0,
+            "y": 440,
+            "width": 1060,
+            "height": 202
+          }
+        },
+        {
+          "id": "cost-treemap",
+          "type": "chart",
+          "variant": "treemap",
+          "dataRef": "costs",
+          "transform": {
+            "sortBy": "amount",
+            "order": "desc",
+            "groupBy": "category",
+            "aggregateField": "amount"
+          },
+          "position": {
+            "x": 1084,
+            "y": 0,
+            "width": 644,
+            "height": 310
+          }
+        },
+        {
+          "id": "risk-matrix",
+          "type": "diagram",
+          "variant": "risk-matrix",
+          "nodes": [
+            "Thiếu mentor GenAI",
+            "Quota lab vượt ngân sách",
+            "Học viên bỏ giữa chừng",
+            "Lịch nghỉ lễ Q4"
+          ],
+          "position": {
+            "x": 1084,
+            "y": 332,
+            "width": 644,
+            "height": 310
+          }
+        }
+      ]
+    },
+    {
+      "id": "q3-attendance",
+      "type": "line-chart",
+      "content": {
+        "sectionTag": "ATTENDANCE",
+        "kicker": "LINE CHART · 3 SERIES",
+        "title": "Chuyên cần theo tuần của ba track",
+        "subtitle": "Tỷ lệ học viên tham dự buổi live (%), 12 tuần của quý 3.",
+        "note": "Dữ liệu minh họa · không phải số liệu đã kiểm chứng",
+        "unit": "%",
+        "labels": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6",
+          "T7",
+          "T8",
+          "T9",
+          "T10",
+          "T11",
+          "T12"
+        ],
+        "series": [
+          {
+            "name": "CloudOps",
+            "values": [
+              88,
+              90,
+              91,
+              92,
+              92,
+              93,
+              86,
+              91,
+              93,
+              94,
+              94,
+              95
+            ]
+          },
+          {
+            "name": "DevOps",
+            "values": [
+              85,
+              86,
+              88,
+              88,
+              89,
+              90,
+              83,
+              88,
+              90,
+              91,
+              92,
+              92
+            ]
+          },
+          {
+            "name": "GenAI",
+            "values": [
+              82,
+              84,
+              83,
+              86,
+              87,
+              87,
+              80,
+              85,
+              86,
+              88,
+              89,
+              90
+            ]
+          }
+        ],
+        "yMin": 70,
+        "yMax": 100,
+        "insightLabel": "Chuyên cần TB Q3",
+        "insightValue": "89%",
+        "insightText": "Trung bình ba track trong quý. Tuần T7 giảm do nghỉ lễ; các track phục hồi ngay tuần sau và đạt đỉnh ở T12."
+      }
+    },
+    {
+      "id": "q3-budget",
+      "type": "waterfall-chart",
+      "content": {
+        "sectionTag": "BUDGET BRIDGE",
+        "kicker": "WATERFALL · KẾ HOẠCH → THỰC TẾ",
+        "title": "Cầu ngân sách Q3: kế hoạch đến thực chi",
+        "subtitle": "Các khoản tăng/giảm giải thích chênh lệch ngân sách quý (triệu đồng).",
+        "note": "Dữ liệu minh họa · không phải số liệu tài chính thực",
+        "unit": "tr",
+        "legendStart": "Kế hoạch",
+        "legendUp": "Tăng chi",
+        "legendDown": "Tiết kiệm",
+        "legendTotal": "Thực chi",
+        "items": [
+          {
+            "label": "Kế hoạch Q3",
+            "value": 720,
+            "kind": "start"
+          },
+          {
+            "label": "Compute lab",
+            "value": 48,
+            "kind": "delta"
+          },
+          {
+            "label": "Giờ mentor thêm",
+            "value": 22,
+            "kind": "delta"
+          },
+          {
+            "label": "Reserved instance",
+            "value": -35,
+            "kind": "delta"
+          },
+          {
+            "label": "Video tự quay",
+            "value": -18,
+            "kind": "delta"
+          },
+          {
+            "label": "Sự kiện Demo day",
+            "value": 13,
+            "kind": "delta"
+          },
+          {
+            "label": "Thực chi Q3",
+            "value": 0,
+            "kind": "total"
+          }
+        ]
+      }
+    },
+    {
+      "id": "q3-lab-ranking",
+      "type": "bar-ranking",
+      "content": {
+        "sectionTag": "LAB COMPLETION",
+        "kicker": "BAR RANKING · MỤC TIÊU 80%",
+        "title": "Tỷ lệ hoàn thành lab theo cohort",
+        "subtitle": "Phần trăm bài lab bắt buộc đã nộp và đạt yêu cầu tính đến tuần T12.",
+        "note": "Dữ liệu minh họa · không phải số liệu đã kiểm chứng",
+        "unit": "%",
+        "highlight": 4,
+        "target": 80,
+        "targetLabel": "Mục tiêu quý",
+        "items": [
+          {
+            "label": "K07 · CloudOps",
+            "value": 91
+          },
+          {
+            "label": "K08 · DevOps",
+            "value": 88
+          },
+          {
+            "label": "K10 · CloudOps",
+            "value": 84
+          },
+          {
+            "label": "K09 · GenAI",
+            "value": 79
+          },
+          {
+            "label": "K11 · DevOps",
+            "value": 72
+          }
+        ]
+      }
+    },
+    {
+      "id": "q3-next-actions",
+      "type": "kanban-board",
+      "content": {
+        "sectionTag": "Q4 ACTIONS",
+        "kicker": "KANBAN · KẾ HOẠCH HÀNH ĐỘNG",
+        "title": "Việc chuyển tiếp sang quý 4",
+        "subtitle": "Hạng mục cải tiến rút ra từ dashboard Q3 và người phụ trách.",
+        "note": "Trạng thái minh họa tại thời điểm báo cáo",
+        "columns": [
+          {
+            "title": "Backlog",
+            "cards": [
+              {
+                "title": "Dashboard tự cập nhật từ LMS",
+                "tag": "Data",
+                "owner": "Ops"
+              },
+              {
+                "title": "Khảo sát cuối kỳ K09",
+                "tag": "Research",
+                "owner": "Program"
+              }
+            ]
+          },
+          {
+            "title": "Đang làm",
+            "cards": [
+              {
+                "title": "Tự động gia hạn quota lab",
+                "tag": "Infra",
+                "owner": "CloudOps"
+              },
+              {
+                "title": "Review bổ trợ Helm, RDS",
+                "tag": "Academic",
+                "owner": "Curriculum"
+              },
+              {
+                "title": "Tuyển thêm mentor GenAI",
+                "tag": "People",
+                "owner": "Program"
+              }
+            ]
+          },
+          {
+            "title": "Rà soát",
+            "cards": [
+              {
+                "title": "Rubric capstone K10",
+                "tag": "Academic",
+                "owner": "Steering"
+              }
+            ]
+          },
+          {
+            "title": "Hoàn thành",
+            "cards": [
+              {
+                "title": "Chuyển reserved instance",
+                "tag": "Cost",
+                "owner": "CloudOps"
+              },
+              {
+                "title": "Playbook sự cố lab",
+                "tag": "Ops",
+                "owner": "Ops"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

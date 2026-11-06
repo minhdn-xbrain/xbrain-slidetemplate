@@ -1,0 +1,22 @@
+# Python (bộ test hợp đồng)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node (script kiểm thử chạy cục bộ)
+node_modules/
+
+# Tệp xuất từ studio ("Tải HTML", "Lưu JSON"): lưu ở nơi khác, không commit nhầm
+xbrain-presentation-system-v1.0.0-edited*.html
+xbrain-presentation-data-v1*.json
+
+# Hệ điều hành / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+
+# Cấu hình Claude Code cá nhân
+.claude/settings.local.json
