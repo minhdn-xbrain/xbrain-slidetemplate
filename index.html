@@ -8113,7 +8113,7 @@ function deckRefreshCounts(){
       return '<!DOCTYPE html>\n'+doc.outerHTML;
     }
     function downloadEditedHTML() {
-      downloadTextFile('xbrain-presentation-system-v1.0.0-edited.html',buildEditedHTML(),'text/html;charset=utf-8');
+      downloadTextFile('index-edited.html',buildEditedHTML(),'text/html;charset=utf-8');
     }
     function walkContent(data,path=[],out=[]) {
       if(Array.isArray(data)) data.forEach((v,i)=>walkContent(v,[...path,i],out));

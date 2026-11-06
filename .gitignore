@@ -7,7 +7,7 @@ __pycache__/
 node_modules/
 
 # Tệp xuất từ studio ("Tải HTML", "Lưu JSON"): lưu ở nơi khác, không commit nhầm
-xbrain-presentation-system-v1.0.0-edited*.html
+index-edited*.html
 xbrain-presentation-data-v1*.json
 
 # Hệ điều hành / editor

@@ -35,10 +35,12 @@
     "Original fixture was untracked when audit began and was not modified.",
     "print-*.png and static-25.png use offline fonts; slide-*.png use online fonts.",
     "During audit completion an external workspace edit renamed Template as Code to Presentation as Code in tracked files. Audit did not modify or revert those changes; baseline source hashes above identify the captured version.",
-    "The observed external HTML diff changed wording, not renderer behavior; minimized probes and unittest were re-run on the updated workspace."
+    "The observed external HTML diff changed wording, not renderer behavior; minimized probes and unittest were re-run on the updated workspace.",
+    "The runtime entrypoint was later renamed to index.html. Historical source hash keys retain the filenames used at the audited commits."
   ],
   "observedWorkspaceSHA256AtCompletion": {
     "xbrain-presentation-system-v1.0.0.html": "eeb38a3a448a57c9b9e4a81ad30a8410b476b13388fa4c63ba4bb8526dda9463",
     "tests/fixtures/paradox_xbrain.json": "cabb55ebcc3417e2cb4a7da4cace1d9c4ba0cd023537173a5e1825c739cc8154"
-  }
+  },
+  "currentRuntimePath": "index.html"
 }

@@ -6,7 +6,7 @@ Release **1.0.0** · JSON schema **1.0**.
 
 ## Bắt đầu nhanh
 
-1. Mở [xbrain-presentation-system-v1.0.0.html](xbrain-presentation-system-v1.0.0.html) bằng Chrome hoặc Edge, không cần cài đặt hay server.
+1. Mở [index.html](index.html) bằng Chrome hoặc Edge, không cần cài đặt hay server.
 2. Bấm vào chữ để sửa, kéo-thả slide để sắp xếp; dùng **Template Gallery** để xem các mẫu.
 3. Chọn **Trình Chiếu** để trình bày hoặc **In PDF** để xuất bản in.
 4. Chọn **Tải HTML** để lưu bộ slide độc lập, hoặc **Lưu JSON** để lưu dữ liệu và mở lại bằng **Mở JSON**.

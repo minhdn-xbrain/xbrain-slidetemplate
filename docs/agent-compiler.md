@@ -1,6 +1,6 @@
 # XBrain compiler và pipeline v1
 
-Runtime, renderer, CSS và dữ liệu mặc định nằm trong `xbrain-presentation-system-v1.0.0.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `untrusted`.
+Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `untrusted`.
 
 ## Quy trình
 

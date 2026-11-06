@@ -22,7 +22,7 @@ FIXTURE_DECKS = ["deck-partnership-proposal.json", "deck-quarterly-ops-report.js
 EXTRACT = r"""
 const fs = require('node:fs');
 const vm = require('node:vm');
-const html = fs.readFileSync('xbrain-presentation-system-v1.0.0.html', 'utf8');
+const html = fs.readFileSync('index.html', 'utf8');
 const match = html.match(/<script>\s*\/\/ Application modules[\s\S]*?<\/script>/);
 if (!match) throw Error('Cannot locate the application script');
 let script = match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');

@@ -17,7 +17,7 @@ const context=await browser.newContext({viewport:{width:1440,height:900}});
 await context.route(/^https?:/,route=>route.abort());
 const page=await context.newPage(),pageErrors=[],results={};page.on('pageerror',e=>pageErrors.push(e.message));page.on('dialog',d=>d.dismiss());
 try{
- await page.goto(pathToFileURL(path.join(root,'xbrain-presentation-system-v1.0.0.html')).href);
+ await page.goto(pathToFileURL(path.join(root,'index.html')).href);
  const editorDeck={version:'1.0',slides:[{type:'composer',content:{title:'Nested title',subtitle:'Nested subtitle',components:[{type:'metric',title:'Count',value:7}]}}]};
  await page.evaluate(d=>XB.setDeck(d),editorDeck);
  const initial=await page.evaluate(()=>JSON.stringify(XB.getDeck()));

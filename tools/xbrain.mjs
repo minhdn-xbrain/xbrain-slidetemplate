@@ -2,7 +2,7 @@
 /*
  XBrain agent compiler CLI (Node ≥ 18, no dependencies).
 
- Runs the runtime embedded in xbrain-presentation-system-v1.0.0.html inside an isolated
+ Runs the runtime embedded in index.html inside an isolated
  node:vm context: no host objects are passed in (only primitive strings cross the boundary),
  every call has a timeout, and for untrusted documents string code generation (eval /
  new Function) is disabled in that context, so template-as-code cannot run at all.
@@ -31,7 +31,7 @@ import os from 'node:os';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const DEFAULT_HTML = path.join(ROOT, 'xbrain-presentation-system-v1.0.0.html');
+export const DEFAULT_HTML = path.join(ROOT, 'index.html');
 export const SCHEMA_FILE = path.join(ROOT, 'contracts', 'xbrain-deck-v1.schema.json');
 
 // Everything the runtime touches at load time, created inside the context (no host references).
