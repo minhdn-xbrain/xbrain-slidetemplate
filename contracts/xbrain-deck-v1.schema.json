@@ -1188,6 +1188,18 @@
             },
             "additionalProperties": false
           }
+        },
+        "tocLabel": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "sidebarPartners": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "sidebarNote": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
         }
       },
       "additionalProperties": false,
@@ -1240,6 +1252,18 @@
         },
         "website": {
           "type": "string"
+        },
+        "contactLabel": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "channelsLabel": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "locationLabel": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
         }
       },
       "additionalProperties": false,
@@ -1663,6 +1687,26 @@
             },
             "additionalProperties": false
           }
+        },
+        "colPhase": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "colDuration": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "colModule": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "colLabs": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "colOutput": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
         }
       },
       "additionalProperties": false,
@@ -1769,6 +1813,14 @@
           "items": {
             "type": "string"
           }
+        },
+        "leftBadge": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
+        },
+        "rightBadge": {
+          "type": "string",
+          "description": "Label shown on the slide; defaults to the original English label."
         }
       },
       "additionalProperties": false,

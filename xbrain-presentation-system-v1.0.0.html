@@ -2911,8 +2911,9 @@ body.presentation-fullscreen #app-shell { height:100dvh; }
 body.presentation-fullscreen #app-sidebar, body.presentation-fullscreen #app-topbar {display:none!important;}
 body.presentation-fullscreen #active-slide-viewport { box-shadow:none; border-radius:0; }
 body.presentation-fullscreen .edit-mode-active [contenteditable=true] { outline:none!important; cursor:default; }
-body.presentation-fullscreen #floating-pres-controls {opacity:0;pointer-events:none;}
-body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opacity:1;pointer-events:auto;}
+/* Presenting: no toolbar over the slide (the workspace fills the screen, so a hover rule kept it visible).
+   Navigate with ←/→, Space, PageUp/PageDown; Esc leaves presentation mode. */
+body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 @media (max-width:1020px) { #app-sidebar {width:210px;} #app-topbar {gap:8px; padding:8px 10px;} #app-topbar > div:first-child {display:none;} }
 @media (max-width:680px) { #app-sidebar {display:none;} #app-topbar {flex-wrap:wrap;justify-content:center;} #app-topbar > div:nth-child(2){order:2;} #studio-view{height:100%;} #floating-pres-controls{font-size:11px;} #active-layout-badge,#active-group-badge{display:none;} #gallery-view,#brand-system-view {padding:12px;} }
 @media print {
@@ -2996,7 +2997,7 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
 .v1-timeline{padding:18px 30px}.v1-time-item{border-left:6px solid #F97C00;display:flex;gap:20px;padding:16px 22px;margin:0 0 4px;font:700 22px Manrope}.v1-time-item span{color:#F97C00;min-width:80px}.v1-imgcard{position:relative;height:100%;width:100%;color:white}.v1-imgcard img{width:100%;height:100%;object-fit:cover;filter:brightness(.65)}.v1-imgcard strong,.v1-imgcard span{position:absolute;left:24px;right:24px}.v1-imgcard strong{bottom:70px;font:800 32px Manrope}.v1-imgcard span{bottom:28px;font:600 18px Nunito}
 .v1-link-card{text-decoration:none;color:#425453}.v1-link-card strong{font:800 28px Manrope}.v1-link-card span{font:600 23px Nunito}.v1-link-card b{font-size:38px;color:#F97C00;margin-top:auto}
 .v1-avatar{display:flex;align-items:center;gap:20px;padding:24px;background:#F8FBF9;border-radius:14px}.v1-avatar span{background:#F97C00;color:white;border-radius:60px;padding:22px;font:800 30px Manrope}.v1-avatar strong{font:800 25px Manrope}.v1-avatar small{font:600 18px Nunito}
-.v1-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.v1-stat-grid div{background:#F6FAF7;padding:20px;border-radius:12px}.v1-stat-grid span,.v1-stat-grid strong{display:block}.v1-stat-grid span{font:700 17px Nunito;color:#6F7F78}.v1-stat-grid strong{font:800 39px Manrope}
+.v1-stat-grid:not(.v1-component){display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.v1-stat-grid:not(.v1-component)>div{background:#F6FAF7;padding:20px;border-radius:12px}.v1-stat-grid span,.v1-stat-grid strong{display:block}.v1-stat-grid span{font:700 17px Nunito;color:#6F7F78}.v1-stat-grid strong{font:800 39px Manrope}
 .v1-scorecard{background:#F8FBF9;padding:22px;border:1px solid #DBE9E1;border-radius:12px}.v1-scorecard>strong{font:800 28px Manrope}.v1-scorecard>div{display:flex;justify-content:space-between;border-top:1px solid #DCE6DF;padding:12px 0;font:700 20px Nunito}.v1-scorecard b{color:#F97C00}.v1-rating{padding:28px;font:750 24px Manrope}.v1-rating strong,.v1-rating span{display:block}.v1-rating span{font-size:42px;color:#F97C00}
 .v1-action{background:#F97C00;border-radius:10px;color:white;padding:18px 28px;font:800 21px Manrope;text-decoration:none;display:inline-block}.v1-chart-card{height:100%;border:1px solid #E5EDEA;border-radius:12px;padding:20px}.v1-chart-card strong{font:800 22px Manrope}.v1-chart-card svg{width:100%;height:calc(100% - 45px)}
 
@@ -3030,6 +3031,10 @@ body.presentation-fullscreen #main-workspace:hover #floating-pres-controls {opac
     @media print { .v1-menu, .v1-toast, .v1-drag-ghost { display: none !important; } }
     .v1-cut { border-style: dashed !important; border-color: #F97C00 !important; position: relative; overflow: visible !important; }
     .v1-cut > * { opacity: .38; filter: grayscale(.7); }
+    /* Standard header logo size (w-[220px] h-[67px]) was missing from the precompiled utilities, so the
+       logo fell back to the default 300×150 SVG box and pushed the header line under diagram titles. */
+    .w-\[220px\] { width: 220px; }
+    .h-\[67px\] { height: 67px; }
     /* Header/footer sync dialog */
     .v1-chrome-backdrop { position: fixed; inset: 0; z-index: 170; background: rgba(7,15,15,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .v1-chrome-dialog { width: min(440px, 100%); padding: 18px 20px; border-radius: 14px; background: #1C2525; border: 1px solid #344444; box-shadow: 0 24px 60px rgba(0,0,0,.5); color: #E8F0ED; font: 600 13.5px/1.5 Manrope, Arial, sans-serif; display: flex; flex-direction: column; gap: 10px; }
@@ -4954,14 +4959,16 @@ function deckComposer(slide,index,isThumb){
 const EnhancedRenderers = (() => {
   function dispose(scope) {
     if (!window.echarts) return;
-    scope.querySelectorAll('.v1-echarts .v1-enhanced').forEach(target => {
+    scope.querySelectorAll('.v1-library.v1-echarts .v1-enhanced').forEach(target => {
       const chart=window.echarts.getInstanceByDom(target);
       if(chart) chart.dispose();
     });
   }
   function mount(scope=document) {
     if(scope!==document && scope.id!=='active-slide-viewport') return;
-    if(window.echarts) scope.querySelectorAll('.v1-echarts').forEach(el => {
+    // Only the inner library block carries data-option/data-source: the component wrapper also has
+    // the class v1-echarts/v1-mermaid (v1-${type}), so select the inner block explicitly.
+    if(window.echarts) scope.querySelectorAll('.v1-library.v1-echarts').forEach(el => {
       try {
         const target=el.querySelector('.v1-enhanced');
         if(target.dataset.ready) return;
@@ -4975,20 +4982,25 @@ const EnhancedRenderers = (() => {
       } catch(error) { console.warn('ECharts fallback',error); }
     });
     if(window.mermaid?.render) {
-      window.mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:'base',themeVariables:{primaryColor:'#F97C00',primaryTextColor:'#425453',primaryBorderColor:'#F97C00',lineColor:'#25AC9D'}});
-      scope.querySelectorAll('.v1-mermaid').forEach(async el => {
+      // suppressErrorRendering: a bad diagram keeps the SVG fallback instead of Mermaid's error graphic.
+      window.mermaid.initialize({startOnLoad:false,securityLevel:'loose',suppressErrorRendering:true,theme:'base',themeVariables:{primaryColor:'#F97C00',primaryTextColor:'#425453',primaryBorderColor:'#E46325',lineColor:'#25AC9D',
+        // explicit secondary colours: derived ones turned edge-label boxes purple with unreadable text
+        secondaryColor:'#E5F4EF',tertiaryColor:'#FFF5ED',edgeLabelBackground:'#FFFFFF',textColor:'#425453',fontFamily:'Nunito, Arial, sans-serif'}});
+      scope.querySelectorAll('.v1-library.v1-mermaid').forEach(async el => {
         const target=el.querySelector('.v1-enhanced');
-        if(target.dataset.ready) return;
+        if(!target || !el.dataset.source || target.dataset.ready) return;
         target.dataset.ready='loading';
+        const id='xbm'+Math.random().toString(36).slice(2);
         try {
           const source=decodeURIComponent(el.dataset.source);
-          const {svg}=await window.mermaid.render('xbm'+Math.random().toString(36).slice(2),source);
+          const {svg}=await window.mermaid.render(id,source);
           if(!target.isConnected || !scope.contains(target)) return;
           target.innerHTML=svg;
           target.dataset.ready='1';
           el.querySelector('.v1-fallback').style.display='none';
         } catch(error) {
-          target.dataset.ready='';
+          target.dataset.ready='failed'; // keep the fallback; do not retry the same broken source
+          document.getElementById('d'+id)?.remove(); // Mermaid's temporary render node
           console.warn('Mermaid fallback',error);
         }
       });
@@ -5004,8 +5016,8 @@ function deckAddExample(title,desc,components,variant='white',layout='auto'){
  DECK_DEMO_SLIDES.push({id:`v1-${String(DECK_DEMO_SLIDES.length+1).padStart(2,'0')}`,type:'composer',group:'E',layoutName:title,title,subtitle:desc,background:variant==='orange'?'#F97C00':variant==='dark'?'#425453':'#FFFFFF',variant,layout,content:{sectionTag:'JSON COMPOSER',kicker:'DATA-DRIVEN VISUAL',source:'SAMPLE DATA'},components});
 }
 function deckVis(variant,dataRef='tracks',span=12,more={}){return {id:'visual-'+variant,type:'diagram',variant,dataRef,span,minHeight:450,...more};}
-function deckCall(text,title='Design insight',span=6){return {type:'callout',title,text,span,minHeight:145};}
-function deckMetric(title,value,delta,span=4){return {type:'metric',title,value,delta,span,minHeight:175};}
+function deckCall(text,title='Design insight',span=6){return {type:'callout',title,text,span,minHeight:155};}
+function deckMetric(title,value,delta,span=4){return {type:'metric',title,value,delta,span,minHeight:190};}
 // Chart-focused slides: each uses the same declarative API.
 [
  ['bar','Track readiness · columns','Compare capabilities at a glance'],
@@ -5082,8 +5094,8 @@ deckAddExample('Composition & narrative','Nested layouts, quote, progress, and c
  {type:'progress',title:'Labs completed · illustrative',value:72,span:4,minHeight:160},
  {type:'progress',title:'Project readiness · illustrative',value:58,span:4,minHeight:160},
  {type:'progress',title:'Mentorship coverage · illustrative',value:88,span:4,minHeight:160},
- {type:'markdown',content:'### Implementation principles\n- Hands-on labs\n- Mentorship\n- Real-world projects',span:6},
- {type:'callout',title:'Important',text:'All values are proposed sample data, not verified XBrain results.',span:6}
+ {type:'markdown',content:'### Implementation principles\n- Hands-on labs\n- Mentorship\n- Real-world projects',span:6,minHeight:240},
+ {type:'callout',title:'Important',text:'All values are proposed sample data, not verified XBrain results.',span:6,minHeight:240}
 ]);
 deckAddExample('HTML & SVG blocks','Trusted custom content can be embedded through JSON',[
  {type:'html',span:6,minHeight:400,html:'<div style="padding:32px;border:2px solid #F97C00;border-radius:20px;background:#FFF6EF;height:100%"><div style="font:700 22px Manrope;color:#F97C00">Custom HTML</div><h2 style="font:800 40px Manrope;color:#425453;margin:16px 0">Composable story</h2><p style="font:23px Nunito;color:#425453">This card is supplied as literal HTML in presentation JSON.</p></div>'},
@@ -5294,9 +5306,7 @@ function deckRefreshCounts(){
               <div class="relative z-10 flex-1 px-[96px] pt-[36px] pb-[90px] grid grid-cols-12 gap-12 items-center">
                 <!-- Left Column: Giant Brand Lockup + Summary Card (PDF Page 2 Motif) -->
                 <div class="col-span-5 flex flex-col justify-center pr-6">
-                  <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FDECE1] text-[#F97C00] font-heading font-bold text-[15px] uppercase tracking-wider w-fit mb-6">
-                    Table of Contents
-                  </div>
+                  <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FDECE1] text-[#F97C00] font-heading font-bold text-[15px] uppercase tracking-wider w-fit mb-6" ${ce} data-field="tocLabel">${c.tocLabel || 'Table of Contents'}</div>
                   <h1 class="font-heading font-extrabold text-[48px] leading-[1.15] text-[#2B3736] mb-8" ${ce} data-field="title">
                     ${c.title || 'Strategic Presentation Agenda'}
                   </h1>
@@ -5310,8 +5320,8 @@ function deckRefreshCounts(){
                       ${c.leftSummary || ''}
                     </p>
                     <div class="mt-6 pt-5 border-t border-[#FBCAAB] flex items-center justify-between text-[16px] font-heading font-bold text-[#F97C00]">
-                      <span>AWS • Synaptix • TechX</span>
-                      <span>16 Reusable Slides</span>
+                      <span ${ce} data-field="sidebarPartners">${c.sidebarPartners || 'AWS • Synaptix • TechX'}</span>
+                      <span ${ce} data-field="sidebarNote">${c.sidebarNote || '16 Reusable Slides'}</span>
                     </div>
                   </div>
                 </div>
@@ -5393,18 +5403,18 @@ function deckRefreshCounts(){
               <!-- Bottom Contact Card Grid (Stationery Details from PDF Pages 28–31) -->
               <div class="relative z-10 grid grid-cols-12 gap-6 bg-white/15 backdrop-blur-md rounded-3xl p-8 border border-white/30 text-white">
                 <div class="col-span-4 border-r border-white/25 pr-6">
-                  <div class="text-[14px] font-heading font-bold uppercase tracking-wider text-[#7FD7BB]">Executive Contact</div>
+                  <div class="text-[14px] font-heading font-bold uppercase tracking-wider text-[#7FD7BB]" ${ce} data-field="contactLabel">${c.contactLabel || 'Executive Contact'}</div>
                   <div class="text-[28px] font-heading font-extrabold mt-1" ${ce} data-field="contactName">${c.contactName || 'Mr. Ha Ngo'}</div>
                   <div class="text-[19px] text-white/90 font-body" ${ce} data-field="contactRole">${c.contactRole || 'Chief Executive Officer'}</div>
                 </div>
                 <div class="col-span-4 border-r border-white/25 px-4">
-                  <div class="text-[14px] font-heading font-bold uppercase tracking-wider text-[#7FD7BB]">Direct Channels</div>
+                  <div class="text-[14px] font-heading font-bold uppercase tracking-wider text-[#7FD7BB]" ${ce} data-field="channelsLabel">${c.channelsLabel || 'Direct Channels'}</div>
                   <div class="text-[20px] font-body font-semibold mt-2" ${ce} data-field="phone">${c.phone || ''}</div>
                   <div class="text-[19px] font-body text-white/90 mt-1" ${ce} data-field="email">${c.email || ''}</div>
                 </div>
                 <div class="col-span-4 pl-4 flex flex-col justify-between">
                   <div>
-                    <div class="text-[14px] font-heading font-bold uppercase tracking-wider text-[#7FD7BB]">Innovation Hub Location</div>
+                    <div class="text-[14px] font-heading font-bold uppercase tracking-wider text-[#7FD7BB]" ${ce} data-field="locationLabel">${c.locationLabel || 'Innovation Hub Location'}</div>
                     <div class="text-[19px] font-body mt-1.5" ${ce} data-field="address">${c.address || ''}</div>
                   </div>
                   <div class="text-[22px] font-heading font-extrabold text-[#FFD54C] mt-2" ${ce} data-field="website">${c.website || 'www.xbrain.com.vn'}</div>
@@ -5934,11 +5944,11 @@ function deckRefreshCounts(){
                   <table class="w-full text-left border-collapse x-data-table">
                     <thead>
                       <tr class="bg-[#425453] text-white">
-                        <th class="w-[16%]">Training Phase</th>
-                        <th class="w-[11%]">Duration</th>
-                        <th class="w-[23%]">Core Curriculum Track</th>
-                        <th class="w-[28%]">Hands-On Labs & Technical Scope</th>
-                        <th class="w-[22%]">Output & Evaluation</th>
+                        <th class="w-[16%]" ${ce} data-field="colPhase">${c.colPhase || 'Training Phase'}</th>
+                        <th class="w-[11%]" ${ce} data-field="colDuration">${c.colDuration || 'Duration'}</th>
+                        <th class="w-[23%]" ${ce} data-field="colModule">${c.colModule || 'Core Curriculum Track'}</th>
+                        <th class="w-[28%]" ${ce} data-field="colLabs">${c.colLabs || 'Hands-On Labs &amp; Technical Scope'}</th>
+                        <th class="w-[22%]" ${ce} data-field="colOutput">${c.colOutput || 'Output &amp; Evaluation'}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -6058,7 +6068,7 @@ function deckRefreshCounts(){
                   <!-- Left Pane: What we need from students -->
                   <div class="bg-[#FDECE1] rounded-3xl p-7 border-2 border-[#FBCAAB] flex flex-col justify-between">
                     <div class="flex items-center gap-4 mb-4">
-                      <div class="w-12 h-12 rounded-2xl bg-[#425453] text-white flex items-center justify-center font-heading font-extrabold text-[20px]">IN</div>
+                      <div class="w-12 h-12 rounded-2xl bg-[#425453] text-white flex items-center justify-center font-heading font-extrabold text-[20px]" ${ce} data-field="leftBadge">${c.leftBadge || 'IN'}</div>
                       <div>
                         <h3 class="font-heading font-extrabold text-[27px] text-[#2B3736]" ${ce} data-field="leftHeader">${c.leftHeader || 'What we need from students'}</h3>
                         <p class="font-body text-[17px] text-[#5E6E6D]" ${ce} data-field="leftSub">${c.leftSub || ''}</p>
@@ -6072,7 +6082,7 @@ function deckRefreshCounts(){
                   <!-- Right Pane: What we can offer -->
                   <div class="bg-[#FBD8C0] rounded-3xl p-7 border-2 border-[#F97C00]/40 flex flex-col justify-between">
                     <div class="flex items-center gap-4 mb-4">
-                      <div class="w-12 h-12 rounded-2xl bg-[#F97C00] text-white flex items-center justify-center font-heading font-extrabold text-[20px]">OUT</div>
+                      <div class="w-12 h-12 rounded-2xl bg-[#F97C00] text-white flex items-center justify-center font-heading font-extrabold text-[20px]" ${ce} data-field="rightBadge">${c.rightBadge || 'OUT'}</div>
                       <div>
                         <h3 class="font-heading font-extrabold text-[27px] text-[#2B3736]" ${ce} data-field="rightHeader">${c.rightHeader || 'What we can offer'}</h3>
                         <p class="font-body text-[17px] text-[#425453]" ${ce} data-field="rightSub">${c.rightSub || ''}</p>
@@ -6285,7 +6295,8 @@ function deckRefreshCounts(){
       const frame = slide.frame !== undefined ? slide.frame : layout.frame;
       if (frame) {
         if (typeof XB_CTX[frame] !== 'function') throw new Error(`frame "${frame}" không phải hàm helper`);
-        html = XB_CTX[frame](c, index, html, { slide, isThumbnail, ce, numStr, layout });
+        // Frames (e.g. dgPage) print title/subtitle/note as HTML: give them escaped content; raw stays in opts.raw.
+        html = XB_CTX[frame](escapedContent(c), index, html, { slide, isThumbnail, ce, numStr, layout, raw: c });
       }
       return (slide.css ? `<style>${xbSrc(slide.css)}</style>` : '') + html;
     }

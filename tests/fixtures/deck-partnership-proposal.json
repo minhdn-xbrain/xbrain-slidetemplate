@@ -1,0 +1,506 @@
+{
+  "$schema": "../../contracts/xbrain-deck-v1.schema.json",
+  "version": "1.0",
+  "releaseVersion": "1.0.0",
+  "metadata": {
+    "name": "XBrain × Đại học Công nghệ Duyên Hải · Đề xuất hợp tác đào tạo CloudOps/DevOps",
+    "note": "Kịch bản hư cấu dùng để kiểm thử template. Mọi con số là dữ liệu minh họa."
+  },
+  "theme": {
+    "preset": "xbrain",
+    "tokens": {
+      "primary": "#F97C00",
+      "ink": "#425453",
+      "teal": "#25AC9D"
+    }
+  },
+  "chrome": {
+    "headerLabel": "ĐỀ XUẤT HỢP TÁC · XBRAIN × ĐH CÔNG NGHỆ DUYÊN HẢI",
+    "website": "www.xbrain.com.vn",
+    "address": "Vietnam Innovation Hub Town, 179 Tran Hung Dao, Da Nang City"
+  },
+  "slides": [
+    {
+      "id": "p-cover",
+      "type": "cover",
+      "content": {
+        "badge": "ĐỀ XUẤT HỢP TÁC ĐÀO TẠO • NĂM HỌC 2026–2027",
+        "titleLine1": "Cùng đào tạo",
+        "titleLine2": "kỹ sư CloudOps",
+        "titleLine3": "& DevOps với",
+        "subtitle": "Đề xuất hợp tác giữa XBrain và Đại học Công nghệ Duyên Hải (tên hư cấu): đưa lab hands-on, mentor thực chiến và capstone theo bài toán doanh nghiệp vào chương trình năm 3–4.",
+        "presenter": "Ban Hợp tác Đào tạo — XBrain",
+        "location": "Vietnam Innovation Hub Town, 179 Tran Hung Dao, Da Nang City",
+        "website": "www.xbrain.com.vn"
+      }
+    },
+    {
+      "id": "p-agenda",
+      "type": "agenda",
+      "content": {
+        "sectionTag": "NỘI DUNG TRÌNH BÀY",
+        "title": "Lộ trình buổi trao đổi hợp tác",
+        "leftHeadline": "Từ giảng đường đến môi trường production",
+        "leftSummary": "Năm phần trình bày đi từ bối cảnh, mô hình hợp tác, chương trình học đến kế hoạch triển khai và các bước tiếp theo.",
+        "items": [
+          {
+            "num": "01",
+            "title": "Bối cảnh & mục tiêu cohort",
+            "desc": "Nhu cầu nhân lực cloud và chỉ tiêu minh họa cho cohort thí điểm",
+            "tag": "Slide 03"
+          },
+          {
+            "num": "02",
+            "title": "Mô hình hợp tác ba bên",
+            "desc": "Vai trò của Nhà trường, XBrain và doanh nghiệp tuyển dụng",
+            "tag": "Slide 04–06"
+          },
+          {
+            "num": "03",
+            "title": "Khung chương trình & phân track",
+            "desc": "Bốn giai đoạn đào tạo, tiêu chí xếp học viên vào CloudOps/DevOps",
+            "tag": "Slide 07–08"
+          },
+          {
+            "num": "04",
+            "title": "Kế hoạch triển khai năm học",
+            "desc": "Gantt 10 tháng, mốc phê duyệt và trách nhiệm từng bên",
+            "tag": "Slide 09"
+          },
+          {
+            "num": "05",
+            "title": "Đánh giá SWOT & bước tiếp theo",
+            "desc": "Rủi ro cần quản trị và đề xuất ký MoU giai đoạn thí điểm",
+            "tag": "Slide 10–11"
+          }
+        ],
+        "tocLabel": "Nội dung",
+        "sidebarPartners": "Nhà trường • XBrain • Doanh nghiệp",
+        "sidebarNote": "11 slide"
+      }
+    },
+    {
+      "id": "p-kpi",
+      "type": "kpi-dashboard",
+      "content": {
+        "sectionTag": "BỐI CẢNH · DỮ LIỆU MINH HỌA",
+        "title": "Mục tiêu cohort thí điểm (số liệu minh họa)",
+        "primaryKpi1Val": "300",
+        "primaryKpi1Label": "Hồ sơ đăng ký mục tiêu",
+        "primaryKpi1Sub": "Sinh viên năm 3–4 khoa CNTT và Điện tử – Viễn thông (minh họa)",
+        "primaryKpi2Val": "120",
+        "primaryKpi2Label": "Học viên được tuyển chọn",
+        "primaryKpi2Sub": "Tỉ lệ chọn 40% qua bài test kỹ thuật và phỏng vấn định hướng",
+        "secondaryKpis": [
+          {
+            "val": "18 tuần",
+            "label": "Thời lượng blended",
+            "color": "#F97C00"
+          },
+          {
+            "val": "85%+",
+            "label": "Mục tiêu hoàn thành lab",
+            "color": "#25AC9D"
+          },
+          {
+            "val": "1 : 12",
+            "label": "Tỉ lệ mentor / học viên",
+            "color": "#007BC1"
+          }
+        ],
+        "segments": [
+          {
+            "title": "Sinh viên năm 3 – học phần tự chọn",
+            "desc": "Học trong khung tín chỉ tự chọn, chuyển đổi tối đa 6 tín chỉ theo quy chế trường.",
+            "badge": "Minh họa • 50%"
+          },
+          {
+            "title": "Sinh viên năm 4 – thực tập tốt nghiệp",
+            "desc": "Capstone theo bài toán doanh nghiệp thay cho đợt thực tập truyền thống.",
+            "badge": "Minh họa • 35%"
+          },
+          {
+            "title": "Cựu sinh viên chuyển hướng nghề",
+            "desc": "Lập trình viên, quản trị hệ thống muốn chuyển sang CloudOps/DevOps.",
+            "badge": "Minh họa • 15%"
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-divider",
+      "type": "section-divider",
+      "content": {
+        "sectionNumber": "02",
+        "categoryLabel": "MÔ HÌNH HỢP TÁC",
+        "title": "Ba bên, một mục tiêu: kỹ sư sẵn sàng đi làm",
+        "subtitle": "Nhà trường giữ nền tảng học thuật, XBrain mang lab và mentor, doanh nghiệp đặt bài toán và tuyển dụng."
+      }
+    },
+    {
+      "id": "p-venn",
+      "type": "venn-diagram",
+      "content": {
+        "sectionTag": "GIÁ TRỊ HỢP TÁC",
+        "kicker": "DIAGRAM · VENN",
+        "title": "Điểm giao thoa của ba nguồn lực",
+        "subtitle": "Mỗi bên đóng góp phần mình mạnh nhất; vùng trung tâm là đầu ra chung của chương trình.",
+        "note": "Mô hình đề xuất · Đại học Công nghệ Duyên Hải là tên hư cấu",
+        "center": "Job-ready",
+        "centerSub": "CloudOps · DevOps",
+        "sets": [
+          {
+            "title": "Nhà trường",
+            "desc": "Sinh viên, tín chỉ, phòng máy và giảng viên đồng hướng dẫn."
+          },
+          {
+            "title": "XBrain",
+            "desc": "Syllabus, lab hands-on, mentor và rubric đánh giá năng lực."
+          },
+          {
+            "title": "Doanh nghiệp",
+            "desc": "Bài toán capstone, phản hồi kỹ năng và vị trí thực tập."
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-compare",
+      "type": "comparison",
+      "content": {
+        "sectionTag": "PHÂN CÔNG TRÁCH NHIỆM",
+        "title": "Cam kết của mỗi bên trong giai đoạn thí điểm",
+        "leftHeader": "Đại học Công nghệ Duyên Hải",
+        "leftSub": "Nền tảng học thuật và điều kiện tổ chức lớp",
+        "leftItems": [
+          {
+            "title": "Tuyển chọn & công nhận tín chỉ",
+            "desc": "Truyền thông tới sinh viên, xét chuyển đổi tín chỉ tự chọn."
+          },
+          {
+            "title": "Cơ sở vật chất",
+            "desc": "Phòng lab, lịch học cố định và kết nối mạng ổn định."
+          },
+          {
+            "title": "Giảng viên đồng hướng dẫn",
+            "desc": "Theo dõi tiến độ, tham gia hội đồng bảo vệ capstone."
+          }
+        ],
+        "rightHeader": "XBrain",
+        "rightSub": "Nội dung thực chiến và đánh giá năng lực",
+        "rightItems": [
+          {
+            "title": "Syllabus & bộ lab hands-on",
+            "desc": "CloudOps/DevOps, cập nhật theo phản hồi mỗi cohort."
+          },
+          {
+            "title": "Mentor & check-in hằng tuần",
+            "desc": "Kỹ sư thực hành hướng dẫn nhóm, chấm bài theo rubric."
+          },
+          {
+            "title": "Kết nối tuyển dụng",
+            "desc": "Demo day, giới thiệu thực tập với doanh nghiệp đối tác."
+          }
+        ],
+        "bottomBannerTitle": "Lợi ích kỳ vọng cho Nhà trường (định tính)",
+        "bottomBenefits": [
+          "Tăng khả năng có việc",
+          "Học phần gắn thực tiễn",
+          "Gắn kết doanh nghiệp",
+          "Nâng cao năng lực giảng viên",
+          "Đồng thương hiệu chương trình",
+          "Dữ liệu đánh giá đầu ra"
+        ],
+        "leftBadge": "ĐH",
+        "rightBadge": "XB"
+      }
+    },
+    {
+      "id": "p-table",
+      "type": "data-table",
+      "chrome": {
+        "headerLabel": "PHỤ LỤC A · KHUNG CHƯƠNG TRÌNH ĐỀ XUẤT",
+        "website": "www.xbrain.com.vn",
+        "address": "Bản nháp thảo luận · Dữ liệu minh họa"
+      },
+      "content": {
+        "sectionTag": "KHUNG CHƯƠNG TRÌNH",
+        "title": "Khung 18 tuần: bốn giai đoạn và QA xuyên suốt",
+        "metaPills": [
+          {
+            "label": "Thời lượng",
+            "val": "18 tuần (minh họa)"
+          },
+          {
+            "label": "Hình thức",
+            "val": "Blended tại trường & online"
+          },
+          {
+            "label": "Track",
+            "val": "CloudOps hoặc DevOps"
+          },
+          {
+            "label": "Tín chỉ",
+            "val": "Tối đa 6 TC tự chọn"
+          }
+        ],
+        "rows": [
+          {
+            "phase": "GĐ 01 • Foundation",
+            "duration": "5 tuần",
+            "module": "Linux, networking và khái niệm cloud cơ bản",
+            "deliverables": "Dựng máy ảo, cấu hình mạng, IAM và quản lý chi phí cơ bản",
+            "assessment": "Quiz hằng tuần + lab checkpoint",
+            "badgeColor": "#25AC9D"
+          },
+          {
+            "phase": "GĐ 02 • Track",
+            "duration": "7 tuần",
+            "module": "CloudOps: monitoring, HA, cost · DevOps: CI/CD, container, IaC",
+            "deliverables": "Pipeline tự động, dashboard giám sát, runbook sự cố",
+            "assessment": "Lab tình huống production theo rubric",
+            "badgeColor": "#F97C00"
+          },
+          {
+            "phase": "GĐ 03 • Capstone",
+            "duration": "4 tuần",
+            "module": "Dự án nhóm theo bài toán doanh nghiệp",
+            "deliverables": "Hệ thống nhiều tầng, tài liệu kiến trúc, demo trực tiếp",
+            "assessment": "Bảo vệ trước hội đồng trường & mentor",
+            "badgeColor": "#007BC1"
+          },
+          {
+            "phase": "GĐ 04 • Career",
+            "duration": "2 tuần",
+            "module": "Chuẩn bị phỏng vấn và kết nối thực tập",
+            "deliverables": "CV, portfolio, phỏng vấn thử system design",
+            "assessment": "Chứng nhận hoàn thành của chương trình",
+            "badgeColor": "#85439A"
+          },
+          {
+            "phase": "Xuyên suốt • QA",
+            "duration": "18 tuần",
+            "module": "Ban điều phối hai bên rà soát chất lượng",
+            "deliverables": "Báo cáo tiến độ 2 tuần/lần, khảo sát học viên giữa kỳ",
+            "assessment": "Báo cáo tổng kết cohort (minh họa)",
+            "badgeColor": "#425453"
+          }
+        ],
+        "colPhase": "Giai đoạn",
+        "colDuration": "Thời lượng",
+        "colModule": "Nội dung cốt lõi",
+        "colLabs": "Lab & phạm vi kỹ thuật",
+        "colOutput": "Đầu ra & đánh giá"
+      }
+    },
+    {
+      "id": "p-tree",
+      "type": "decision-tree",
+      "content": {
+        "sectionTag": "PHÂN TRACK HỌC VIÊN",
+        "kicker": "DIAGRAM · DECISION TREE",
+        "title": "Xếp học viên vào lộ trình phù hợp",
+        "subtitle": "Hai câu hỏi sau bài test đầu vào quyết định track và nhu cầu học bổ trợ.",
+        "note": "Tiêu chí minh họa · hội đồng hai bên chốt ngưỡng điểm trước tuyển sinh",
+        "root": {
+          "title": "Điểm test Linux & mạng ≥ 60?",
+          "desc": "Sau bài test đầu vào"
+        },
+        "branches": [
+          {
+            "label": "Đạt",
+            "title": "Thích tự động hoá & code?",
+            "children": [
+              {
+                "label": "Có",
+                "title": "DevOps Track",
+                "desc": "CI/CD, container, IaC"
+              },
+              {
+                "label": "Chưa",
+                "title": "CloudOps Track",
+                "desc": "Vận hành, giám sát, chi phí"
+              }
+            ]
+          },
+          {
+            "label": "Chưa đạt",
+            "title": "Học bổ trợ 3 tuần được?",
+            "children": [
+              {
+                "label": "Có",
+                "title": "Bridge + CloudOps",
+                "desc": "Bổ trợ trước khi vào track"
+              },
+              {
+                "label": "Chưa",
+                "title": "Cohort kế tiếp",
+                "desc": "Gợi ý tài liệu tự học"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-gantt",
+      "type": "gantt-roadmap",
+      "chrome": {
+        "headerLabel": "KẾ HOẠCH TRIỂN KHAI · NĂM HỌC 2026–2027",
+        "website": "www.xbrain.com.vn",
+        "address": "Mốc thời gian minh họa, chờ hai bên xác nhận"
+      },
+      "content": {
+        "sectionTag": "KẾ HOẠCH TRIỂN KHAI",
+        "kicker": "DIAGRAM · GANTT",
+        "title": "Lộ trình 10 tháng của cohort thí điểm",
+        "subtitle": "Thanh là khoảng thời gian thực hiện; hình thoi là mốc cần hai bên phê duyệt.",
+        "note": "Dữ liệu minh họa · thời gian thực tế phụ thuộc lịch học kỳ của trường",
+        "periods": [
+          "T9",
+          "T10",
+          "T11",
+          "T12",
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6"
+        ],
+        "today": 1.5,
+        "todayLabel": "Hiện tại",
+        "tasks": [
+          {
+            "title": "Ký MoU & ban điều phối",
+            "owner": "Hai bên",
+            "start": 0,
+            "end": 1
+          },
+          {
+            "title": "Truyền thông & nhận hồ sơ",
+            "owner": "Nhà trường",
+            "start": 0.8,
+            "end": 2.2
+          },
+          {
+            "title": "Test đầu vào & phân track",
+            "owner": "XBrain",
+            "start": 2,
+            "end": 3
+          },
+          {
+            "title": "Foundation",
+            "owner": "Mentor",
+            "start": 3,
+            "end": 4.3
+          },
+          {
+            "title": "Track CloudOps / DevOps",
+            "owner": "Mentor",
+            "start": 4.3,
+            "end": 6.2
+          },
+          {
+            "title": "Capstone doanh nghiệp",
+            "owner": "Doanh nghiệp",
+            "start": 6.2,
+            "end": 7.8
+          },
+          {
+            "title": "Career & đánh giá cohort",
+            "owner": "Hai bên",
+            "start": 7.8,
+            "end": 9.2
+          }
+        ],
+        "milestones": [
+          {
+            "label": "Ký MoU",
+            "at": 1
+          },
+          {
+            "label": "Chốt danh sách",
+            "at": 3
+          },
+          {
+            "label": "Demo day",
+            "at": 7.8
+          },
+          {
+            "label": "Tổng kết",
+            "at": 9.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-swot",
+      "type": "swot-analysis",
+      "content": {
+        "sectionTag": "ĐÁNH GIÁ HỢP TÁC",
+        "kicker": "DIAGRAM · SWOT",
+        "title": "SWOT của mô hình hợp tác thí điểm",
+        "subtitle": "Nội lực của hai bên và bối cảnh bên ngoài để chọn ưu tiên quản trị rủi ro.",
+        "note": "Đánh giá định tính minh họa · cập nhật sau buổi làm việc với nhà trường",
+        "quadrants": [
+          {
+            "letter": "S",
+            "title": "Strengths · Điểm mạnh",
+            "items": [
+              "Lab mô phỏng môi trường production",
+              "Mentor là kỹ sư đang làm nghề",
+              "Đánh giá bằng sản phẩm thật",
+              "Sinh viên có nền tảng CNTT"
+            ]
+          },
+          {
+            "letter": "W",
+            "title": "Weaknesses · Điểm yếu",
+            "items": [
+              "Cohort đầu còn nhỏ",
+              "Lịch học phụ thuộc học kỳ",
+              "Chi phí hạ tầng lab cloud"
+            ]
+          },
+          {
+            "letter": "O",
+            "title": "Opportunities · Cơ hội",
+            "items": [
+              "Nhu cầu kỹ sư cloud tăng",
+              "Chuyển đổi số tại địa phương",
+              "Mở rộng sang khoa khác",
+              "Doanh nghiệp cần nguồn thực tập"
+            ]
+          },
+          {
+            "letter": "T",
+            "title": "Threats · Thách thức",
+            "items": [
+              "Khóa học online giá rẻ",
+              "Công nghệ thay đổi nhanh",
+              "Sinh viên bỏ giữa chừng"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "p-closing",
+      "type": "closing",
+      "content": {
+        "headline": "CẢM ƠN",
+        "subheadline": "Bước tiếp theo: thống nhất phạm vi, ký MoU, khởi động cohort thí điểm.",
+        "contactName": "Ban Hợp tác Đào tạo",
+        "contactRole": "XBrain — Đầu mối làm việc với Nhà trường",
+        "phone": "+(84) 28 3620 9897",
+        "email": "Cloud@xbrain.com.vn",
+        "address": "Vietnam Innovation Hub Town, 179 Tran Hung Dao, An Hai Ward, Da Nang City",
+        "website": "www.xbrain.com.vn",
+        "contactLabel": "Đầu mối liên hệ",
+        "channelsLabel": "Kênh liên lạc",
+        "locationLabel": "Địa điểm"
+      }
+    }
+  ]
+}

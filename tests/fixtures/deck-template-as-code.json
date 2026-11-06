@@ -1,0 +1,684 @@
+{
+  "$schema": "../../contracts/xbrain-deck-v1.schema.json",
+  "version": "1.0",
+  "releaseVersion": "1.0.0",
+  "metadata": {
+    "name": "XBrain · Template as code — Platform Engineering",
+    "note": "Kịch bản C: layout viết bằng mã trong JSON. Số liệu trong deck là minh họa."
+  },
+  "theme": {
+    "preset": "xbrain",
+    "tokens": {
+      "primary": "#F97C00",
+      "ink": "#425453",
+      "teal": "#25AC9D"
+    }
+  },
+  "chrome": {
+    "headerLabel": "XBrain · Platform Engineering",
+    "website": "www.xbrain.com.vn",
+    "address": "Vietnam Innovation Hub Town, 179 Tran Hung Dao, Da Nang City"
+  },
+  "helpers": {
+    "PE": {
+      "main": "#F97C00",
+      "ink": "#425453",
+      "heading": "#2B3736",
+      "soft": "#FFF5ED",
+      "line": "#DEE8E2",
+      "muted": "#5E6E6D"
+    },
+    "edit": "(ce, path) => `${ce} data-field=\"${path}\"`",
+    "pill": "(text, color = XO, fg = '#FFFFFF') => `<span style=\"display:inline-block;padding:10px 26px;border-radius:999px;background:${color};color:${fg};font:800 20px/1.2 Manrope,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase\">${escapeHtml(text)}</span>`",
+    "svgText": "(x, y, s, o = {}) => xT(x, y, escapeHtml(s), o)",
+    "svgTextC": "(x, y, s, o = {}) => xTC(x, y, escapeHtml(s), o)",
+    "pePage": [
+      "(c, numStr, body, opts = {}) => `<div class=\"v1-pe-page\" style=\"width:1920px;height:1080px;background:${opts.bg || '#FFFFFF'};position:relative;overflow:hidden;display:flex;flex-direction:column;color:${PE.ink};font-family:Nunito,Arial,sans-serif\">",
+      "  ${renderStandardWhiteHeader(escapeHtml(c.sectionTag || 'PLATFORM ENGINEERING'), numStr)}",
+      "  <div style=\"position:relative;z-index:10;flex:1;min-height:0;display:flex;flex-direction:column;padding:${opts.pad || '24px 96px 112px'}\">${body}</div>",
+      "  ${renderStandardWhiteFooter(numStr)}",
+      "</div>`"
+    ],
+    "peHead": [
+      "(c, ce) => `<div class=\"v1-pe-head\">",
+      "  <div style=\"font:800 17px/1.4 Manrope,Arial,sans-serif;letter-spacing:.12em;color:${PE.main};text-transform:uppercase\" ${edit(ce, 'kicker')}>${escapeHtml(c.kicker || '')}</div>",
+      "  <h1 style=\"font:800 52px/1.15 Manrope,Arial,sans-serif;color:${PE.heading};margin:10px 0 8px;letter-spacing:-.02em\" ${edit(ce, 'title')}>${escapeHtml(c.title || '')}</h1>",
+      "  <p style=\"font:600 23px/1.45 Nunito,Arial,sans-serif;color:#697D77;margin:0\" ${edit(ce, 'subtitle')}>${escapeHtml(c.subtitle || '')}</p>",
+      "</div>`"
+    ]
+  },
+  "layouts": {
+    "pe-statement": {
+      "name": "PE · Big Statement",
+      "group": "B",
+      "desc": "Thông điệp lớn + 3 luận điểm, viết bằng template literal; mọi chữ sửa trực tiếp được.",
+      "limits": {
+        "points": 3
+      },
+      "sample": {
+        "sectionTag": "WHY PLATFORM ENGINEERING",
+        "tag": "Thông điệp chính",
+        "statement": "Developer tự phục vụ hạ tầng qua golden path, còn platform team giữ chuẩn bằng code.",
+        "points": [
+          "Mỗi template là một sản phẩm: có owner, version và changelog.",
+          "Guardrail chạy tự động trong pipeline, không qua ticket thủ công.",
+          "Đo trải nghiệm developer bằng DORA metrics và khảo sát định kỳ."
+        ],
+        "note": "Định hướng năng lực · nội dung minh họa cho buổi giới thiệu"
+      },
+      "template": [
+        "${pePage(c, numStr, `",
+        "<div style=\"flex:1;display:flex;flex-direction:column;justify-content:center;gap:40px\">",
+        "  <div>${pill(c.tag)}</div>",
+        "  <div class=\"v1-pe-statement\" ${edit(ce, 'statement')}>${escapeHtml(c.statement)}</div>",
+        "  <div class=\"v1-pe-points\">",
+        "    ${(c.points || []).slice(0, 3).map((p, i) => `<div class=\"v1-pe-point\"><span class=\"v1-pe-point__num\">${String(i + 1).padStart(2, '0')}</span><span ${edit(ce, 'points.' + i)}>${escapeHtml(p)}</span></div>`).join('')}",
+        "  </div>",
+        "  <div class=\"v1-pe-note\" ${edit(ce, 'note')}>${escapeHtml(c.note || '')}</div>",
+        "</div>`)}"
+      ],
+      "css": [
+        ".v1-pe-statement{font:800 72px/1.16 Manrope,Arial,sans-serif;color:#2B3736;max-width:1600px;letter-spacing:-.02em}",
+        ".v1-pe-points{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}",
+        ".v1-pe-point{display:flex;gap:20px;align-items:flex-start;padding:28px 30px;border-radius:24px;background:#FFF5ED;border:2px solid #FBCAAB;font:600 25px/1.42 Nunito,Arial,sans-serif;color:#425453}",
+        ".v1-pe-point:nth-child(2){background:#F3F6F5;border-color:#DEE8E2}",
+        ".v1-pe-point__num{font:800 30px/1.15 Manrope,Arial,sans-serif;color:#F97C00;flex:none}",
+        ".v1-pe-point:nth-child(2) .v1-pe-point__num{color:#425453}",
+        ".v1-pe-note{font:600 17px/1.4 Nunito,Arial,sans-serif;color:#83918C}"
+      ]
+    },
+    "pe-capability-grid": {
+      "name": "PE · Capability Grid",
+      "group": "C",
+      "desc": "Lưới 4–6 thẻ năng lực (render JS): nhãn, tiêu đề, mô tả, chỉ số; tự đổi 2/3 cột.",
+      "limits": {
+        "items": 6
+      },
+      "sample": {
+        "sectionTag": "CAPABILITIES",
+        "kicker": "PLATFORM ENGINEERING · NĂNG LỰC",
+        "title": "Sáu năng lực lõi của XBrain Platform Team",
+        "subtitle": "Mỗi năng lực được đóng gói thành template có thể tái sử dụng giữa các dự án.",
+        "items": [
+          {
+            "tag": "Self-service",
+            "title": "Internal Developer Portal",
+            "desc": "Catalog dịch vụ, scaffold dự án mới và tài liệu tập trung một nơi.",
+            "metric": "15 phút",
+            "metricLabel": "tạo service mới (minh họa)"
+          },
+          {
+            "tag": "IaC",
+            "title": "Infrastructure as Code",
+            "desc": "Module Terraform chuẩn cho mạng, compute, database và IAM.",
+            "metric": "40+",
+            "metricLabel": "module dùng chung (minh họa)"
+          },
+          {
+            "tag": "CI/CD",
+            "title": "Golden path pipeline",
+            "desc": "Build, test, scan và deploy theo một luồng đã được kiểm chứng.",
+            "metric": "3 bước",
+            "metricLabel": "để lên môi trường preview"
+          },
+          {
+            "tag": "Guardrail",
+            "title": "Policy as Code",
+            "desc": "Kiểm tra bảo mật, chi phí và tag tài nguyên ngay trong pipeline.",
+            "metric": "100%",
+            "metricLabel": "PR qua policy check (mục tiêu)"
+          },
+          {
+            "tag": "Observability",
+            "title": "Observability mặc định",
+            "desc": "Log, metric, trace và dashboard được gắn sẵn cho mọi service mới.",
+            "metric": "4",
+            "metricLabel": "golden signals có sẵn"
+          },
+          {
+            "tag": "FinOps",
+            "title": "FinOps theo team",
+            "desc": "Ngân sách, cảnh báo và báo cáo chi phí theo từng sản phẩm.",
+            "metric": "-20%",
+            "metricLabel": "chi phí lãng phí (minh họa)"
+          }
+        ],
+        "note": "Số liệu minh họa · không phải kết quả đo thực tế của XBrain hay khách hàng"
+      },
+      "render": [
+        "const items = (c.items || []).slice(0, 6);",
+        "const cols = items.length > 4 ? 3 : 2;",
+        "const cards = items.map((it, i) => {",
+        "  const k = i % 2 ? XT : XO;",
+        "  return `<div class=\"v1-pe-card\" style=\"--k:${k}\">",
+        "    <div class=\"v1-pe-card__top\"><span class=\"v1-pe-card__idx\" style=\"background:${k}\">${String(i + 1).padStart(2, '0')}</span><span class=\"v1-pe-card__tag\" ${edit(ce, `items.${i}.tag`)}>${escapeHtml(it.tag || '')}</span></div>",
+        "    <div class=\"v1-pe-card__title\" ${edit(ce, `items.${i}.title`)}>${escapeHtml(it.title || '')}</div>",
+        "    <div class=\"v1-pe-card__desc\" ${edit(ce, `items.${i}.desc`)}>${escapeHtml(it.desc || '')}</div>",
+        "    <div class=\"v1-pe-card__metric\"><b style=\"color:${k}\" ${edit(ce, `items.${i}.metric`)}>${escapeHtml(it.metric || '')}</b><span ${edit(ce, `items.${i}.metricLabel`)}>${escapeHtml(it.metricLabel || '')}</span></div>",
+        "  </div>`;",
+        "}).join('');",
+        "return pePage(c, numStr, `${peHead(c, ce)}",
+        "  <div class=\"v1-pe-grid\" style=\"grid-template-columns:repeat(${cols},1fr)\">${cards}</div>",
+        "  <div class=\"v1-pe-note\" style=\"margin-top:16px\" ${edit(ce, 'note')}>${escapeHtml(c.note || '')}</div>`);"
+      ],
+      "css": [
+        ".v1-pe-grid{flex:1;min-height:0;display:grid;gap:24px;margin-top:28px;grid-auto-rows:1fr}",
+        ".v1-pe-card{position:relative;background:#FFFFFF;border:2px solid #DEE8E2;border-radius:24px;padding:18px 26px 16px 32px;display:flex;flex-direction:column;gap:6px;overflow:hidden}",
+        ".v1-pe-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--k)}",
+        ".v1-pe-card__top{display:flex;align-items:center;justify-content:space-between;gap:16px}",
+        ".v1-pe-card__idx{width:42px;height:42px;border-radius:13px;color:#FFFFFF;font:800 18px/42px Manrope,Arial,sans-serif;text-align:center}",
+        ".v1-pe-card__tag{font:800 14px/1.2 Manrope,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#5E6E6D;background:#F3F6F5;padding:8px 14px;border-radius:999px}",
+        ".v1-pe-card__title{font:800 28px/1.2 Manrope,Arial,sans-serif;color:#2B3736}",
+        ".v1-pe-card__desc{font:600 20px/1.42 Nunito,Arial,sans-serif;color:#5E6E6D;flex:1}",
+        ".v1-pe-card__metric{display:flex;align-items:baseline;gap:12px;border-top:2px dashed #DEE8E2;padding-top:8px}",
+        ".v1-pe-card__metric b{font:800 32px/1.1 Manrope,Arial,sans-serif;white-space:nowrap}",
+        ".v1-pe-card__metric span{font:700 17px/1.3 Nunito,Arial,sans-serif;color:#5E6E6D}"
+      ]
+    },
+    "pe-metric-bars": {
+      "name": "PE · Metric Bars (SVG)",
+      "group": "D",
+      "desc": "Cặp thanh trước/sau và % cải thiện, vẽ SVG trong khung diagram chuẩn dgPage (1728×600).",
+      "frame": "dgPage",
+      "limits": {
+        "rows": 5
+      },
+      "sample": {
+        "sectionTag": "OUTCOMES",
+        "kicker": "PROPOSED DIAGRAM · DORA METRICS",
+        "title": "Trước và sau khi áp dụng golden path",
+        "subtitle": "So sánh năm chỉ số giao hàng phần mềm của một nhóm sản phẩm điển hình sau hai quý.",
+        "note": "Số liệu minh họa cho bố cục · thay bằng dữ liệu đo thực tế trước khi dùng chính thức",
+        "legendBefore": "Trước (quy trình thủ công)",
+        "legendAfter": "Sau 2 quý dùng golden path",
+        "rows": [
+          {
+            "label": "Lead time cho thay đổi",
+            "hint": "Từ commit tới production",
+            "before": 9,
+            "after": 2,
+            "unit": "ngày",
+            "better": "lower"
+          },
+          {
+            "label": "Tần suất deploy",
+            "hint": "Số lần deploy production",
+            "before": 2,
+            "after": 12,
+            "unit": "lần/tuần",
+            "better": "higher"
+          },
+          {
+            "label": "Thời gian khôi phục",
+            "hint": "MTTR khi có sự cố",
+            "before": 6,
+            "after": 1.5,
+            "unit": "giờ",
+            "better": "lower"
+          },
+          {
+            "label": "Tỉ lệ thay đổi lỗi",
+            "hint": "Change failure rate",
+            "before": 18,
+            "after": 7,
+            "unit": "%",
+            "better": "lower"
+          },
+          {
+            "label": "Onboarding dev mới",
+            "hint": "Tới commit đầu tiên",
+            "before": 10,
+            "after": 2,
+            "unit": "ngày",
+            "better": "lower"
+          }
+        ]
+      },
+      "render": [
+        "const rows = (c.rows || []).slice(0, 5);",
+        "const x0 = 470, bw = 940, rh = 104, y0 = 64;",
+        "let o = xRect(x0, 6, 24, 24, XGRAY, 6) + svgText(x0 + 36, 26, c.legendBefore || 'Trước', { size: 20, color: XMUTED, max: 40 })",
+        "  + xRect(x0 + 420, 6, 24, 24, XO, 6) + svgText(x0 + 456, 26, c.legendAfter || 'Sau', { size: 20, color: XMUTED, max: 40 })",
+        "  + svgTextC(1635, 18, 'Cải thiện', { size: 18, color: XMUTED, weight: 800 });",
+        "rows.forEach((r, i) => {",
+        "  const y = y0 + i * rh, b = xNum(r.before), a = xNum(r.after), m = Math.max(b, a) || 1;",
+        "  const lower = r.better !== 'higher';",
+        "  const gain = b ? Math.round((lower ? (b - a) / b : (a - b) / b) * 100) : 0;",
+        "  const wb = bw * b / m, wa = bw * a / m, unit = !r.unit ? '' : r.unit === '%' ? '%' : ' ' + r.unit;",
+        "  o += dgR(0, y, 1728, rh - 12, i % 2 ? '#FFFFFF' : '#F8FAF9', 'none', 16)",
+        "    + xRect(0, y, 8, rh - 12, i % 2 ? XT : XO, 4)",
+        "    + svgText(32, y + 42, r.label, { size: 25, color: XT, weight: 800, max: 30 })",
+        "    + svgText(32, y + 72, r.hint || '', { size: 18, color: XMUTED, weight: 600, font: 'b', max: 40 })",
+        "    + xRect(x0, y + 14, wb, 28, XGRAY, 8)",
+        "    + svgText(x0 + wb + 14, y + 35, xFmt(b) + unit, { size: 19, color: XMUTED, max: 20 })",
+        "    + xRect(x0, y + 50, wa, 28, XO, 8)",
+        "    + svgText(x0 + wa + 14, y + 71, xFmt(a) + unit, { size: 19, color: XO, weight: 800, max: 20 })",
+        "    + dgR(1560, y + 20, 150, 52, gain >= 0 ? XT : XRED, 'none', 26)",
+        "    + svgTextC(1635, y + 46, (gain > 0 ? '+' : '') + gain + '%', { size: 24, color: '#FFFFFF', weight: 800 });",
+        "});",
+        "return o;"
+      ]
+    }
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "group": "A",
+      "layoutName": "Cover",
+      "content": {
+        "badge": "PLATFORM ENGINEERING",
+        "titleLine1": "Template as code",
+        "titleLine2": "cho Platform Engineering",
+        "titleLine3": "cùng",
+        "subtitle": "Giới thiệu năng lực Platform Engineering của XBrain: golden path, IaC và guardrail tự động.",
+        "presenter": "XBrain Platform Team",
+        "location": "Đà Nẵng, Việt Nam",
+        "website": "www.xbrain.com.vn"
+      }
+    },
+    {
+      "id": "why",
+      "type": "pe-statement",
+      "group": "B",
+      "layoutName": "PE · Big Statement",
+      "content": {
+        "sectionTag": "WHY PLATFORM ENGINEERING",
+        "tag": "Thông điệp chính",
+        "statement": "Developer tự phục vụ hạ tầng qua golden path, còn platform team giữ chuẩn bằng code.",
+        "points": [
+          "Mỗi template là một sản phẩm: có owner, version và changelog.",
+          "Guardrail chạy tự động trong pipeline, không qua ticket thủ công.",
+          "Đo trải nghiệm developer bằng DORA metrics và khảo sát định kỳ."
+        ],
+        "note": "Định hướng năng lực · nội dung minh họa cho buổi giới thiệu"
+      }
+    },
+    {
+      "id": "capabilities",
+      "type": "pe-capability-grid",
+      "group": "C",
+      "layoutName": "PE · Capability Grid",
+      "content": {
+        "sectionTag": "CAPABILITIES",
+        "kicker": "PLATFORM ENGINEERING · NĂNG LỰC",
+        "title": "Sáu năng lực lõi của XBrain Platform Team",
+        "subtitle": "Mỗi năng lực được đóng gói thành template có thể tái sử dụng giữa các dự án.",
+        "items": [
+          {
+            "tag": "Self-service",
+            "title": "Internal Developer Portal",
+            "desc": "Catalog dịch vụ, scaffold dự án mới và tài liệu tập trung một nơi.",
+            "metric": "15 phút",
+            "metricLabel": "tạo service mới (minh họa)"
+          },
+          {
+            "tag": "IaC",
+            "title": "Infrastructure as Code",
+            "desc": "Module Terraform chuẩn cho mạng, compute, database và IAM.",
+            "metric": "40+",
+            "metricLabel": "module dùng chung (minh họa)"
+          },
+          {
+            "tag": "CI/CD",
+            "title": "Golden path pipeline",
+            "desc": "Build, test, scan và deploy theo một luồng đã được kiểm chứng.",
+            "metric": "3 bước",
+            "metricLabel": "để lên môi trường preview"
+          },
+          {
+            "tag": "Guardrail",
+            "title": "Policy as Code",
+            "desc": "Kiểm tra bảo mật, chi phí và tag tài nguyên ngay trong pipeline.",
+            "metric": "100%",
+            "metricLabel": "PR qua policy check (mục tiêu)"
+          },
+          {
+            "tag": "Observability",
+            "title": "Observability mặc định",
+            "desc": "Log, metric, trace và dashboard được gắn sẵn cho mọi service mới.",
+            "metric": "4",
+            "metricLabel": "golden signals có sẵn"
+          },
+          {
+            "tag": "FinOps",
+            "title": "FinOps theo team",
+            "desc": "Ngân sách, cảnh báo và báo cáo chi phí theo từng sản phẩm.",
+            "metric": "-20%",
+            "metricLabel": "chi phí lãng phí (minh họa)"
+          }
+        ],
+        "note": "Số liệu minh họa · không phải kết quả đo thực tế của XBrain hay khách hàng"
+      }
+    },
+    {
+      "id": "idp-architecture",
+      "type": "system-architecture",
+      "group": "D",
+      "layoutName": "System Architecture",
+      "content": {
+        "sectionTag": "REFERENCE ARCHITECTURE",
+        "kicker": "PROPOSED DIAGRAM · INTERNAL DEVELOPER PLATFORM",
+        "title": "Kiến trúc tham chiếu của Internal Developer Platform",
+        "subtitle": "Năm vùng trách nhiệm, từ developer tới hạ tầng và lớp quản trị.",
+        "note": "Kiến trúc đề xuất · thành phần cụ thể tùy theo cloud và công cụ của khách hàng",
+        "zones": [
+          {
+            "title": "Developer",
+            "items": [
+              {
+                "title": "IDE & Git",
+                "desc": "Code, pull request"
+              },
+              {
+                "title": "CLI nội bộ",
+                "desc": "Scaffold, deploy"
+              }
+            ]
+          },
+          {
+            "title": "Portal & API",
+            "items": [
+              {
+                "title": "Service catalog",
+                "desc": "Owner, tài liệu"
+              },
+              {
+                "title": "Template",
+                "desc": "Golden path"
+              },
+              {
+                "title": "Platform API",
+                "desc": "Self-service"
+              }
+            ]
+          },
+          {
+            "title": "Orchestration",
+            "items": [
+              {
+                "title": "CI/CD",
+                "desc": "Pipeline chuẩn"
+              },
+              {
+                "title": "GitOps",
+                "desc": "Đồng bộ cấu hình"
+              },
+              {
+                "title": "Policy as Code",
+                "desc": "Guardrail tự động"
+              }
+            ]
+          },
+          {
+            "title": "Runtime",
+            "items": [
+              {
+                "title": "Kubernetes",
+                "desc": "Workload container"
+              },
+              {
+                "title": "Serverless",
+                "desc": "Hàm, sự kiện"
+              },
+              {
+                "title": "Database",
+                "desc": "Managed service"
+              }
+            ]
+          },
+          {
+            "title": "Vận hành",
+            "items": [
+              {
+                "title": "Observability",
+                "desc": "Log, metric, trace"
+              },
+              {
+                "title": "FinOps",
+                "desc": "Chi phí theo team"
+              },
+              {
+                "title": "Security",
+                "desc": "Secret, IAM"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "outcomes",
+      "type": "pe-metric-bars",
+      "group": "D",
+      "layoutName": "PE · Metric Bars (SVG)",
+      "content": {
+        "sectionTag": "OUTCOMES",
+        "kicker": "PROPOSED DIAGRAM · DORA METRICS",
+        "title": "Trước và sau khi áp dụng golden path",
+        "subtitle": "So sánh năm chỉ số giao hàng phần mềm của một nhóm sản phẩm điển hình sau hai quý.",
+        "note": "Số liệu minh họa cho bố cục · thay bằng dữ liệu đo thực tế trước khi dùng chính thức",
+        "legendBefore": "Trước (quy trình thủ công)",
+        "legendAfter": "Sau 2 quý dùng golden path",
+        "rows": [
+          {
+            "label": "Lead time cho thay đổi",
+            "hint": "Từ commit tới production",
+            "before": 9,
+            "after": 2,
+            "unit": "ngày",
+            "better": "lower"
+          },
+          {
+            "label": "Tần suất deploy",
+            "hint": "Số lần deploy production",
+            "before": 2,
+            "after": 12,
+            "unit": "lần/tuần",
+            "better": "higher"
+          },
+          {
+            "label": "Thời gian khôi phục",
+            "hint": "MTTR khi có sự cố",
+            "before": 6,
+            "after": 1.5,
+            "unit": "giờ",
+            "better": "lower"
+          },
+          {
+            "label": "Tỉ lệ thay đổi lỗi",
+            "hint": "Change failure rate",
+            "before": 18,
+            "after": 7,
+            "unit": "%",
+            "better": "lower"
+          },
+          {
+            "label": "Onboarding dev mới",
+            "hint": "Tới commit đầu tiên",
+            "before": 10,
+            "after": 2,
+            "unit": "ngày",
+            "better": "lower"
+          }
+        ]
+      }
+    },
+    {
+      "id": "code-slide",
+      "type": "pe-code-walkthrough",
+      "group": "C",
+      "layoutName": "Code slide · render riêng",
+      "chrome": {
+        "headerLabel": "Code slide · render viết ngay trong JSON"
+      },
+      "content": {
+        "sectionTag": "HOW IT WORKS",
+        "kicker": "TEMPLATE AS CODE · TỰ MANG RENDER",
+        "title": "Một layout mới chỉ cần vài dòng JSON",
+        "subtitle": "Khai báo helper và layout ở cấp deck, rồi mọi slide dùng lại bằng type.",
+        "fileName": "deck-template-as-code.json",
+        "steps": [
+          {
+            "title": "Khai báo helpers",
+            "desc": "Hàm dùng chung như pill, svgText, pePage cho mọi layout."
+          },
+          {
+            "title": "Định nghĩa layout",
+            "desc": "Viết template, render hoặc vẽ SVG trong khung dgPage."
+          },
+          {
+            "title": "Dùng lại theo type",
+            "desc": "Slide chỉ mang content; chữ sửa trực tiếp nhờ data-field."
+          }
+        ],
+        "code": "{\n  \"helpers\": { \"svgText\": \"(x, y, s, o) => xT(x, y, escapeHtml(s), o)\" },\n  \"layouts\": {\n    \"pe-metric-bars\": {\n      \"name\": \"PE · Metric Bars (SVG)\",\n      \"group\": \"D\",\n      \"frame\": \"dgPage\",\n      \"render\": [\n        \"const rows = (c.rows || []).slice(0, 5);\",\n        \"return rows.map(bar).join('');\"\n      ]\n    }\n  },\n  \"slides\": [{ \"type\": \"pe-metric-bars\", \"content\": { \"rows\": [] } }]\n}"
+      },
+      "render": [
+        "const steps = (c.steps || []).slice(0, 3);",
+        "const hl = s => escapeHtml(s)",
+        "  .replace(/(&quot;[\\w$-]+&quot;)(\\s*:)/g, '<span class=\"k\">$1</span>$2')",
+        "  .replace(/(:\\s*)(&quot;[^&]*&quot;)/g, '$1<span class=\"s\">$2</span>');",
+        "const code = String(c.code || '').split('\\n').map(l => `<span class=\"v1-pe-code__ln\">${hl(l) || ' '}</span>`).join('');",
+        "const list = steps.map((s, i) => `<div class=\"v1-pe-code__step\">",
+        "    <span class=\"v1-pe-code__num\" style=\"background:${i === 1 ? XT : XO}\">${i + 1}</span>",
+        "    <div><div class=\"v1-pe-code__st\" ${edit(ce, `steps.${i}.title`)}>${escapeHtml(s.title || '')}</div>",
+        "    <div class=\"v1-pe-code__sd\" ${edit(ce, `steps.${i}.desc`)}>${escapeHtml(s.desc || '')}</div></div>",
+        "  </div>`).join('');",
+        "return pePage(c, numStr, `${peHead(c, ce)}",
+        "  <div class=\"v1-pe-code\">",
+        "    <div class=\"v1-pe-code__steps\">${list}</div>",
+        "    <div class=\"v1-pe-code__panel\">",
+        "      <div class=\"v1-pe-code__bar\"><i></i><i></i><i></i><span ${edit(ce, 'fileName')}>${escapeHtml(c.fileName || 'deck.json')}</span></div>",
+        "      <pre class=\"v1-pe-code__pre\" ${edit(ce, 'code')}>${code}</pre>",
+        "    </div>",
+        "  </div>`);"
+      ],
+      "css": [
+        ".v1-pe-code{flex:1;min-height:0;display:grid;grid-template-columns:600px 1fr;gap:40px;margin-top:28px}",
+        ".v1-pe-code__steps{display:flex;flex-direction:column;gap:20px;justify-content:center}",
+        ".v1-pe-code__step{display:flex;gap:22px;align-items:flex-start;background:#FFFFFF;border:2px solid #DEE8E2;border-radius:22px;padding:22px 26px}",
+        ".v1-pe-code__num{flex:none;width:52px;height:52px;border-radius:16px;color:#FFFFFF;font:800 24px/52px Manrope,Arial,sans-serif;text-align:center}",
+        ".v1-pe-code__st{font:800 26px/1.25 Manrope,Arial,sans-serif;color:#2B3736}",
+        ".v1-pe-code__sd{font:600 19px/1.42 Nunito,Arial,sans-serif;color:#5E6E6D;margin-top:6px}",
+        ".v1-pe-code__panel{background:#2B3736;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 40px rgba(43,55,54,.18)}",
+        ".v1-pe-code__bar{display:flex;align-items:center;gap:10px;padding:16px 24px;background:#425453;color:#DEE8E2;font:700 17px/1.2 Manrope,Arial,sans-serif}",
+        ".v1-pe-code__bar i{width:14px;height:14px;border-radius:50%;background:#F97C00;display:inline-block}",
+        ".v1-pe-code__bar i:nth-child(2){background:#FBCAAB}",
+        ".v1-pe-code__bar i:nth-child(3){background:#7FD7BB}",
+        ".v1-pe-code__bar span{margin-left:12px}",
+        ".v1-pe-code__pre{margin:0;padding:22px 28px 22px 0;font:500 19px/1.5 Consolas,'Courier New',monospace;color:#E8EEEC;white-space:pre;counter-reset:ln;flex:1;overflow:hidden}",
+        ".v1-pe-code__ln{display:block;min-height:1.5em}",
+        ".v1-pe-code__ln::before{counter-increment:ln;content:counter(ln);display:inline-block;width:56px;margin-right:22px;text-align:right;color:#7E918D}",
+        ".v1-pe-code__pre .k{color:#FBCAAB}",
+        ".v1-pe-code__pre .s{color:#7FD7BB}"
+      ]
+    },
+    {
+      "id": "capability-map",
+      "type": "mind-map",
+      "group": "D",
+      "layoutName": "Mind Map",
+      "content": {
+        "sectionTag": "CAPABILITY MAP",
+        "kicker": "PROPOSED DIAGRAM · MIND MAP",
+        "title": "Bản đồ năng lực Platform Engineering",
+        "subtitle": "Sáu nhóm năng lực XBrain triển khai cùng khách hàng theo từng giai đoạn.",
+        "note": "Phạm vi minh họa · điều chỉnh theo mức trưởng thành của từng tổ chức",
+        "center": "XBrain IDP",
+        "centerSub": "Platform Engineering",
+        "branches": [
+          {
+            "title": "Self-service",
+            "leaves": [
+              "Service catalog",
+              "Scaffold dự án",
+              "Docs tập trung"
+            ]
+          },
+          {
+            "title": "IaC",
+            "leaves": [
+              "Module Terraform",
+              "Môi trường tạm",
+              "Drift detection"
+            ]
+          },
+          {
+            "title": "CI/CD",
+            "leaves": [
+              "Pipeline chuẩn",
+              "GitOps",
+              "Canary release"
+            ]
+          },
+          {
+            "title": "Guardrail",
+            "leaves": [
+              "Policy as Code",
+              "Quét bảo mật",
+              "Quản lý secret"
+            ]
+          },
+          {
+            "title": "Observability",
+            "leaves": [
+              "Golden signals",
+              "SLO & alert",
+              "Tracing"
+            ]
+          },
+          {
+            "title": "Đo lường",
+            "leaves": [
+              "DORA metrics",
+              "Khảo sát DevEx",
+              "FinOps"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "golden-path",
+      "type": "custom-diagram",
+      "group": "D",
+      "layoutName": "Custom SVG Diagram",
+      "content": {
+        "sectionTag": "GOLDEN PATH",
+        "kicker": "CUSTOM SVG · GOLDEN PATH",
+        "title": "Golden path: từ commit tới production",
+        "subtitle": "Sáu chặng tự động hóa, mỗi chặng là một template được platform team bảo trì.",
+        "note": "Luồng đề xuất · tỉ lệ canary và ngưỡng rollback là ví dụ minh họa",
+        "svg": "<rect x=\"20\" y=\"0\" width=\"1688\" height=\"56\" rx=\"28\" fill=\"#FFF5ED\"/><text x=\"864\" y=\"36\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"22\" font-weight=\"800\" fill=\"#425453\">Self-service end-to-end · không cần mở ticket cho platform team</text><line x1=\"160\" y1=\"210\" x2=\"1570\" y2=\"210\" stroke=\"#DEE8E2\" stroke-width=\"12\" stroke-linecap=\"round\"/><path d=\"M291 198 L307 210 L291 222\" fill=\"none\" stroke=\"#B6B7B7\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"90\" y=\"86\" width=\"140\" height=\"40\" rx=\"20\" fill=\"#F3F6F5\"/><text x=\"160\" y=\"113\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"18\" font-weight=\"800\" fill=\"#5E6E6D\">git push</text><circle cx=\"160\" cy=\"210\" r=\"52\" fill=\"#F97C00\" stroke=\"#FFFFFF\" stroke-width=\"8\"/><text x=\"160\" y=\"221\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"30\" font-weight=\"800\" fill=\"#FFFFFF\">01</text><text x=\"160\" y=\"310\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"27\" font-weight=\"800\" fill=\"#2B3736\">Commit</text><text x=\"160\" y=\"350\" text-anchor=\"middle\" font-family=\"Nunito,Arial,sans-serif\" font-size=\"20\" font-weight=\"600\" fill=\"#5E6E6D\"><tspan x=\"160\" dy=\"0\">Developer đẩy code</tspan><tspan x=\"160\" dy=\"26\">lên nhánh feature</tspan></text><path d=\"M573 198 L589 210 L573 222\" fill=\"none\" stroke=\"#B6B7B7\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"372\" y=\"86\" width=\"140\" height=\"40\" rx=\"20\" fill=\"#F3F6F5\"/><text x=\"442\" y=\"113\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"18\" font-weight=\"800\" fill=\"#5E6E6D\">CI</text><circle cx=\"442\" cy=\"210\" r=\"52\" fill=\"#425453\" stroke=\"#FFFFFF\" stroke-width=\"8\"/><text x=\"442\" y=\"221\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"30\" font-weight=\"800\" fill=\"#FFFFFF\">02</text><text x=\"442\" y=\"310\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"27\" font-weight=\"800\" fill=\"#2B3736\">Build & test</text><text x=\"442\" y=\"350\" text-anchor=\"middle\" font-family=\"Nunito,Arial,sans-serif\" font-size=\"20\" font-weight=\"600\" fill=\"#5E6E6D\"><tspan x=\"442\" dy=\"0\">Unit test, lint, build</tspan><tspan x=\"442\" dy=\"26\">container image</tspan></text><path d=\"M855 198 L871 210 L855 222\" fill=\"none\" stroke=\"#B6B7B7\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"654\" y=\"86\" width=\"140\" height=\"40\" rx=\"20\" fill=\"#F3F6F5\"/><text x=\"724\" y=\"113\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"18\" font-weight=\"800\" fill=\"#5E6E6D\">Guardrail</text><circle cx=\"724\" cy=\"210\" r=\"52\" fill=\"#F97C00\" stroke=\"#FFFFFF\" stroke-width=\"8\"/><text x=\"724\" y=\"221\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"30\" font-weight=\"800\" fill=\"#FFFFFF\">03</text><text x=\"724\" y=\"310\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"27\" font-weight=\"800\" fill=\"#2B3736\">Policy check</text><text x=\"724\" y=\"350\" text-anchor=\"middle\" font-family=\"Nunito,Arial,sans-serif\" font-size=\"20\" font-weight=\"600\" fill=\"#5E6E6D\"><tspan x=\"724\" dy=\"0\">Quét bảo mật, chi phí</tspan><tspan x=\"724\" dy=\"26\">và tag tài nguyên</tspan></text><path d=\"M1137 198 L1153 210 L1137 222\" fill=\"none\" stroke=\"#B6B7B7\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"936\" y=\"86\" width=\"140\" height=\"40\" rx=\"20\" fill=\"#F3F6F5\"/><text x=\"1006\" y=\"113\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"18\" font-weight=\"800\" fill=\"#5E6E6D\">Preview</text><circle cx=\"1006\" cy=\"210\" r=\"52\" fill=\"#425453\" stroke=\"#FFFFFF\" stroke-width=\"8\"/><text x=\"1006\" y=\"221\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"30\" font-weight=\"800\" fill=\"#FFFFFF\">04</text><text x=\"1006\" y=\"310\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"27\" font-weight=\"800\" fill=\"#2B3736\">Môi trường tạm</text><text x=\"1006\" y=\"350\" text-anchor=\"middle\" font-family=\"Nunito,Arial,sans-serif\" font-size=\"20\" font-weight=\"600\" fill=\"#5E6E6D\"><tspan x=\"1006\" dy=\"0\">Mỗi PR có URL riêng</tspan><tspan x=\"1006\" dy=\"26\">để review</tspan></text><path d=\"M1419 198 L1435 210 L1419 222\" fill=\"none\" stroke=\"#B6B7B7\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"1218\" y=\"86\" width=\"140\" height=\"40\" rx=\"20\" fill=\"#F3F6F5\"/><text x=\"1288\" y=\"113\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"18\" font-weight=\"800\" fill=\"#5E6E6D\">Canary</text><circle cx=\"1288\" cy=\"210\" r=\"52\" fill=\"#F97C00\" stroke=\"#FFFFFF\" stroke-width=\"8\"/><text x=\"1288\" y=\"221\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"30\" font-weight=\"800\" fill=\"#FFFFFF\">05</text><text x=\"1288\" y=\"310\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"27\" font-weight=\"800\" fill=\"#2B3736\">Phát hành dần</text><text x=\"1288\" y=\"350\" text-anchor=\"middle\" font-family=\"Nunito,Arial,sans-serif\" font-size=\"20\" font-weight=\"600\" fill=\"#5E6E6D\"><tspan x=\"1288\" dy=\"0\">5% → 50% → 100%</tspan><tspan x=\"1288\" dy=\"26\">theo SLO</tspan></text><rect x=\"1500\" y=\"86\" width=\"140\" height=\"40\" rx=\"20\" fill=\"#F3F6F5\"/><text x=\"1570\" y=\"113\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"18\" font-weight=\"800\" fill=\"#5E6E6D\">Prod</text><circle cx=\"1570\" cy=\"210\" r=\"52\" fill=\"#425453\" stroke=\"#FFFFFF\" stroke-width=\"8\"/><text x=\"1570\" y=\"221\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"30\" font-weight=\"800\" fill=\"#FFFFFF\">06</text><text x=\"1570\" y=\"310\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"27\" font-weight=\"800\" fill=\"#2B3736\">Production</text><text x=\"1570\" y=\"350\" text-anchor=\"middle\" font-family=\"Nunito,Arial,sans-serif\" font-size=\"20\" font-weight=\"600\" fill=\"#5E6E6D\"><tspan x=\"1570\" dy=\"0\">Tự rollback khi</tspan><tspan x=\"1570\" dy=\"26\">vượt error budget</tspan></text><path d=\"M1570 410 C1570 520, 1450 530, 1310 530 L420 530 C280 530, 160 520, 160 425\" fill=\"none\" stroke=\"#F97C00\" stroke-width=\"5\" stroke-dasharray=\"14 10\" stroke-linecap=\"round\"/><path d=\"M148 432 L160 408 L172 432 Z\" fill=\"#F97C00\"/><rect x=\"434\" y=\"506\" width=\"860\" height=\"50\" rx=\"25\" fill=\"#FFFFFF\" stroke=\"#FBCAAB\" stroke-width=\"2\"/><text x=\"864\" y=\"539\" text-anchor=\"middle\" font-family=\"Manrope,Arial,sans-serif\" font-size=\"21\" font-weight=\"800\" fill=\"#425453\">Vòng phản hồi: DORA metrics + khảo sát developer mỗi sprint</text>"
+      }
+    },
+    {
+      "id": "comparison",
+      "type": "custom-html",
+      "group": "C",
+      "layoutName": "Custom HTML",
+      "content": {
+        "sectionTag": "COMPARISON",
+        "title": "ClickOps hay template as code?",
+        "html": "<div style=\"display:flex;flex-direction:column;gap:22px;height:100%\"><table style=\"width:100%;border-collapse:separate;border-spacing:0;font-family:Nunito,Arial,sans-serif;font-size:22px;color:#425453;border:2px solid #DEE8E2;border-radius:22px;overflow:hidden\"><thead><tr><th style=\"text-align:left;padding:24px 28px;background:#425453;color:#FFFFFF;font:800 20px/1.3 Manrope,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;width:24%\">Tiêu chí</th><th style=\"text-align:left;padding:24px 28px;background:#425453;color:#FFFFFF;font:800 20px/1.3 Manrope,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;width:34%\">ClickOps &amp; ticket thủ công</th><th style=\"text-align:left;padding:24px 28px;background:#F97C00;color:#FFFFFF;font:800 20px/1.3 Manrope,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase\">Template as code · golden path</th></tr></thead><tbody><tr><td style=\"padding:26px 28px;background:#FFFFFF;border-top:1px solid #DEE8E2;font:800 22px/1.35 Manrope,Arial,sans-serif;color:#2B3736\">Tạo môi trường mới</td><td style=\"padding:26px 28px;background:#FFFFFF;border-top:1px solid #DEE8E2;color:#5E6E6D\">Mở ticket, chờ 3–5 ngày làm việc</td><td style=\"padding:26px 28px;background:#FFF5ED;border-top:1px solid #DEE8E2;font-weight:700;color:#425453\">Chọn template trên portal, sẵn sàng trong khoảng 15 phút</td></tr><tr><td style=\"padding:26px 28px;background:#F8FAF9;border-top:1px solid #DEE8E2;font:800 22px/1.35 Manrope,Arial,sans-serif;color:#2B3736\">Tính nhất quán</td><td style=\"padding:26px 28px;background:#F8FAF9;border-top:1px solid #DEE8E2;color:#5E6E6D\">Mỗi team cấu hình một kiểu</td><td style=\"padding:26px 28px;background:#FFF5ED;border-top:1px solid #DEE8E2;font-weight:700;color:#425453\">Cùng module IaC, cùng chuẩn đặt tên và tag</td></tr><tr><td style=\"padding:26px 28px;background:#FFFFFF;border-top:1px solid #DEE8E2;font:800 22px/1.35 Manrope,Arial,sans-serif;color:#2B3736\">Bảo mật &amp; tuân thủ</td><td style=\"padding:26px 28px;background:#FFFFFF;border-top:1px solid #DEE8E2;color:#5E6E6D\">Kiểm tra thủ công trước release</td><td style=\"padding:26px 28px;background:#FFF5ED;border-top:1px solid #DEE8E2;font-weight:700;color:#425453\">Policy as Code chạy trên mọi pull request</td></tr><tr><td style=\"padding:26px 28px;background:#F8FAF9;border-top:1px solid #DEE8E2;font:800 22px/1.35 Manrope,Arial,sans-serif;color:#2B3736\">Truy vết thay đổi</td><td style=\"padding:26px 28px;background:#F8FAF9;border-top:1px solid #DEE8E2;color:#5E6E6D\">Rải rác trên console và chat</td><td style=\"padding:26px 28px;background:#FFF5ED;border-top:1px solid #DEE8E2;font-weight:700;color:#425453\">Mọi thay đổi nằm trong Git, review được</td></tr><tr><td style=\"padding:26px 28px;background:#FFFFFF;border-top:1px solid #DEE8E2;font:800 22px/1.35 Manrope,Arial,sans-serif;color:#2B3736\">Chi phí vận hành</td><td style=\"padding:26px 28px;background:#FFFFFF;border-top:1px solid #DEE8E2;color:#5E6E6D\">Khó gán chi phí cho sản phẩm</td><td style=\"padding:26px 28px;background:#FFF5ED;border-top:1px solid #DEE8E2;font-weight:700;color:#425453\">Tag bắt buộc, báo cáo FinOps theo team</td></tr></tbody></table><div style=\"display:flex;gap:16px;align-items:center;font:600 18px/1.4 Nunito,Arial,sans-serif;color:#83918C\"><span style=\"display:inline-block;width:12px;height:12px;border-radius:50%;background:#F97C00\"></span>Thời gian và tỉ lệ trong bảng là số liệu minh họa, phụ thuộc mức trưởng thành của từng tổ chức.</div></div>"
+      }
+    },
+    {
+      "id": "closing",
+      "type": "closing",
+      "group": "A",
+      "layoutName": "Closing / Thank You",
+      "content": {
+        "headline": "CẢM ƠN",
+        "subheadline": "Cùng XBrain xây golden path cho đội ngũ phát triển của bạn.",
+        "contactName": "XBrain Platform Team",
+        "contactRole": "Platform Engineering · Cloud & DevOps",
+        "phone": "Đặt lịch workshop qua email bên dưới",
+        "email": "Cloud@xbrain.com.vn",
+        "address": "Vietnam Innovation Hub Town, 179 Tran Hung Dao, An Hai Ward, Da Nang City",
+        "website": "www.xbrain.com.vn"
+      }
+    }
+  ]
+}

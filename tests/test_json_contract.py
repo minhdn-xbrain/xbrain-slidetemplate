@@ -13,6 +13,9 @@ from jsonschema import Draft202012Validator
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "contracts/xbrain-deck-v1.schema.json"
 EXAMPLE = ROOT / "contracts/example-deck-v1.json"
+# Complete decks authored only in JSON (no HTML changes); each must validate, load and render.
+FIXTURES = ROOT / "tests/fixtures"
+FIXTURE_DECKS = ["deck-partnership-proposal.json", "deck-quarterly-ops-report.json", "deck-template-as-code.json"]
 
 # Run the app declarations in a VM with inert event registration, without opening
 # a browser or changing the delivered HTML. Fail if the app entry cannot be found.
@@ -50,13 +53,29 @@ script = script.replace(/\}\)\(\);\s*$/, `
     payloadWithoutVersion:fails(()=>xbSlidesFromPayload({xbrainSlides:true,slides:[]})),
     customLayoutsRegistered:LAYOUT_CATALOG.filter(x=>x.custom).length
   };
+  // Load each fixture deck the way the studio does (validate, register its layouts/helpers),
+  // then render every slide as a thumbnail and collect error pages. Runs last: it replaces the deck.
+  const fixtures=Object.entries(FIXTURES).map(([name,doc])=>{
+    try {
+      const next=DeckModel.normalize(doc,xbCatalogFor(doc,doc.layouts),DECK_DEFAULT_CONFIG);
+      xbSyncCustom({layouts:doc.layouts,helpers:doc.helpers});
+      DECK_CONFIG=next.config; slides=next.slides;
+      const broken=slides.map((s,i)=>/LỖI RENDER|Không có layout|Unknown component/.test(renderSlideHTML(s,i,true))?(i+1)+':'+s.type:null).filter(Boolean);
+      return {name,slides:slides.length,compileErrors:XB_ERRORS.slice(),broken};
+    } catch(error) { return {name,error:error.message}; }
+  });
+  xbSyncCustom({}); // drop fixture layouts so the registry checks below see only built-in layouts
   globalThis.result={document:current,layouts:LAYOUT_CATALOG.map(x=>x.type),
     components:Object.keys(COMPONENT_RENDERERS),visuals:DECK_DESCRIPTORS,
     normalized:DeckModel.serialize(normalized.config,normalized.slides),rejectedVersions,
     draft:{empty:emptyDraft,saved:savedDraft,reads,keys:[...storage.keys()]},
-    array:DeckModel.serialize(array.config,array.slides),templateAsCode};
+    array:DeckModel.serialize(array.config,array.slides),templateAsCode,fixtures};
 })();`);
-const context={window:{addEventListener(){}},document:{addEventListener(){}},console};
+const FIXTURES={};
+if (fs.existsSync('tests/fixtures'))
+  for (const f of fs.readdirSync('tests/fixtures').filter(f=>f.endsWith('.json')).sort())
+    FIXTURES[f]=JSON.parse(fs.readFileSync('tests/fixtures/'+f,'utf8'));
+const context={window:{addEventListener(){}},document:{addEventListener(){}},console:{...console,error(){}},FIXTURES};
 vm.runInNewContext(script,context,{timeout:5000});
 process.stdout.write(JSON.stringify(context.result));
 """
@@ -253,6 +272,24 @@ class JsonContractTest(unittest.TestCase):
         self.assertInvalid({"version": "1.0", "layouts": {"bad name": layout}, "slides": [{"type": "cover", "content": {}}]})
         self.assertInvalid({"version": "1.0", "helpers": [], "slides": [{"type": "cover", "content": {}}]})
         self.assertInvalid({"version": "1.0", "slides": [{"type": "one-off", "content": {}, "render": "", "titel": "x"}]})
+
+    def test_fixture_decks_validate_against_schema(self):
+        for name in FIXTURE_DECKS:
+            with self.subTest(deck=name):
+                deck = json.loads((FIXTURES / name).read_text(encoding="utf-8"))
+                self.assertValid(deck)
+                self.assertGreaterEqual(len(deck["slides"]), 5)
+
+    def test_fixture_decks_load_and_render_in_runtime(self):
+        results = {item["name"]: item for item in self.source["fixtures"]}
+        for name in FIXTURE_DECKS:
+            with self.subTest(deck=name):
+                result = results.get(name)
+                self.assertIsNotNone(result, "fixture not loaded")
+                self.assertNotIn("error", result)
+                self.assertGreaterEqual(result["slides"], 5)
+                self.assertEqual(result["compileErrors"], [])
+                self.assertEqual(result["broken"], [])
 
     def test_header_footer_chrome(self):
         chrome = {"headerLabel": "XBrain · Q3 Review", "website": "www.xbrain.com.vn", "address": "Da Nang"}
