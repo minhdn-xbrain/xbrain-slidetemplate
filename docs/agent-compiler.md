@@ -2,6 +2,14 @@
 
 Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `untrusted`.
 
+## Lấy contract từ trình duyệt
+
+Chọn **Schema / Contract** cạnh **Deck JSON** trong Studio. Tab **Schema JSON** hiển thị kết quả `XBrainCompiler.schema()`; tab **Agent Contract** hiển thị kết quả `XBrainCompiler.contract()`, gồm schema, layout, component, variant, yêu cầu dữ liệu, giới hạn và mã diagnostic.
+
+JSON được tạo khi mở/chuyển tab và hiển thị trong phần tử văn bản `#v1-contract-json` của dialog `#v1-contract-modal`, để extension AI đọc qua DOM/accessibility. **Sao chép** dùng clipboard với fallback chọn văn bản khi trình duyệt hạn chế quyền; **Tải JSON** lưu `xbrain-deck-v1.schema.json` hoặc `xbrain-agent-contract-v1.json` theo tab hiện tại. Có thể chuyển tab bằng phím mũi tên và đóng bằng Escape.
+
+Tính năng dùng được qua `file://`, offline và trong HTML editable đã xuất. Việc tra cứu không thay đổi deck hoặc lịch sử undo/redo. Nội dung chỉ được tạo trong lúc tra cứu, không nhúng thêm một bản schema tĩnh vào HTML xuất.
+
 ## Quy trình
 
 ```sh

@@ -17,6 +17,8 @@ File mở trực tiếp bằng `file://`. Font, ECharts và Mermaid dùng CDN kh
 
 Mỗi deck cần `"version": "1.0"` và mảng `slides`. Mỗi slide chọn `type` và cung cấp dữ liệu theo hợp đồng của layout.
 
+Trong Studio, mở **Schema / Contract** cạnh **Deck JSON** để đọc **Schema JSON** hoặc **Agent Contract**, sao chép và tải JSON. Nội dung hiển thị trực tiếp để extension AI có thể đọc qua giao diện; tính năng dùng được offline và lấy dữ liệu từ compiler hiện tại.
+
 Bắt đầu từ [deck mẫu](contracts/example-deck-v1.json), tra cấu trúc trong [JSON Schema](contracts/xbrain-deck-v1.schema.json), rồi chạy với **Node.js ≥ 18**:
 
 ```bash

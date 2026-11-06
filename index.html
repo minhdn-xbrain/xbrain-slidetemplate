@@ -2923,7 +2923,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 @media print {
   @page {size:20in 11.25in;margin:0;}
   html,body {height:auto!important;min-height:0!important;width:auto!important;}
-  #app-shell,#modal-add-slide,#modal-json-editor,#modal-content-editor { display:none!important; }
+  #app-shell,#modal-add-slide,#modal-json-editor,#modal-content-editor,#v1-contract-modal { display:none!important; }
   #print-all-slides-container {display:block!important;position:static!important;width:1920px!important;margin:0!important;padding:0!important;}
   .print-slide-page {display:block!important;page-break-inside:avoid!important;break-inside:avoid!important;page-break-after:always!important;break-after:page!important;width:1920px!important;height:1080px!important;position:relative!important;overflow:hidden!important;}
   .print-slide-page:last-child {page-break-after:auto!important;break-after:auto!important;}
@@ -2981,6 +2981,8 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 .v1-modal{position:fixed;inset:0;z-index:160;background:rgba(7,15,15,.88);display:flex;align-items:center;justify-content:center;padding:24px}.v1-modal.hidden{display:none}.v1-modal-body{width:min(1080px,96vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column;background:#1E2827;color:#F7FBFA;border-radius:18px;border:1px solid #3D5550;box-shadow:0 40px 100px #0008}.v1-modal-head{padding:18px 23px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #3D504E}.v1-modal-head h3{font:800 21px Manrope,Arial;margin:0}.v1-modal-head p{font:500 12px Nunito,Arial;color:#AFBDB7;margin-top:5px}.v1-modal-close{color:white;font-size:26px;padding:2px 12px;cursor:pointer}.v1-modal-actions{padding:15px 23px;display:flex;justify-content:flex-end;gap:12px;border-top:1px solid #3D504E}.v1-modal textarea{font:13px/1.5 ui-monospace,Consolas,monospace;tab-size:2;background:#0F1818;color:#DCF1E8;border:0;outline:none;resize:none;flex:1;min-height:280px;padding:23px;width:100%}.v1-modal-error{font:13px Nunito,Arial;color:#F7A09C;padding:0 22px}.v1-modal-toolbar{padding:14px 20px;display:flex;gap:13px}.v1-modal-toolbar input,.v1-modal-toolbar select{background:#111C1A;border:1px solid #3D504E;color:white;padding:10px 12px;border-radius:7px;flex:1;font-size:13px}.v1-library-grid{overflow-y:auto;padding:14px 20px 24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.v1-library-choice{display:flex;flex-direction:column;gap:8px;text-align:left;min-height:118px;background:#243331;color:white;border:1px solid #3B534E;border-radius:10px;padding:14px;cursor:pointer}.v1-library-choice:hover{border-color:#F97C00;background:#30443F}.v1-library-choice .v1-family{font:800 10px Manrope,Arial;color:#FF991D;letter-spacing:.08em;text-transform:uppercase}.v1-library-choice strong{font:750 16px Manrope,Arial}.v1-library-choice small{font:500 11px ui-monospace,monospace;color:#AABAB3}
 @media(max-width:750px){.v1-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v1-modal{padding:10px}.v1-modal-toolbar{flex-wrap:wrap}.v1-modal-body{max-height:95vh}}
 @media print{.v1-slide{page-break-inside:avoid;break-inside:avoid}.v1-enhanced{display:none!important}.v1-fallback{display:block!important}}
+
+.v1-contract-body{height:min(820px,90vh);min-height:0}.v1-contract-tabs{display:flex;gap:10px;padding:14px 23px}.v1-contract-tabs [aria-selected="true"]{background:#F97C00;color:#111C1A;border-color:#F97C00}.v1-contract-panel{display:flex;flex:1;min-height:0}.v1-contract-json{flex:1;min-width:0;min-height:0;overflow:auto;margin:0;padding:20px 23px;background:#0F1818;color:#DCF1E8;font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre;tab-size:2;user-select:text}.v1-contract-json:focus-visible{outline:2px solid #F97C00;outline-offset:-2px}.v1-contract-status{min-height:18px;margin:0;padding:8px 23px;font:500 12px/1.5 Nunito,Arial;color:#AFBDB7}.v1-contract-actions{flex-wrap:wrap}
 
 /* Two-tier toolbar keeps all actions reachable without stealing slide real estate. */
 #app-topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:50px 42px;height:108px!important;gap:2px 10px;padding:5px 18px!important;align-items:center;overflow:hidden}
@@ -3233,6 +3235,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
         </button>
 
         <button class="v1-btn" data-click-action="deckOpenDeckEditor" title="Chỉnh toàn bộ deck dưới dạng JSON">{ } Deck JSON</button>
+        <button id="v1-contract-trigger" class="v1-btn" data-click-action="deckOpenContract" aria-haspopup="dialog" aria-controls="v1-contract-modal" aria-expanded="false" title="Xem schema và hợp đồng JSON cho AI agent">Schema / Contract</button>
         <button class="v1-btn" data-click-action="deckOpenLibrary" title="Visual registry">◈ Visual Library</button>
         <button class="v1-btn" data-click-action="deckReloadRemote" title="Nạp lại URL/API trong datasets">↻ Data</button>
         <button data-click-action="startFullscreenPresentation" class="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-heading font-bold bg-gradient-to-r from-[#F97C00] to-[#FF991D] hover:from-[#e07000] hover:to-[#f08c10] text-white shadow-lg shadow-orange-950/40 transition-all">
@@ -6446,6 +6449,69 @@ function deckOpenDeckEditor(){const m=document.getElementById('v1-deck-modal'),a
 function deckCloseDeckEditor(){document.getElementById('v1-deck-modal').classList.add('hidden');}
 function deckApplyDeckEditor(){try{deckApplyDocument(JSON.parse(document.getElementById('v1-deck-text').value));deckCloseDeckEditor();}catch(e){document.getElementById('v1-deck-error').textContent=e.message;}}
 
+// Read-only contract UI. Browser dependencies and the live compiler are resolved on demand.
+function createContractViewer({getDocument,getCompiler,getClipboard,download}){
+ let view='schema',text='',returnFocus=null;
+ const bound=new WeakSet(),label=()=>view==='schema'?'Schema JSON':'Agent Contract';
+ const element=id=>getDocument().getElementById(id);
+ const isOpen=()=>!element('v1-contract-modal').classList.contains('hidden');
+ function show(next){
+  view=next==='contract'?'contract':'schema';
+  const compiler=getCompiler(),value=view==='schema'?compiler.schema():compiler.contract();
+  text=JSON.stringify(value,null,2);
+  const output=element('v1-contract-json');output.textContent=text;output.scrollTop=0;output.scrollLeft=0;output.setAttribute('aria-label',label());
+  for(const name of ['schema','contract']){
+   const tab=element('v1-contract-tab-'+name),active=name===view;
+   tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;
+  }
+  element('v1-contract-panel').setAttribute('aria-labelledby','v1-contract-tab-'+view);
+  element('v1-contract-status').textContent='';
+ }
+ function close(){
+  if(!isOpen())return;
+  element('v1-contract-modal').classList.add('hidden');element('v1-contract-trigger').setAttribute('aria-expanded','false');
+  element('v1-contract-json').textContent='';element('v1-contract-status').textContent='';text='';
+  if(returnFocus?.isConnected)returnFocus.focus();returnFocus=null;
+ }
+ function bind(modal){
+  if(bound.has(modal))return;bound.add(modal);
+  modal.addEventListener('keydown',event=>{
+   event.stopPropagation(); // Keep deck navigation, undo and panel shortcuts behind the dialog.
+   if(event.key==='Escape'){event.preventDefault();close();return;}
+   const tab=event.target.closest('[role="tab"]');
+   if(tab&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
+    event.preventDefault();show(event.key==='Home'?'schema':event.key==='End'?'contract':view==='schema'?'contract':'schema');element('v1-contract-tab-'+view).focus();return;
+   }
+   if(event.key==='Tab'){
+    const controls=[...modal.querySelectorAll('button,[tabindex="0"]')].filter(el=>!el.disabled&&el.tabIndex>=0),first=controls[0],last=controls.at(-1),active=getDocument().activeElement;
+    if(event.shiftKey&&active===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&active===last){event.preventDefault();first.focus();}
+   }
+  });
+ }
+ function open(){
+  const modal=element('v1-contract-modal');if(isOpen())return;
+  returnFocus=getDocument().activeElement;show('schema');bind(modal);
+  modal.classList.remove('hidden');element('v1-contract-trigger').setAttribute('aria-expanded','true');element('v1-contract-tab-schema').focus();
+ }
+ async function copy(){
+  if(!isOpen())return;const content=text,name=label();let copied=false;
+  try{const clipboard=getClipboard();if(clipboard?.writeText){await clipboard.writeText(content);copied=true;}}catch{}
+  if(!isOpen()||text!==content)return;
+  if(!copied&&isOpen()){
+   const doc=getDocument(),selection=doc.getSelection(),range=doc.createRange(),saved=[];
+   if(selection){for(let i=0;i<selection.rangeCount;i++)saved.push(selection.getRangeAt(i).cloneRange());range.selectNodeContents(element('v1-contract-json'));selection.removeAllRanges();selection.addRange(range);
+    try{copied=doc.execCommand('copy');}catch{}
+    if(copied){selection.removeAllRanges();for(const previous of saved)selection.addRange(previous);}
+   }
+  }
+  if(isOpen())element('v1-contract-status').textContent=copied?'Đã sao chép '+name+'.':'Trình duyệt chưa sao chép được. Chọn JSON và nhấn Ctrl+C, hoặc dùng Tải JSON.';
+ }
+ function save(){if(isOpen())download(view==='schema'?'xbrain-deck-v1.schema.json':'xbrain-agent-contract-v1.json',text+'\n');}
+ return {open,close,show,copy,save};
+}
+const ContractViewer=createContractViewer({getDocument:()=>document,getCompiler:()=>XBrainCompiler,getClipboard:()=>navigator.clipboard,download:(...args)=>downloadTextFile(...args)});
+
 window.addEventListener('deck-library-loaded', () => {
  const active=document.getElementById('active-slide-viewport');
  if(active) EnhancedRenderers.mount(active);
@@ -8103,6 +8169,8 @@ function deckRefreshCounts(){
       for(const selector of ['#print-all-slides-container','#gallery-grid-container','#sidebar-slide-list','#active-slide-viewport']){const el=doc.querySelector(selector);if(el)el.innerHTML='';}
       doc.querySelector('#canvas-scale-wrapper')?.removeAttribute('style');
       doc.querySelector('#active-slide-viewport')?.removeAttribute('style');
+      for(const selector of ['#v1-contract-json','#v1-contract-status'])doc.querySelector(selector)?.replaceChildren();
+      doc.querySelector('#v1-contract-trigger')?.setAttribute('aria-expanded','false');
       for(const modal of doc.querySelectorAll('.v1-modal,#modal-content-editor,#modal-json-editor,#modal-add-slide'))modal.classList.add('hidden');
       doc.querySelector('#studio-view')?.classList.remove('hidden');
       doc.querySelector('#gallery-view')?.classList.add('hidden');
@@ -8251,7 +8319,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       if(event.key==='Escape') {
         if(document.body.classList.contains('presentation-fullscreen')) exitFullscreenPresentation();
         closeAddSlideModal();closeDataEditorModal();closeContentEditorModal();
-        deckCloseLibrary();deckCloseDeckEditor();
+        deckCloseLibrary();deckCloseDeckEditor();ContractViewer.close();
         return;
       }
       if(editing) return;
@@ -8260,7 +8328,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         else if(event.key.toLowerCase()==='y'){event.preventDefault();redoDeck();}
         return;
       }
-      const modalOpen=['modal-add-slide','modal-json-editor','modal-content-editor','v1-visual-modal','v1-deck-modal']
+      const modalOpen=['modal-add-slide','modal-json-editor','modal-content-editor','v1-visual-modal','v1-deck-modal','v1-contract-modal']
         .some(id=>!document.getElementById(id).classList.contains('hidden'));
       if(currentAppMode!=='workspace'||modalOpen) return;
       if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();nextSlide();}
@@ -8291,6 +8359,11 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         deckApplyDeckEditor: deckApplyDeckEditor,
         deckCloseDeckEditor: deckCloseDeckEditor,
         deckCloseLibrary: deckCloseLibrary,
+        deckOpenContract: () => ContractViewer.open(),
+        deckCloseContract: () => ContractViewer.close(),
+        deckShowContract: view => ContractViewer.show(view),
+        deckCopyContract: () => ContractViewer.copy(),
+        deckDownloadContract: () => ContractViewer.save(),
         deckFilterLibrary: deckFilterLibrary,
         deckOpenDeckEditor: deckOpenDeckEditor,
         deckOpenLibrary: deckOpenLibrary,
@@ -8686,7 +8759,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     }
 
     /* Keyboard + clipboard events (ignored while typing, in modals, brand view or fullscreen). */
-    const XB_MODALS = ['modal-add-slide', 'modal-json-editor', 'modal-content-editor', 'v1-visual-modal', 'v1-deck-modal', 'v1-chrome-dialog'];
+    const XB_MODALS = ['modal-add-slide', 'modal-json-editor', 'modal-content-editor', 'v1-visual-modal', 'v1-deck-modal', 'v1-contract-modal', 'v1-chrome-dialog'];
     function slideShortcutsActive() {
       const a = document.activeElement;
       const typing = a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
@@ -9301,6 +9374,18 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       <textarea id="v1-deck-text" spellcheck="false" aria-label="Presentation JSON"></textarea>
       <p class="v1-modal-error" id="v1-deck-error"></p>
       <div class="v1-modal-actions"><button class="v1-btn" data-click-action="deckCloseDeckEditor">Hủy</button><button class="v1-btn" style="background:#F97C00;border-color:#F97C00" data-click-action="deckApplyDeckEditor">Áp dụng JSON</button></div>
+    </div>
+  </div>
+  <div id="v1-contract-modal" class="v1-modal hidden" role="dialog" aria-modal="true" aria-labelledby="v1-contract-title" aria-describedby="v1-contract-description">
+    <div class="v1-modal-body v1-contract-body">
+      <div class="v1-modal-head"><div><h3 id="v1-contract-title">Schema / Contract</h3><p id="v1-contract-description">Tra cứu schema và hợp đồng JSON để tạo slide bằng AI agent.</p></div><button type="button" class="v1-modal-close" data-click-action="deckCloseContract" aria-label="Đóng Schema / Contract">×</button></div>
+      <div class="v1-contract-tabs" role="tablist" aria-label="Loại hợp đồng">
+        <button type="button" id="v1-contract-tab-schema" class="v1-btn" role="tab" aria-selected="true" aria-controls="v1-contract-panel" data-click-action="deckShowContract" data-click-arg="'schema'">Schema JSON</button>
+        <button type="button" id="v1-contract-tab-contract" class="v1-btn" role="tab" aria-selected="false" aria-controls="v1-contract-panel" tabindex="-1" data-click-action="deckShowContract" data-click-arg="'contract'">Agent Contract</button>
+      </div>
+      <div id="v1-contract-panel" class="v1-contract-panel" role="tabpanel" aria-labelledby="v1-contract-tab-schema"><pre id="v1-contract-json" class="v1-contract-json" tabindex="0" aria-label="Schema JSON"></pre></div>
+      <p id="v1-contract-status" class="v1-contract-status" role="status" aria-live="polite"></p>
+      <div class="v1-modal-actions v1-contract-actions"><button type="button" class="v1-btn" data-click-action="deckCopyContract">Sao chép</button><button type="button" class="v1-btn" data-click-action="deckDownloadContract">Tải JSON</button><button type="button" class="v1-btn" data-click-action="deckCloseContract">Đóng</button></div>
     </div>
   </div>
   <div id="v1-visual-modal" class="v1-modal hidden" role="dialog" aria-label="Visual Registry">
