@@ -1,0 +1,327 @@
+{
+  "version": "1.0",
+  "datasets": {
+    "revenue": [
+      {
+        "label": "North",
+        "value": 120
+      },
+      {
+        "label": "South",
+        "value": -35
+      },
+      {
+        "label": "East",
+        "value": "n/a"
+      },
+      {
+        "label": "Hồ Chí Minh City (Thành phố Hồ Chí Minh) regional office",
+        "value": 64
+      }
+    ],
+    "empty": [],
+    "share": [
+      {
+        "label": "A",
+        "value": 50
+      },
+      {
+        "label": "B",
+        "value": -10
+      },
+      {
+        "label": "C",
+        "value": 30
+      }
+    ],
+    "bridge": [
+      {
+        "label": "Start",
+        "value": 100
+      },
+      {
+        "label": "Up",
+        "value": 20
+      },
+      {
+        "label": "End",
+        "value": 150,
+        "total": true
+      }
+    ]
+  },
+  "slides": [
+    {
+      "id": "typos",
+      "type": "composer",
+      "titel": "Typos an agent often makes",
+      "components": [
+        {
+          "type": "barchart",
+          "dataRef": "revenu",
+          "span": 14,
+          "childen": []
+        },
+        {
+          "type": "progress",
+          "title": "Progress as string",
+          "value": "70%"
+        },
+        {
+          "type": "chart",
+          "variant": "piechart",
+          "dataRef": "share"
+        },
+        {
+          "type": "chart",
+          "variant": "org-chart",
+          "nodes": [
+            "CEO",
+            "CTO"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-honesty",
+      "type": "composer",
+      "title": "Missing, empty and non-numeric data",
+      "components": [
+        {
+          "type": "chart",
+          "variant": "bar",
+          "span": 4
+        },
+        {
+          "type": "chart",
+          "variant": "line",
+          "dataRef": "empty",
+          "span": 4
+        },
+        {
+          "type": "chart",
+          "variant": "bar",
+          "dataRef": "revenue",
+          "span": 4
+        },
+        {
+          "type": "chart",
+          "variant": "scatter",
+          "dataRef": "revenue",
+          "span": 6
+        },
+        {
+          "type": "chart",
+          "variant": "waterfall",
+          "dataRef": "bridge",
+          "span": 6
+        }
+      ]
+    },
+    {
+      "id": "graph-errors",
+      "type": "composer",
+      "title": "Broken relations",
+      "components": [
+        {
+          "type": "diagram",
+          "variant": "tree",
+          "span": 6,
+          "nodes": [
+            {
+              "id": "a",
+              "label": "A",
+              "parent": "c"
+            },
+            {
+              "id": "b",
+              "label": "B",
+              "parent": "a"
+            },
+            {
+              "id": "c",
+              "label": "C",
+              "parent": "b"
+            }
+          ]
+        },
+        {
+          "type": "diagram",
+          "variant": "flowchart",
+          "span": 6,
+          "nodes": [
+            {
+              "id": "x",
+              "label": "Start"
+            },
+            {
+              "id": "y",
+              "label": "End"
+            }
+          ],
+          "edges": [
+            {
+              "from": "x",
+              "to": "missing"
+            }
+          ]
+        },
+        {
+          "type": "diagram",
+          "variant": "sankey",
+          "span": 12,
+          "nodes": [
+            "In",
+            "Out"
+          ],
+          "edges": [
+            {
+              "from": "In",
+              "to": "Out"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "overflow",
+      "type": "composer",
+      "title": "Too many components for one slide",
+      "components": [
+        {
+          "type": "callout",
+          "title": "1",
+          "text": "First point with enough words to need two lines in a half-width callout box.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "2",
+          "text": "Point 2.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "3",
+          "text": "Point 3.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "4",
+          "text": "Point 4.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "5",
+          "text": "Point 5.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "6",
+          "text": "Point 6.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "7",
+          "text": "Point 7.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "8",
+          "text": "Point 8.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "9",
+          "text": "Point 9.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "10",
+          "text": "Point 10.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "11",
+          "text": "Point 11.",
+          "span": 6
+        },
+        {
+          "type": "callout",
+          "title": "12",
+          "text": "Point 12.",
+          "span": 6
+        }
+      ]
+    },
+    {
+      "id": "freeform",
+      "type": "composer",
+      "layout": "freeform",
+      "title": "Freeform out of bounds",
+      "components": [
+        {
+          "type": "text",
+          "text": "Off the right edge",
+          "position": {
+            "x": 1500,
+            "y": 100,
+            "width": 600,
+            "height": 120
+          }
+        },
+        {
+          "type": "text",
+          "text": "Overlapping",
+          "position": {
+            "x": 1600,
+            "y": 150,
+            "width": 100,
+            "height": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "template-limit",
+      "type": "venn-diagram",
+      "content": {
+        "title": "Four sets in a three-set layout",
+        "sets": [
+          {
+            "title": "A"
+          },
+          {
+            "title": "B"
+          },
+          {
+            "title": "C"
+          },
+          {
+            "title": "D"
+          }
+        ]
+      }
+    },
+    {
+      "id": "long-title",
+      "type": "composer",
+      "title": "A slide title that keeps going because nobody edited it down and now it needs three lines in the header band which is too much",
+      "subtitle": "And a subtitle as well",
+      "components": [
+        {
+          "type": "text",
+          "text": "Body"
+        }
+      ]
+    }
+  ]
+}

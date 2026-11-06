@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "helpers": { "boom": "(() => { return 'HELPER-RAN-' + typeof process; })()" },
+  "layouts": {
+    "kpi-tiles": { "group": "D", "render": ["return '<div>LAYOUT-RAN-' + boom + '</div>';"] }
+  },
+  "customCss": "@import url('https://evil.example/x.css'); .v1-slide { background: url(https://evil.example/pixel.png); }",
+  "slides": [
+    { "type": "kpi-tiles", "content": {} },
+    { "type": "one-off", "content": {}, "render": "return '<b>SLIDE-RAN</b>' + this.constructor.constructor('return typeof process')();" },
+    { "type": "composer", "title": "Active content", "components": [
+      { "type": "html", "html": "<p onclick=\"alert(1)\">ok</p><script>alert(2)</script><img src=x onerror=alert(3)><a href=\"jav&#x61;script:alert(4)\">x</a><iframe src=\"https://evil.example\"></iframe>" },
+      { "type": "svg", "svg": "<svg onload=\"alert(5)\"><a xlink:href=\"javascript:alert(6)\"><text>t</text></a><foreignObject><div>x</div></foreignObject><animate attributeName=\"href\" to=\"javascript:alert(7)\"/></svg>" },
+      { "type": "link", "text": "Click", "href": "javascript:alert(8)" },
+      { "type": "iframe", "src": "https://evil.example/frame" },
+      { "type": "image", "src": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=" } ] },
+    { "type": "custom-html", "content": { "title": "Raw HTML slide", "html": "<style>body{display:none}</style><b>safe bold</b><img src=\"https://cdn.example/a.png\" onerror=\"alert(9)\">" } }
+  ]
+}

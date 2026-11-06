@@ -15,6 +15,9 @@ HTML được tổ chức theo kiến trúc **Template as Code**: template/rende
 - Áp dụng SOLID bằng module có trách nhiệm rõ và interface nhỏ.
 - Mở rộng layout, diagram và component qua registry hiện có.
 - Khi sửa format JSON, template hoặc component, đọc `contracts/xbrain-deck-v1.schema.json` và cập nhật `tests/test_json_contract.py` tương ứng.
+- Schema là sản phẩm dẫn xuất: cấu trúc ở `XB_SCHEMA_BASE`, enum lấy từ registry (`LAYOUT_CATALOG`, `COMPONENT_RENDERERS`, `CHART_VARIANTS`, `DIAGRAM_VARIANTS`). Sau khi sửa registry chạy `node tools/xbrain.mjs schema --write`.
+- Variant mới khai báo nhãn, hợp đồng dữ liệu và renderer trong cùng một mục registry; renderer chỉ vẽ trường có trong dữ liệu và báo thiếu qua `XBDiag.report`, không tự tạo giá trị hay quan hệ.
+- Tạo/kiểm tra deck bằng `XBrainCompiler` (`tools/xbrain.mjs`, xem `docs/agent-compiler.md`): `repair` → `qa` → `build`; mặc định `strict` và `untrusted`.
 - Ghi nhận chỉnh sửa qua `DeckStore`; render không được thay đổi lịch sử.
 - Truyền dependency trình duyệt vào module xử lý dữ liệu và lưu trữ.
 - Dùng event delegation cho thao tác UI; giữ implementation trong scope riêng.
@@ -27,4 +30,5 @@ HTML được tổ chức theo kiến trúc **Template as Code**: template/rende
 - Khi sửa state/editor: kiểm tra undo/redo và dữ liệu nhập không hợp lệ.
 - Khi sửa import/export: kiểm tra JSON v1 hợp lệ, version sai và mở lại HTML xuất bằng `file://`.
 - Khi sửa render: kiểm tra các loại liên quan, Gallery, bản in và fallback offline.
+- Chạy `python -m unittest discover -s tests -p "test_*.py"` (cần Node ≥ 18 và `jsonschema`); `tests/test_compiler.py` dùng deck thật và edge case trong `tests/fixtures/`.
 - Báo rõ kiểm thử đã chạy, kết quả và phần chưa kiểm chứng.

@@ -73,7 +73,9 @@ script = script.replace(/\}\)\(\);\s*$/, `
 })();`);
 const FIXTURES={};
 if (fs.existsSync('tests/fixtures'))
-  for (const f of fs.readdirSync('tests/fixtures').filter(f=>f.endsWith('.json')).sort())
+  // Only the complete deck-*.json decks: other fixtures (untrusted code, wrong version) belong to test_compiler.py,
+  // which runs them in the isolated compiler VM.
+  for (const f of fs.readdirSync('tests/fixtures').filter(f=>/^deck-.*\.json$/.test(f)).sort())
     FIXTURES[f]=JSON.parse(fs.readFileSync('tests/fixtures/'+f,'utf8'));
 const context={window:{addEventListener(){}},document:{addEventListener(){}},console:{...console,error(){}},FIXTURES};
 vm.runInNewContext(script,context,{timeout:5000});
@@ -255,6 +257,40 @@ class JsonContractTest(unittest.TestCase):
         self.assertInvalid({"version": "1.0", "slides": [{"type": "progress-rings", "content": {"rings": [{"value": 140}]}}]})
         self.assertValid({"version": "1.0", "slides": [{"type": "custom-diagram", "content": {
             "title": "Own SVG", "svg": "<rect width=\"10\" height=\"10\"/>"}}]})
+
+    TEMPLATE_PACK_CHARTS = ["combo", "stacked-100", "diverging-bar"]
+    TEMPLATE_PACK_DIAGRAMS = ["vertical-timeline", "pros-cons", "iceberg"]
+
+    def test_template_pack_variants_have_sample_slides(self):
+        def variants(components):
+            for component in components or []:
+                yield component.get("variant")
+                yield from variants(component.get("children") or component.get("components"))
+        used = {v for slide in self.source["document"]["slides"] for v in variants(slide.get("components"))}
+        for variant in self.TEMPLATE_PACK_CHARTS:
+            with self.subTest(variant=variant):
+                self.assertIn(variant, self.source["visuals"]["chart"])
+                self.assertIn(variant, used)
+                self.assertValid(self.deck({"type": "chart", "variant": variant, "dataRef": "tracks"}))
+                self.assertValid(self.deck({"type": "chart-card", "variant": variant, "title": "Card"}))
+        for variant in self.TEMPLATE_PACK_DIAGRAMS:
+            with self.subTest(variant=variant):
+                self.assertIn(variant, self.source["visuals"]["flow"] | self.source["visuals"]["structure"])
+                self.assertIn(variant, used)
+                self.assertValid(self.deck({"type": "diagram", "variant": variant, "options": {"labels": ["A", "B"]},
+                                            "nodes": [{"label": "A", "date": "JAN", "group": "con"}, "B"]}))
+                self.assertInvalid(self.deck({"type": "chart", "variant": variant}))
+
+    def test_semantic_data_fields_for_visuals(self):
+        # Fields the native renderers read (dates, lanes, statuses, coordinates, RACI) stay valid v1 JSON.
+        self.assertValid(self.deck({"type": "diagram", "variant": "gantt", "options": {"today": "2026-10-06"}, "nodes": [
+            {"id": "a", "label": "Build", "start": "2026-10-01", "end": "2026-10-31", "lane": "Ops", "status": "Doing"},
+            {"id": "b", "label": "Review", "start": 3, "end": 3, "kind": "milestone", "parent": "a", "x": 2, "y": 4,
+             "group": "con", "raci": {"Ops": "R"}, "date": "2026-10"}],
+            "edges": [{"from": "a", "to": "b", "label": "then", "value": 12, "kind": "return", "critical": True}]}))
+        self.assertValid(self.deck({"type": "chart", "variant": "combo", "data": [{"label": "Q1", "value": 3, "target": 4}]}))
+        self.assertInvalid(self.deck({"type": "diagram", "variant": "sankey", "edges": [{"from": "a"}]}))
+        self.assertInvalid(self.deck({"type": "diagram", "variant": "gantt", "nodes": [{"label": "x", "value": "big"}]}))
 
     def test_template_as_code_contract(self):
         layout = {"group": "D", "name": "KPI Tiles", "frame": "dgPage", "sample": {"items": []},

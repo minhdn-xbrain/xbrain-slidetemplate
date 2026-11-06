@@ -1,0 +1,109 @@
+{
+  "version": "1.0",
+  "metadata": { "name": "XBrain Academy · Q3 2026 business review", "owner": "Program office" },
+  "chrome": { "headerLabel": "XBrain Academy · Q3 2026 review" },
+  "datasets": {
+    "enrolment": { "type": "csv", "value": "Quarter,Value,Target\nQ4 2025,118,110\nQ1 2026,132,130\nQ2 2026,151,150\nQ3 2026,164,175" },
+    "revenue": [
+      { "label": "Q4 2025", "Tuition": 1.82, "Corporate": 0.64, "Grants": 0.21 },
+      { "label": "Q1 2026", "Tuition": 2.05, "Corporate": 0.71, "Grants": 0.18 },
+      { "label": "Q2 2026", "Tuition": 2.31, "Corporate": 0.93, "Grants": 0.25 },
+      { "label": "Q3 2026", "Tuition": 2.47, "Corporate": 1.12, "Grants": 0.2 }
+    ],
+    "bridge": [
+      { "label": "Q2 margin", "value": 412 },
+      { "label": "Corporate deals", "value": 96 },
+      { "label": "Cloud credits", "value": -38 },
+      { "label": "Mentor hours", "value": -27 },
+      { "label": "Q3 margin", "value": 443, "total": true }
+    ],
+    "dropReasons": { "type": "tsv", "value": "label\tvalue\nSchedule conflict\t41\nLab environment\t27\nPace too fast\t18\nFinancial\t9\nOther\t5" },
+    "skills": [
+      { "label": "Networking", "Entry": 41, "Exit": 74 },
+      { "label": "Linux", "Entry": 52, "Exit": 81 },
+      { "label": "Containers", "Entry": 28, "Exit": 69 },
+      { "label": "IaC", "Entry": 19, "Exit": 72 },
+      { "label": "Observability", "Entry": 23, "Exit": 64 }
+    ],
+    "placement": [
+      { "label": "Cloud engineer", "before": 0, "after": 34 },
+      { "label": "DevOps engineer", "before": 0, "after": 27 },
+      { "label": "SRE", "before": 0, "after": 9 },
+      { "label": "Data engineer", "before": 0, "after": 12 }
+    ],
+    "kpis": [
+      { "label": "Lab completion", "value": 78, "target": 80 },
+      { "label": "Placement in 90 days", "value": 64, "target": 60 },
+      { "label": "Learner NPS", "value": 52, "target": 50 }
+    ]
+  },
+  "slides": [
+    { "type": "cover", "content": { "badge": "Q3 2026 BUSINESS REVIEW", "titleLine1": "Q3 2026", "titleLine2": "Academy review", "subtitle": "Enrolment, revenue, outcomes and the Q4 plan.", "presenter": "Program office" } },
+    { "type": "agenda", "content": { "sectionTag": "AGENDA", "title": "Today", "items": [
+      { "num": "01", "title": "Enrolment", "desc": "Intake versus plan" },
+      { "num": "02", "title": "Revenue", "desc": "Mix and margin bridge" },
+      { "num": "03", "title": "Learning outcomes", "desc": "Skills and placement" },
+      { "num": "04", "title": "Q4 plan", "desc": "Roadmap, owners and risks" } ] } },
+    { "id": "enrolment", "type": "composer", "title": "Enrolment missed plan only in Q3", "subtitle": "164 learners against a target of 175 (−6%)",
+      "content": { "sectionTag": "ENROLMENT", "source": "Admissions system export, 2026-10-02" },
+      "components": [
+        { "type": "chart-card", "title": "Learners per quarter vs target", "variant": "combo", "dataRef": "enrolment", "span": 8, "minHeight": 470 },
+        { "type": "stack", "span": 4, "minHeight": 470, "children": [
+          { "type": "metric", "title": "Q3 learners", "value": "164", "delta": "−11 vs target" },
+          { "type": "callout", "title": "Why", "text": "The September cohort started two weeks late after the lab platform migration." } ] } ] },
+    { "id": "revenue", "type": "composer", "title": "Corporate revenue grew 75% in four quarters", "subtitle": "Revenue by stream, VND billion",
+      "content": { "sectionTag": "REVENUE", "source": "Finance ledger, Q4 2025 – Q3 2026" },
+      "components": [
+        { "type": "chart", "variant": "stacked-bar", "dataRef": "revenue", "span": 7, "minHeight": 470 },
+        { "type": "chart-card", "title": "Margin bridge Q2 → Q3 (VND million)", "variant": "waterfall", "dataRef": "bridge", "span": 5, "minHeight": 470 } ] },
+    { "id": "outcomes", "type": "composer", "title": "Every skill area improved by at least 29 points", "subtitle": "Average assessment score at entry and exit, Q3 cohort (n = 164)",
+      "content": { "sectionTag": "OUTCOMES", "source": "Assessment platform, cohort Q3-2026" },
+      "components": [
+        { "type": "chart", "variant": "grouped-bar", "dataRef": "skills", "span": 7, "minHeight": 470 },
+        { "type": "chart-card", "title": "Why learners withdrew (n = 100)", "variant": "pareto", "dataRef": "dropReasons", "span": 5, "minHeight": 470 } ] },
+    { "id": "kpi-status", "type": "composer", "title": "Two of three outcome KPIs are on target", "subtitle": "Q3 actual against the annual target",
+      "content": { "sectionTag": "KPI", "source": "Program scorecard 2026" },
+      "components": [ { "type": "chart", "variant": "bullet", "dataRef": "kpis", "span": 12 } ] },
+    { "type": "section-divider", "content": { "sectionNumber": "04", "categoryLabel": "PLAN", "title": "Q4 plan", "subtitle": "Roadmap, ownership and risks" } },
+    { "id": "roadmap", "type": "composer", "title": "Q4 roadmap", "subtitle": "Workstreams and milestones, October – December 2026",
+      "content": { "sectionTag": "Q4 PLAN", "source": "Program plan v3" },
+      "components": [ { "type": "diagram", "variant": "gantt", "span": 12, "options": { "today": "2026-10-06", "todayLabel": "Today" },
+        "nodes": [
+          { "id": "lab", "label": "Lab platform hardening", "start": "2026-10-01", "end": "2026-10-31" },
+          { "id": "genai", "label": "GenAI track pilot", "start": "2026-10-15", "end": "2026-12-10" },
+          { "id": "corp", "label": "Corporate academy offer", "start": "2026-11-01", "end": "2026-12-20" },
+          { "id": "intake", "label": "January intake", "start": "2026-12-01", "end": "2026-12-31" },
+          { "id": "review", "label": "Year-end review", "start": "2026-12-18", "end": "2026-12-18", "kind": "milestone" } ] } ] },
+    { "id": "governance", "type": "composer", "title": "Who owns the Q4 plan", "subtitle": "Program governance",
+      "content": { "sectionTag": "Q4 PLAN", "source": "Org chart, October 2026" },
+      "components": [
+        { "type": "diagram", "variant": "org-chart", "span": 7, "nodes": [
+          { "id": "dir", "label": "Academy director" },
+          { "id": "cur", "label": "Curriculum lead", "parent": "dir" },
+          { "id": "ops", "label": "Lab operations", "parent": "dir" },
+          { "id": "biz", "label": "Corporate partnerships", "parent": "dir" },
+          { "id": "gen", "label": "GenAI track", "parent": "cur" },
+          { "id": "sre", "label": "Platform SRE", "parent": "ops" } ] },
+        { "type": "diagram", "variant": "raci", "span": 5, "options": { "roles": ["Director", "Curriculum", "Ops", "Partners"] }, "nodes": [
+          { "label": "Lab hardening", "raci": { "Director": "A", "Ops": "R", "Curriculum": "C" } },
+          { "label": "GenAI pilot", "raci": { "Director": "A", "Curriculum": "R", "Ops": "C" } },
+          { "label": "Corporate offer", "raci": { "Director": "A", "Partners": "R", "Curriculum": "C" } } ] } ] },
+    { "id": "risks", "type": "composer", "title": "Two risks need action this month", "subtitle": "Likelihood × impact, 1 = low, 5 = high",
+      "content": { "sectionTag": "RISKS", "source": "Risk register, 2026-10-01" },
+      "components": [
+        { "type": "diagram", "variant": "risk-matrix", "span": 7, "nodes": [
+          { "label": "Cloud cost overrun", "x": 4, "y": 4 },
+          { "label": "Mentor churn", "x": 3, "y": 4 },
+          { "label": "Late GenAI content", "x": 2, "y": 3 },
+          { "label": "Low corporate uptake", "x": 2, "y": 2 } ] },
+        { "type": "list", "span": 5, "items": ["Cap sandbox spend per learner", "Contract two backup mentors", "Weekly GenAI content review"] } ] },
+    { "id": "funnel", "type": "composer", "title": "Where applicants go", "subtitle": "Q3 admissions flow (people)",
+      "content": { "sectionTag": "ENROLMENT", "source": "Admissions system export, 2026-10-02" },
+      "components": [ { "type": "diagram", "variant": "sankey", "span": 12,
+        "nodes": [ { "id": "app", "label": "Applied" }, { "id": "sl", "label": "Shortlisted" }, { "id": "rej", "label": "Not shortlisted" },
+                   { "id": "enr", "label": "Enrolled" }, { "id": "wl", "label": "Waitlist" } ],
+        "edges": [ { "from": "app", "to": "sl", "value": 236 }, { "from": "app", "to": "rej", "value": 412 },
+                   { "from": "sl", "to": "enr", "value": 164 }, { "from": "sl", "to": "wl", "value": 72 } ] } ] },
+    { "type": "closing", "content": { "headline": "Thank you", "subheadline": "Questions and decisions" } }
+  ]
+}

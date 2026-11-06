@@ -574,7 +574,10 @@
         "waffle",
         "range-bar",
         "dumbbell",
-        "marimekko"
+        "marimekko",
+        "combo",
+        "stacked-100",
+        "diverging-bar"
       ]
     },
     "diagramVariant": {
@@ -609,6 +612,9 @@
         "range-bar",
         "dumbbell",
         "marimekko",
+        "combo",
+        "stacked-100",
+        "diverging-bar",
         "flowchart",
         "decision-tree",
         "process-pipeline",
@@ -634,6 +640,7 @@
         "cycle",
         "fishbone",
         "bowtie",
+        "vertical-timeline",
         "org-chart",
         "tree",
         "mindmap",
@@ -665,7 +672,9 @@
         "quadrant",
         "portfolio",
         "okrs",
-        "radial-tree"
+        "radial-tree",
+        "pros-cons",
+        "iceberg"
       ]
     },
     "componentType": {
@@ -4215,46 +4224,6 @@
             "properties": {
               "type": {
                 "enum": [
-                  "composer"
-                ]
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          "then": {
-            "properties": {
-              "content": {
-                "$ref": "#/$defs/content-composer"
-              }
-            },
-            "anyOf": [
-              {
-                "required": [
-                  "components"
-                ]
-              },
-              {
-                "required": [
-                  "content"
-                ],
-                "properties": {
-                  "content": {
-                    "required": [
-                      "components"
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "enum": [
                   "venn-diagram"
                 ]
               }
@@ -4703,6 +4672,46 @@
             },
             "required": [
               "content"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "composer"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "$ref": "#/$defs/content-composer"
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "components"
+                ]
+              },
+              {
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "required": [
+                      "components"
+                    ]
+                  }
+                }
+              }
             ]
           }
         }
