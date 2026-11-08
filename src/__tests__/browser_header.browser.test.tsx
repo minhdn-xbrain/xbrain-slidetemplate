@@ -1,14 +1,17 @@
-// Optional header workflow checks. Uses the same external Playwright/Chromium setup as browser_improvements.mjs.
+// Header workflow checks against the standalone React/Vite build.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {pathToFileURL,fileURLToPath} from 'node:url';
+import { test } from 'vitest';
+
+test('browser header', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
-const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),dir=path.resolve(process.argv[2]||'/tmp/xbrain-header-check');fs.mkdirSync(dir,{recursive:true});
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),dir=path.resolve(process.env.XB_BROWSER_ARTIFACT_DIR||'/tmp/xbrain-header-check');fs.mkdirSync(dir,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 const context=await browser.newContext({viewport:{width:1366,height:768}});await context.route(/^https?:/,route=>route.abort());
-const page=await context.newPage(),errors=[],results={};page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.type()==='confirm'?d.accept():d.dismiss());
+const page=await context.newPage(),errors: string[]=[],results: Record<string, any>={};page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.type()==='confirm'?d.accept():d.dismiss());
 const menu=name=>page.locator('#v1-menu-'+name),trigger=name=>page.locator('#v1-menu-'+name+'-trigger');
 const choose=async(name,action)=>{await trigger(name).click();await menu(name).locator('[data-click-action="'+action+'"]').click();};
 const deck=()=>page.evaluate(()=>JSON.stringify(XB.getDeck()));
@@ -45,10 +48,10 @@ try{
  results.keyboardMenus=true;
  const fixture={version:'1.0',metadata:{name:'Báo cáo vận hành Q4'},slides:[{type:'composer',title:'Overview',components:[{type:'text',text:'Verified content'}]},{type:'composer',title:'Details',components:[{type:'text',text:'Details'}]}]};
  const fixtureFile=path.join(dir,'input.json');fs.writeFileSync(fixtureFile,JSON.stringify(fixture));
- const [chooser]=await Promise.all([page.waitForEvent('filechooser'),choose('file','importDeckJSON')]);await chooser.setFiles(fixtureFile);await page.waitForFunction(()=>XB.getDeck().metadata.name==='Báo cáo vận hành Q4');
+ const [chooser]=await Promise.all([page.waitForEvent('filechooser'),choose('file','importDeckJSON')]);await chooser.setFiles(fixtureFile);await page.waitForFunction(()=>XB.getDeck().metadata?.name==='Báo cáo vận hành Q4');
  assert.equal(await page.locator('#v1-document-name').innerText(),fixture.metadata.name);assert.equal(await page.locator('#v1-document-count').innerText(),'2 slide');
  await choose('file','saveLocalDraft');assert.equal(await page.locator('#v1-draft-status').innerText(),'Đã lưu nháp');
- const saved=await deck(),stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('xbrain-v1-draft')));assert.equal(stored.version,'1.0');assert.ok(stored.savedAt);
+ const saved=await deck(),stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('xbrain-v1-draft')!));assert.equal(stored.version,'1.0');assert.ok(stored.savedAt);
  await page.evaluate(()=>XB.updateSlide(0,{source:'Changed'}));assert.equal(await page.locator('#v1-draft-status').innerText(),'Có thay đổi');
  assert.equal(await page.locator('#v1-undo').isDisabled(),false);assert.equal(await page.locator('#v1-redo').isDisabled(),true);
  await page.locator('#v1-undo').click();assert.equal(await deck(),saved);assert.equal(await page.locator('#v1-draft-status').innerText(),'Đã lưu nháp');assert.equal(await page.locator('#v1-redo').isDisabled(),false);
@@ -58,7 +61,7 @@ try{
  await choose('file','saveLocalDraft');assert.equal(await page.locator('#v1-draft-status').innerText(),'Chưa lưu được nháp');
  await page.evaluate(()=>{Storage.prototype.setItem=window.__setItem;delete window.__setItem;});await choose('file','saveLocalDraft');assert.equal(await page.locator('#v1-draft-status').innerText(),'Đã lưu nháp');
  const beforeInvalid=await deck(),invalidFile=path.join(dir,'invalid.json');fs.writeFileSync(invalidFile,JSON.stringify({...fixture,version:'2.0'}));
- const [invalidChooser]=await Promise.all([page.waitForEvent('filechooser'),choose('file','importDeckJSON')]);await invalidChooser.setFiles(invalidFile);await page.waitForFunction(()=>document.getElementById('import-deck-json').value==='');assert.equal(await deck(),beforeInvalid);assert.equal(await page.locator('#v1-document-name').innerText(),fixture.metadata.name);
+ const [invalidChooser]=await Promise.all([page.waitForEvent('filechooser'),choose('file','importDeckJSON')]);await invalidChooser.setFiles(invalidFile);await page.waitForFunction(()=>(document.getElementById('import-deck-json') as HTMLInputElement).value==='');assert.equal(await deck(),beforeInvalid);assert.equal(await page.locator('#v1-document-name').innerText(),fixture.metadata.name);
  results.fileImportAndVersionGate=true;
  results.draftAndHistory=true;
  await page.locator('#v1-qa-trigger').click();assert.equal(await page.locator('#v1-qa-status').getAttribute('data-state'),'clean');
@@ -96,3 +99,5 @@ try{
  assert.deepEqual(errors,[]);results.pageErrors=errors;
  fs.writeFileSync(path.join(dir,'results.json'),JSON.stringify(results,null,2)+'\n');console.log(JSON.stringify(results,null,2));
 }finally{await browser.close();}
+
+});

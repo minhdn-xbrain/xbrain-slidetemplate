@@ -1,3 +1,4 @@
+import type { AddressInfo } from 'node:net';
 // The agent accepts author HTML, CSS, JavaScript, remote assets and JSON keys.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -5,13 +6,16 @@ import http from 'node:http';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent flexibility', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');let images=0;
 const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP438DwHwAGgAJ/EEwb4QAAAABJRU5ErkJggg==','base64');
 const server=http.createServer((req,res)=>{if(req.url==='/asset.png'){images++;res.writeHead(200,{'content-type':'image/png'});res.end(png);return;}res.writeHead(200,{'content-type':'text/html; charset=utf-8'});res.end(fs.readFileSync(path.join(root,'dist/index.html')));});
-await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
+await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 try{
- const context=await browser.newContext();await context.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());const page=await context.newPage();await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);
+ const context=await browser.newContext();await context.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());const page=await context.newPage();await page.goto(`http://127.0.0.1:${(server.address() as AddressInfo).port}/index.html`);
  const result=await page.evaluate(async origin=>{
   const a=XB.agent;await a.ready();const state=(await a.getState()).data;
   const doc={version:'1.0',helpers:{double:'(x)=>x*2'},slides:[{id:'one',type:'composer',title:'Flexible',customCss:'@keyframes authored {from{opacity:0}to{opacity:1}} body{--author-value:1}.author-fixed{position:fixed}',components:[{type:'html',height:200,style:{backgroundColor:'#fff',fontFamily:'"Times New Roman", serif'},html:`<div id="author-content" data-xb-slide="8" data-xb-source-path="authored">Author content <img src="${origin}/asset.png" alt="asset"></div><script>parent.__authorRan=(parent.__authorRan||0)+1;<\/script>`},{type:'link',text:'Action',href:'javascript:void(0)'}]}]};
@@ -23,7 +27,7 @@ try{
   const patched=await a.applyPatch({baseRevision:created.revision,operations:[{op:'add',path:'/slides/0/content',value:JSON.parse('{"__proto__":{"label":"kept"},"constructor":"kept"}')} ]});
   const after=await a.getDeck({source:'candidate'});
   return {created,validated,render,preview,exported,artifact,committed,candidate,patched,after,special:JSON.stringify(after.data.document.slides[0].content),authorRan:window.__authorRan||0};
- },`http://127.0.0.1:${server.address().port}`);
+ },`http://127.0.0.1:${(server.address() as AddressInfo).port}`);
  assert.equal(result.created.ok,true);assert.equal(result.validated.data.validation.valid,true,JSON.stringify(result.validated));assert.equal(result.render.data.manifest.trust,'trusted');
  assert.match(result.preview.data.html,/data-xb-source-path="authored"/);assert.match(result.preview.data.html,/data-xb-slide="8"/);assert.ok(result.authorRan>0);assert.ok(images>0);assert.equal(result.exported.ok,true,JSON.stringify(result.exported));assert.equal(result.committed.ok,true,JSON.stringify(result.committed));
  assert.match(result.artifact.data.content,/font-family:&quot;Times New Roman&quot;, serif/);assert.match(result.artifact.data.content,/<script>/i);assert.match(result.artifact.data.content,/@keyframes authored/);assert.match(result.artifact.data.content,/position:fixed/);assert.match(result.artifact.data.content,/body\{--author-value:1\}/);assert.doesNotMatch(result.artifact.data.content,/Content-Security-Policy/i);
@@ -40,3 +44,5 @@ try{
  const out='/tmp/xbrain-flexible-export.html';fs.writeFileSync(out,result.artifact.data.content);const reopened=await context.newPage();await reopened.goto(pathToFileURL(out).href);assert.equal(await reopened.locator('#author-content').count(),1);
  await context.close();console.log('Agent trusted HTML, CSS, script, URL and JSON key workflow passed');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}
+
+});

@@ -4,11 +4,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent render', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 try{
- const context=await browser.newContext({viewport:{width:1366,height:768}});await context.route(/^https?:/,r=>r.abort());const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const context=await browser.newContext({viewport:{width:1366,height:768}});await context.route(/^https?:/,r=>r.abort());const page=await context.newPage(),errors: string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(pathToFileURL(path.join(root,'dist/index.html')).href);
  const fixture=JSON.parse(fs.readFileSync(path.join(root,'src/__tests__/fixtures/qbr-deck.json'),'utf8'));
  const results=await page.evaluate(async doc=>{
@@ -27,3 +30,5 @@ try{
  assert.equal(results.rerender.data.qa.checkedSlides,12);assert.equal(results.exported.ok,true,JSON.stringify(results.exported));
  await context.close();console.log('Agent render, measurement and isolation checks passed');
 } finally {await browser.close();}
+
+});

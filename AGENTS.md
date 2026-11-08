@@ -15,7 +15,7 @@
 
 - Áp dụng SOLID bằng module có trách nhiệm rõ và interface nhỏ.
 - Mở rộng layout, diagram và component qua registry hiện có.
-- Khi sửa format JSON, template hoặc component, đọc `contracts/xbrain-deck-v1.schema.json` và cập nhật `src/__tests__/test_json_contract.py` tương ứng.
+- Khi sửa format JSON, template hoặc component, đọc `contracts/xbrain-deck-v1.schema.json` và cập nhật `src/__tests__/schema-contract.test.ts` tương ứng.
 - Schema là sản phẩm dẫn xuất: cấu trúc ở `XB_SCHEMA_BASE`, enum lấy từ registry (`LAYOUT_CATALOG`, `COMPONENT_RENDERERS`, `CHART_VARIANTS`, `DIAGRAM_VARIANTS`). Sau khi sửa registry chạy `npm run schema`.
 - Variant mới khai báo nhãn, hợp đồng dữ liệu và renderer trong cùng một mục registry; renderer chỉ vẽ trường có trong dữ liệu và báo thiếu qua `XBDiag.report`, không tự tạo giá trị hay quan hệ.
 - Tạo/kiểm tra deck bằng `XBrainCompiler` trong `src/store/xbrainStore.ts`: `repair` → `qa` → xuất HTML; mặc định `strict` và `trusted`.
@@ -33,6 +33,6 @@
 - Khi sửa state/editor: kiểm tra undo/redo và dữ liệu nhập không hợp lệ.
 - Khi sửa import/export: kiểm tra JSON v1 hợp lệ, version sai và mở lại HTML xuất bằng `file://`.
 - Khi sửa render: kiểm tra các loại liên quan, Gallery, bản in và fallback offline.
-- Khi sửa Agent API hoặc Console: chạy các `src/__tests__/browser_agent_*.mjs` liên quan, gồm luồng API và click-only, kiểm tra file/host, stale QA và nội dung tác giả tùy biến; ghi rõ môi trường và phần chưa kiểm chứng.
-- Chạy `npm run lint`, `npm test` và `python3 -m unittest discover -s src/__tests__ -p "test_*.py"` (cần Node ≥ 22.15 và `jsonschema`); `src/__tests__/test_compiler.py` dùng deck thật và edge case trong `src/__tests__/fixtures/`.
+- Khi sửa Agent API hoặc Console: chạy các `src/__tests__/browser_agent_*.browser.test.tsx` liên quan, gồm luồng API và click-only, kiểm tra file/host, stale QA và nội dung tác giả tùy biến; ghi rõ môi trường và phần chưa kiểm chứng.
+- Chạy `npm run lint`, `npm test` và `npm run test:browser` (cần Node ≥ 22.15 và Chromium); các fixture thật và edge case nằm trong `src/__tests__/fixtures/`.
 - Báo rõ kiểm thử đã chạy, kết quả và phần chưa kiểm chứng.

@@ -1,3 +1,4 @@
+import type { AddressInfo } from 'node:net';
 // Click-only workflow on a static host: no page.evaluate is used.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -8,20 +9,23 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test.each(['file', 'http', 'https'])('Agent Console click-only workflow: %s', async (mode) => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const mode=process.argv[2]||'http',temp=fs.mkdtempSync(path.join(os.tmpdir(),'xbrain-ui-tls-'));
-const unexpected=[];
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'xbrain-ui-tls-'));
+const unexpected: string[]=[];
 const handler=(req,res)=>{if(req.url!=='/index.html'&&req.url!=='/'){if(req.url!=='/favicon.ico')unexpected.push(req.url);res.writeHead(404);res.end();return;}res.setHeader('content-type','text/html; charset=utf-8');res.end(fs.readFileSync(path.join(root,'dist/index.html')));};
 let server;
 if(mode==='https'){
  const key=path.join(temp,'key.pem'),cert=path.join(temp,'cert.pem');execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-keyout',key,'-out',cert,'-days','1','-subj','/CN=localhost'],{stdio:'ignore'});
  server=https.createServer({key:fs.readFileSync(key),cert:fs.readFileSync(cert)},handler);
 }else server=http.createServer(handler);
-await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
+await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 try{
- const context=await browser.newContext({viewport:{width:1366,height:768},acceptDownloads:true,ignoreHTTPSErrors:true});await context.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(mode==='file'?pathToFileURL(path.join(root,'dist/index.html')).href:`${mode}://127.0.0.1:${server.address().port}/index.html`);
+ const context=await browser.newContext({viewport:{width:1366,height:768},acceptDownloads:true,ignoreHTTPSErrors:true});await context.route(/^https?:\/\/(?!127\.0\.0\.1)/,r=>r.abort());const page=await context.newPage(),errors: string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(mode==='file'?pathToFileURL(path.join(root,'dist/index.html')).href:`${mode}://127.0.0.1:${(server.address() as AddressInfo).port}/index.html`);
  await page.locator('#v1-menu-ai-trigger').click();await page.getByRole('menuitem',{name:'AI Console'}).click();
  await page.locator('[data-testid="xb-agent-ready"][data-state="ready"]').waitFor();
  assert.equal(await page.locator('[data-v1-agent-action="contract"]').count(),0);
@@ -47,3 +51,5 @@ try{
  await page.getByRole('button',{name:'Studio',exact:true}).click();assert.equal(await page.locator('#v1-agent-console').isHidden(),true);assert.deepEqual(errors,[]);assert.deepEqual(unexpected,[]);
  await context.close();console.log('Agent Console click-only '+mode+' workflow passed');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));fs.rmSync(temp,{recursive:true,force:true});}
+
+});

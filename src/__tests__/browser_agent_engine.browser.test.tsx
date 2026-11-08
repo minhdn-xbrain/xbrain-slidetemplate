@@ -5,15 +5,18 @@ import path from 'node:path';
 import os from 'node:os';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent engine', async () => {
 
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const dir=path.resolve(process.argv[2]||'/tmp/xbrain-agent-browser');fs.mkdirSync(dir,{recursive:true});
+const dir=path.resolve(process.env.XB_BROWSER_ARTIFACT_DIR||'/tmp/xbrain-agent-browser');fs.mkdirSync(dir,{recursive:true});
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'xbrain-agent-browser-'));
 const fixture=JSON.parse(fs.readFileSync(path.join(root,'src/__tests__/fixtures/agent-native.json'),'utf8'));
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 const context=await browser.newContext({viewport:{width:1960,height:1200}});
-const errors=[],requests=[],results={};
+const errors: string[]=[],requests: string[]=[],results: Record<string, any>={};
 await context.route(/^https?:/,route=>{requests.push(route.request().url());return route.abort();});
 try{
   const studio=await context.newPage();studio.on('pageerror',e=>errors.push(e.message));
@@ -87,3 +90,5 @@ try{
   fs.writeFileSync(path.join(dir,'browser-results.json'),JSON.stringify(results,null,2)+'\n');
   console.log(JSON.stringify(results,null,2));
 }finally{await context.close();await browser.close();fs.rmSync(temp,{recursive:true,force:true});}
+
+});

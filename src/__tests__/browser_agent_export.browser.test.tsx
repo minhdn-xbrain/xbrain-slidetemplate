@@ -4,6 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent export', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
@@ -21,10 +24,10 @@ try{
   const exported=await a.exportArtifact({revision:created.revision,format:'static-html',profile:'agent-strict'});
   const artifact=exported.ok?await a.getArtifact({artifactId:exported.data.artifactId}):null;
   Object.defineProperty(navigator,'userActivation',{configurable:true,value:{isActive:false}});
-  const noGesture=await a.downloadArtifact({artifactId:exported.data.artifactId});delete navigator.userActivation;
+  const noGesture=await a.downloadArtifact({artifactId:exported.data.artifactId});Reflect.deleteProperty(navigator,'userActivation');
   const wrongStudio=await a.commitCandidate({baseRevision:created.revision,expectedStudioRevision:'stale',qaRunId:run.data.runId});
-  const viewport=document.getElementById('active-slide-viewport'),native=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
-  Object.defineProperty(viewport,'innerHTML',{configurable:true,get(){return native.get.call(this);},set(){delete this.innerHTML;throw Error('forced render failure');}});
+  const viewport=document.getElementById('active-slide-viewport'),native=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML')!;
+  Object.defineProperty(viewport,'innerHTML',{configurable:true,get(){return native.get!.call(this);},set(){delete this.innerHTML;throw Error('forced render failure');}});
   const failedCommit=await a.commitCandidate({baseRevision:created.revision,expectedStudioRevision:state.studioRevision,qaRunId:run.data.runId});const afterFailed=JSON.stringify(XB.getDeck());
   const committed=await a.commitCandidate({baseRevision:created.revision,expectedStudioRevision:state.studioRevision,qaRunId:run.data.runId});
   const oldArtifact=await a.getArtifact({artifactId:exported.data.artifactId}),staleDownload=await a.downloadArtifact({artifactId:exported.data.artifactId});
@@ -42,3 +45,5 @@ try{
  const output='/tmp/xbrain-agent-static-test.html';fs.writeFileSync(output,artifact);const reopened=await context.newPage();await reopened.goto(pathToFileURL(output).href);assert.equal(await reopened.locator('[data-xb-slide]').count(),1);assert.match(await reopened.locator('body').innerText(),/Verified content/);
  await context.close();console.log('Agent strict export and Studio transaction checks passed');
 }finally{await browser.close();}
+
+});

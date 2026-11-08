@@ -1,3 +1,4 @@
+import type { AddressInfo } from 'node:net';
 // Read-only agent facade: file and static-host parity, readiness and isolation.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -5,13 +6,16 @@ import http from 'node:http';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent api', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const server=http.createServer((req,res)=>{res.setHeader('content-type','text/html; charset=utf-8');res.end(fs.readFileSync(path.join(root,'dist/index.html')));});
-await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 try {
- for(const url of [pathToFileURL(path.join(root,'dist/index.html')).href,`http://127.0.0.1:${server.address().port}/index.html`]){
+ for(const url of [pathToFileURL(path.join(root,'dist/index.html')).href,`http://127.0.0.1:${(server.address() as AddressInfo).port}/index.html`]){
   const context=await browser.newContext();await context.route(/^https?:\/\/(?!127\.0\.0\.1)/,route=>route.abort());
   await context.addInitScript(()=>{
    if(window!==window.top)return;
@@ -21,7 +25,7 @@ try {
     window.XB.agent.ready().then(()=>{window.__readyBeforeBoot=window.__agentReadyEvents===0;});
    });
   });
-  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const page=await context.newPage(),errors: string[]=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);
   const result=await page.evaluate(async()=>{
    const a=window.XB.agent, ready=await a.ready(),cap=await a.capabilities(),full=await a.capabilities({detail:'full'}),contract=await a.getContract(),schema=await a.getSchema(),state=await a.getState(),first=await a.getDeck({source:'studio'});
@@ -42,3 +46,5 @@ try {
  }
  console.log('Agent read-only facade: file and HTTP passed');
 } finally {await browser.close();await new Promise(resolve=>server.close(resolve));}
+
+});

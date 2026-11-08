@@ -4,11 +4,11 @@ import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
-const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),html=process.argv[2]||path.join(root,'dist/index.html');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),html=process.argv[2]||path.join(root,'dist/index.html');
 const fixture=JSON.parse(fs.readFileSync(path.join(root,'src/__tests__/fixtures/qbr-deck.json'),'utf8'));
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 try{
- const results=[];
+ const results: unknown[]=[];
  for(const count of [12,50,100,400]){
   const context=await browser.newContext({viewport:{width:1366,height:768}});await context.route(/^https?:/,r=>r.abort());const page=await context.newPage();await page.goto(pathToFileURL(html).href);
   const cdp=await context.newCDPSession(page);await cdp.send('Performance.enable');

@@ -4,6 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent repair', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
@@ -39,9 +42,11 @@ try{
  assert.equal(result.originalStatus,'unverified');assert.equal(result.tampered.error.code,'PRESERVATION_UNVERIFIED');
  assert.equal(result.report.data.status,'unverified');assert.ok(result.report.data.missingPaths.includes('/datasets/rows/0/x'));
  assert.equal(result.nestedProposal.data.preservation.tableAudit.status,'preserved');assert.equal(result.nestedAccepted.ok,true,JSON.stringify(result.nestedAccepted));
- const nestedRows=[];function collect(component){if(component.type==='table'&&Array.isArray(component.data))nestedRows.push(...component.data);for(const child of component.children||component.components||[])collect(child);}
+ const nestedRows: unknown[]=[];function collect(component){if(component.type==='table'&&Array.isArray(component.data))nestedRows.push(...component.data);for(const child of component.children||component.components||[])collect(child);}
  for(const slide of result.nestedAfter.data.document.slides.filter(s=>/^table(?:-\d+)?$/.test(s.id)))for(const component of slide.components||slide.content?.components||[])collect(component);
  assert.deepEqual(nestedRows,fixture.datasets.districts);
  assert.equal(result.stagnate.data.stagnated,true);assert.equal(result.stagnated.error.code,'REPAIR_STAGNATED');assert.equal(result.third.ok,true);assert.equal(result.limit.error.code,'REPAIR_LIMIT');
  await context.close();console.log('Agent scoped repair and preservation checks passed');
 }finally{await browser.close();}
+
+});

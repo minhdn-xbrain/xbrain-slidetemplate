@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent lifecycle', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 try{
@@ -18,9 +21,9 @@ try{
   for(let i=0;i<100;i++){state=(await a.getState()).data;if(state.activeRunId)break;await new Promise(resolve=>setTimeout(resolve,5));}
   const cancelled=await a.cancel({runId:state.activeRunId});const end=await task;
   const current=await a.getState();const completeCandidate=await a.getDeck({source:'candidate'});
-  document.querySelector('[data-testid="xb-agent-deck-input"]').value=marker;
-  document.querySelector('[data-testid="xb-agent-response-json"]').textContent=marker;
-  document.querySelector('[data-testid="xb-agent-review-evidence"]').setAttribute('value',marker);
+  document.querySelector<HTMLTextAreaElement>('[data-testid="xb-agent-deck-input"]')!.value=marker;
+  document.querySelector('[data-testid="xb-agent-response-json"]')!.textContent=marker;
+  document.querySelector('[data-testid="xb-agent-review-evidence"]')!.setAttribute('value',marker);
   const html=XB.exportHTML();
   return {first,second,draft,draftExport,partial,cancelled,end,current,completeCandidate,leaked:html.includes(marker)};
  });
@@ -30,3 +33,5 @@ try{
  assert.equal(result.current.data.candidateRevision,result.completeCandidate.revision);assert.equal(result.leaked,false);
  await context.close();console.log('Agent cancellation, coverage and privacy checks passed');
 }finally{await browser.close();}
+
+});

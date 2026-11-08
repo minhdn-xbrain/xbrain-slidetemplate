@@ -26,8 +26,9 @@ Mở `dist/index.html` trong trình duyệt. Để xuất một bản HTML có t
 ```sh
 npm run lint
 npm test
-python3 -m unittest discover -s src/__tests__ -p 'test_*.py'
 npm run schema
 ```
 
-Lệnh `npm run schema` tạo lại `contracts/xbrain-deck-v1.schema.json` từ các registry hiện tại. Compiler được dùng trực tiếp trong ứng dụng và Agent API. Các kiểm thử Python cần `jsonschema` và dùng Vite để nạp compiler TypeScript.
+Lệnh `npm run schema` tạo lại `contracts/xbrain-deck-v1.schema.json` từ các registry hiện tại. Compiler được dùng trực tiếp trong ứng dụng và Agent API.
+
+Để chạy kiểm thử trình duyệt, cài Chromium của Playwright bằng `npx playwright-core install chromium`, rồi chạy `npm run test:browser`. Có thể đặt `CHROME_PATH` để dùng Chromium hoặc Chrome đã cài; các test HTTPS cần `openssl`. Lệnh này build ứng dụng trước khi chạy. Benchmark 12–400 slide chạy riêng bằng `npm run benchmark:browser`.

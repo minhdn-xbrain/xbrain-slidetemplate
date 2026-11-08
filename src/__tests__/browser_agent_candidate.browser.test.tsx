@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent candidate', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
@@ -24,7 +27,7 @@ try {
   const scoped=await a.applyPatch({baseRevision:applied.revision,scope:{slideId:'s1',sourcePath:'/slides/0/content'},operations:[{op:'replace',path:'/slides/0/title',value:'outside'}]});
   const unsupported=await a.applyPatch({baseRevision:applied.revision,operations:[{op:'move',from:'/slides/0/title',path:'/slides/0/id'}]});
   const nonfinite=await a.setCandidate({baseRevision:applied.revision,document:{...doc,metadata:{value:NaN}}});
-  const cycle={version:'1.0',slides:[{type:'cover'}]};cycle.self=cycle;
+  const cycle: {version:string;slides:{type:string}[];self?:unknown}={version:'1.0',slides:[{type:'cover'}]};cycle.self=cycle;
   const cyclic=await a.setCandidate({baseRevision:applied.revision,document:cycle});
   const badBase=await a.applyPatch({baseRevision:cycle,operations:[]});const badRevision=await a.validate({revision:cycle});
   const brokenVersion=await a.applyPatch({baseRevision:applied.revision,operations:[{op:'remove',path:'/version'}]});
@@ -38,7 +41,7 @@ try {
   const beforeSync=await a.getState();const badSync=await a.syncFromStudio({baseRevision:beforeSync.data.candidateRevision,expectedStudioRevision:'stale'});
   const sync=await a.syncFromStudio({baseRevision:beforeSync.data.candidateRevision,expectedStudioRevision:beforeSync.data.studioRevision});
   const synced=await a.getDeck({source:'candidate'});
-  return {created,preview,afterPreview,applied,current,stale,atomic,badPointer,badVersion,tooMany,scoped,unsupported,nonfinite,cyclic,badBase,badRevision,brokenVersion,badIndex,final,initial,studio,state,reset,oldEmpty,duplicate,concurrent,badSync,sync,synced,injected:!!window.__injected,polluted:({}).polluted};
+  return {created,preview,afterPreview,applied,current,stale,atomic,badPointer,badVersion,tooMany,scoped,unsupported,nonfinite,cyclic,badBase,badRevision,brokenVersion,badIndex,final,initial,studio,state,reset,oldEmpty,duplicate,concurrent,badSync,sync,synced,injected:!!window.__injected,polluted:({} as {polluted?:unknown}).polluted};
  });
  assert.equal(out.created.ok,true,JSON.stringify(out.created));assert.equal(out.preview.ok,true,JSON.stringify(out.preview));assert.equal(out.afterPreview.revision,out.created.revision);
  assert.equal(out.afterPreview.data.document.slides[0].title,'First');assert.equal(out.current.data.document.slides[0].title,'Changed');assert.deepEqual(out.current.data.document.slides[0].content['a/b']['~key'],[9,2]);
@@ -49,3 +52,5 @@ try {
  assert.deepEqual(out.current.data.document,out.final.data.document);assert.equal(out.initial,out.studio);assert.equal(out.injected,false);assert.equal(out.polluted,undefined);assert.equal(out.state.data.diverged,true);assert.equal(out.reset.ok,true);
  await context.close();console.log('Agent candidate and patch transaction checks passed');
 } finally {await browser.close();}
+
+});

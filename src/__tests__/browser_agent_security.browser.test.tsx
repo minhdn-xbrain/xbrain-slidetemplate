@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import { test } from 'vitest';
+
+test('browser agent security', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
@@ -29,3 +32,5 @@ try{
  assert.equal(result.inspection.data.fresh,false);assert.equal(result.stale.error.code,'QA_STALE');
  await context.close();console.log('Agent content quality, asset status and stale-run checks passed');
 }finally{await browser.close();}
+
+});

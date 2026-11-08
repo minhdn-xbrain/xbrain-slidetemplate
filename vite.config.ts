@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig, type Plugin } from 'vite';
+import type { Plugin } from 'vite';
+import { configDefaults, defineConfig } from 'vitest/config';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 
 function inlineBinaryAssetsPlugin(): Plugin {
@@ -45,8 +46,7 @@ function inlineBinaryAssetsPlugin(): Plugin {
   };
 }
 
-export default defineConfig(() => {
-  return {
+export default defineConfig({
     base: './',
     plugins: [inlineBinaryAssetsPlugin(), react(), tailwindcss(), viteSingleFile()],
     resolve: {
@@ -66,6 +66,9 @@ export default defineConfig(() => {
         },
       },
     },
+    test: {
+      exclude: [...configDefaults.exclude, '**/*.browser.test.tsx'],
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
@@ -73,5 +76,4 @@ export default defineConfig(() => {
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
-  };
 });

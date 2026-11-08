@@ -1,19 +1,22 @@
 // Optional browser regressions. Supply playwright-core and Chromium externally; no app dependency.
-// XB_PLAYWRIGHT_MODULE=/path/to/playwright-core CHROME_PATH=/path/to/chrome node src/__tests__/browser_improvements.mjs [artifact-dir]
+// Run with npm run test:browser; XB_BROWSER_ARTIFACT_DIR overrides the screenshot directory.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
 import {pathToFileURL, fileURLToPath} from 'node:url';
+import { test } from 'vitest';
+
+test('browser improvements', async () => {
 const require=createRequire(import.meta.url),{chromium}=require(process.env.XB_PLAYWRIGHT_MODULE||'playwright-core');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const dir=path.resolve(process.argv[2]||'/tmp/xbrain-browser-improvements');fs.mkdirSync(dir,{recursive:true});
+const dir=path.resolve(process.env.XB_BROWSER_ARTIFACT_DIR||'/tmp/xbrain-browser-improvements');fs.mkdirSync(dir,{recursive:true});
 const fixture=JSON.parse(fs.readFileSync(path.join(root,'src/__tests__/fixtures/recursive-pipeline.json'),'utf8'));
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true,args:['--no-sandbox']});
 const context=await browser.newContext({viewport:{width:1440,height:900}});
 await context.grantPermissions(['clipboard-read','clipboard-write']);
 await context.route(/^https?:/,route=>route.abort());
-const page=await context.newPage(),pageErrors=[],results={};page.on('pageerror',e=>pageErrors.push(e.message));page.on('dialog',d=>d.dismiss());
+const page=await context.newPage(),pageErrors: string[]=[],results: Record<string, any>={};page.on('pageerror',e=>pageErrors.push(e.message));page.on('dialog',d=>d.dismiss());
 async function checkSchemaViewer(target,name){
  const before=await target.evaluate(()=>JSON.stringify(XB.getDeck())),counter=await target.locator('#slide-counter-badge').innerText();
  const modal=target.getByRole('dialog',{name:'Schema JSON',exact:true}),trigger=target.locator('#v1-schema-trigger'),opener=target.locator('#v1-menu-ai-trigger');
@@ -28,7 +31,7 @@ async function checkSchemaViewer(target,name){
  {
   const text=await output.textContent(),expected=await target.evaluate(()=>XBrainCompiler.schema());
   await modal.getByRole('button',{name:'Sao chép',exact:true}).click();
-  await target.waitForFunction(()=>document.getElementById('v1-schema-status').textContent.startsWith('Đã sao chép'));
+  await target.waitForFunction(()=>document.getElementById('v1-schema-status')!.textContent!.startsWith('Đã sao chép'));
   assert.equal(await target.evaluate(()=>navigator.clipboard.readText()),text);
   const [download]=await Promise.all([target.waitForEvent('download'),modal.getByRole('button',{name:'Tải JSON',exact:true}).click()]);
   assert.equal(download.suggestedFilename(),'xbrain-deck-v1.schema.json');
@@ -38,17 +41,17 @@ async function checkSchemaViewer(target,name){
  await target.evaluate(()=>{
   window.__schemaCopyTest={clipboard:Object.getOwnPropertyDescriptor(navigator,'clipboard'),execCommand:document.execCommand,copied:null};
   Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw Error('Permission denied');}}});
-  document.addEventListener('copy',event=>{window.__schemaCopyTest.copied=document.getSelection().toString();event.clipboardData.setData('text/plain',window.__schemaCopyTest.copied);event.preventDefault();},{once:true});
+  document.addEventListener('copy',event=>{window.__schemaCopyTest.copied=document.getSelection()!.toString();event.clipboardData!.setData('text/plain',window.__schemaCopyTest.copied);event.preventDefault();},{once:true});
  });
  await modal.getByRole('button',{name:'Sao chép',exact:true}).click();
  assert.equal(await target.evaluate(()=>window.__schemaCopyTest.copied),await output.textContent());
  assert.ok((await target.locator('#v1-schema-status').innerText()).startsWith('Đã sao chép'));
  await target.evaluate(()=>{document.execCommand=()=>false;});
  await modal.getByRole('button',{name:'Sao chép',exact:true}).click();
- await target.waitForFunction(()=>document.getElementById('v1-schema-status').textContent.includes('Ctrl+C'));
+ await target.waitForFunction(()=>document.getElementById('v1-schema-status')!.textContent!.includes('Ctrl+C'));
  await target.evaluate(()=>{
   const saved=window.__schemaCopyTest;document.execCommand=saved.execCommand;
-  if(saved.clipboard)Object.defineProperty(navigator,'clipboard',saved.clipboard);else delete navigator.clipboard;
+  if(saved.clipboard)Object.defineProperty(navigator,'clipboard',saved.clipboard);else Reflect.deleteProperty(navigator,'clipboard');
   delete window.__schemaCopyTest;
  });
  assert.equal(await modal.getByRole('tab').count(),0);
@@ -121,7 +124,7 @@ try{
  results.containerTypes=[];
  for(const type of ['grid','columns','row','stack','card','group']){
   await page.evaluate(type=>XB.setDeck({version:'1.0',slides:[{type:'composer',title:type,components:[{type,span:12,children:[{type:'chart',variant:'bar',data:[{label:'A',value:1}]},{type:'text',text:'Sibling'}]}]}]}),type);
-  const geometry=await page.evaluate(()=>{const root=document.querySelector('#active-slide-viewport .v1-scene>.v1-component'),inner=root.firstElementChild;return {root:root.getBoundingClientRect().width,inner:inner.getBoundingClientRect().width,qa:XBrainCompiler.qa(XB.getDeck(),{measure:true})};});
+  const geometry=await page.evaluate(()=>{const root=document.querySelector('#active-slide-viewport .v1-scene>.v1-component')!,inner=root.firstElementChild!;return {root:root.getBoundingClientRect().width,inner:inner.getBoundingClientRect().width,qa:XBrainCompiler.qa(XB.getDeck(),{measure:true})};});
   assert.ok(geometry.inner<=geometry.root+1);assert.ok(geometry.inner>=geometry.root-2);assert.equal(geometry.qa.summary.errors,0);assert.equal(geometry.qa.diagnostics.filter(d=>d.measurement==='browser'||d.code==='layout.measured-overflow').length,0);
   results.containerTypes.push(type);
  }
@@ -131,7 +134,7 @@ try{
   try{return XBrainCompiler.measure(host).filter(d=>d.code==='layout.text-collision');}finally{host.remove();}
  });assert.equal(results.collisionPositive.length,1);assert.ok(results.collisionPositive[0].overlap>.15);
  await page.evaluate(()=>XB.setDeck({version:'1.0',theme:{preset:'dark',tokens:{ink:'#EAF7FF'}},slides:[{type:'composer',title:'Dark theme',components:[{type:'chart',title:'Visible chart title',variant:'bar',data:[{label:'A',value:7}]}]}]}));
- results.theme=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.v1-slide')).backgroundColor,title:getComputedStyle(document.querySelector('.v1-slide h1')).color,logo:document.querySelector('.v1-slide-logo use').getAttribute('href'),chartHeadings:document.querySelectorAll('.v1-visual-heading').length}));
+ results.theme=await page.evaluate(()=>({background:getComputedStyle(document.querySelector('.v1-slide')!).backgroundColor,title:getComputedStyle(document.querySelector('.v1-slide h1')!).color,logo:document.querySelector('.v1-slide-logo use')!.getAttribute('href'),chartHeadings:document.querySelectorAll('.v1-visual-heading').length}));
  assert.equal(results.theme.background,'rgb(66, 84, 83)');assert.equal(results.theme.title,'rgb(234, 247, 255)');assert.equal(results.theme.logo,'#xbrain-logo-white');assert.equal(results.theme.chartHeadings,1);
  await page.locator('#active-slide-viewport').screenshot({path:path.join(dir,'theme.png')});
  await page.evaluate(d=>XB.setDeck(d),fixed.document);
@@ -145,7 +148,7 @@ try{
  for(const [width,height] of [[1366,768],[1440,900]]){await page.setViewportSize({width,height});await page.screenshot({path:path.join(dir,`studio-${width}.png`)});}
  await page.locator('#tab-btn-gallery').click();assert.equal(await page.locator('#gallery-view').isVisible(),true);await page.screenshot({path:path.join(dir,'gallery.png')});
  await page.locator('#tab-btn-workspace').click();
- const color=await page.evaluate(()=>{const ids=['scoped','unscoped'];return ids.map(id=>{const i=XB.getDeck().slides.findIndex(s=>s.id===id);XB.select(i);return getComputedStyle(document.querySelector('#active-slide-viewport .v1-text')).color;});});
+ const color=await page.evaluate(()=>{const ids=['scoped','unscoped'];return ids.map(id=>{const i=XB.getDeck().slides.findIndex(s=>s.id===id);XB.select(i);return getComputedStyle(document.querySelector('#active-slide-viewport .v1-text')!).color;});});
  assert.equal(color[0],'rgb(195, 0, 0)');assert.equal(color[0],color[1]);results.colors=color;
  const beforeExport=await page.evaluate(()=>JSON.stringify(XB.getDeck()));
  await page.locator('#v1-menu-ai-trigger').click();await page.locator('#v1-schema-trigger').click();
@@ -172,3 +175,5 @@ try{
  assert.deepEqual(pageErrors,[]);results.pageErrors=pageErrors;
  fs.writeFileSync(path.join(dir,'results.json'),JSON.stringify(results,null,2)+'\n');console.log(JSON.stringify({editor:results.editor,schemaViewer:results.schemaViewer,reopenedSchemaViewer:results.reopenedSchemaViewer,qa:results.qa.summary,static:results.static,print:results.print,pageErrors},null,2));
 }finally{await browser.close();}
+
+});
