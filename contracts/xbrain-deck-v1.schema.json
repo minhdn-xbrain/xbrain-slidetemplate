@@ -660,7 +660,137 @@
         "combo",
         "stacked-100",
         "diverging-bar"
-      ]
+      ],
+      "x-v1-constraints": {
+        "bar": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "bar-horizontal": {
+          "maxRows": 10,
+          "maxSeries": null
+        },
+        "grouped-bar": {
+          "maxRows": 10,
+          "maxSeries": 6
+        },
+        "stacked-bar": {
+          "maxRows": 10,
+          "maxSeries": 6
+        },
+        "line": {
+          "maxRows": 24,
+          "maxSeries": 5
+        },
+        "area": {
+          "maxRows": 24,
+          "maxSeries": 5
+        },
+        "step-line": {
+          "maxRows": 24,
+          "maxSeries": 5
+        },
+        "lollipop": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "dot-plot": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "waterfall": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "donut": {
+          "maxRows": null,
+          "maxSeries": null
+        },
+        "pie": {
+          "maxRows": null,
+          "maxSeries": null
+        },
+        "radar": {
+          "maxRows": 10,
+          "maxSeries": null
+        },
+        "scatter": {
+          "maxRows": 60,
+          "maxSeries": null
+        },
+        "bubble": {
+          "maxRows": 60,
+          "maxSeries": null
+        },
+        "heatmap": {
+          "maxRows": 12,
+          "maxSeries": 8
+        },
+        "histogram": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "pareto": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "gauge": {
+          "maxRows": 1,
+          "maxSeries": null
+        },
+        "bullet": {
+          "maxRows": 10,
+          "maxSeries": null
+        },
+        "progress-ring": {
+          "maxRows": 5,
+          "maxSeries": null
+        },
+        "sparkline": {
+          "maxRows": 24,
+          "maxSeries": null
+        },
+        "treemap": {
+          "maxRows": 20,
+          "maxSeries": null
+        },
+        "funnel-chart": {
+          "maxRows": 8,
+          "maxSeries": null
+        },
+        "slope": {
+          "maxRows": 10,
+          "maxSeries": null
+        },
+        "waffle": {
+          "maxRows": 8,
+          "maxSeries": null
+        },
+        "range-bar": {
+          "maxRows": 10,
+          "maxSeries": null
+        },
+        "dumbbell": {
+          "maxRows": 10,
+          "maxSeries": null
+        },
+        "marimekko": {
+          "maxRows": 8,
+          "maxSeries": 6
+        },
+        "combo": {
+          "maxRows": 12,
+          "maxSeries": null
+        },
+        "stacked-100": {
+          "maxRows": 10,
+          "maxSeries": 6
+        },
+        "diverging-bar": {
+          "maxRows": 10,
+          "maxSeries": null
+        }
+      }
     },
     "diagramVariant": {
       "type": "string",
@@ -1242,7 +1372,8 @@
       },
       "additionalProperties": false,
       "title": "1. Cover Slide (Bìa Trình Chiếu)",
-      "description": "Content for the cover template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the cover template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-agenda": {
       "type": "object",
@@ -1295,7 +1426,8 @@
       },
       "additionalProperties": false,
       "title": "2. Agenda Slide (Mục Lục & Lộ Trình)",
-      "description": "Content for the agenda template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the agenda template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-section-divider": {
       "type": "object",
@@ -1315,7 +1447,8 @@
       },
       "additionalProperties": false,
       "title": "3. Section Divider (Chuyển Chương)",
-      "description": "Content for the section-divider template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the section-divider template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-closing": {
       "type": "object",
@@ -1359,7 +1492,8 @@
       },
       "additionalProperties": false,
       "title": "4. Closing / Thank You (Kết Thúc)",
-      "description": "Content for the closing template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the closing template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-title-body": {
       "type": "object",
@@ -1400,7 +1534,8 @@
       },
       "additionalProperties": false,
       "title": "5. Title + Body Content (Tầm Nhìn & Sứ Mệnh)",
-      "description": "Content for the title-body template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the title-body template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-two-column": {
       "type": "object",
@@ -1450,7 +1585,8 @@
       },
       "additionalProperties": false,
       "title": "6. Two-Column Content (Context & Rationale)",
-      "description": "Content for the two-column template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the two-column template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-text-image": {
       "type": "object",
@@ -1488,7 +1624,8 @@
       },
       "additionalProperties": false,
       "title": "7. Text + Image (Who We Are & Lab Thực Chiến)",
-      "description": "Content for the text-image template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the text-image template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-three-card": {
       "type": "object",
@@ -1520,7 +1657,8 @@
       },
       "additionalProperties": false,
       "title": "8. Three-Card Layout (3 Giá Trị Cốt Lõi)",
-      "description": "Content for the three-card template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the three-card template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-four-quadrant": {
       "type": "object",
@@ -1561,7 +1699,8 @@
       },
       "additionalProperties": false,
       "title": "9. Four-Quadrant Layout (4 Mục Tiêu Chương Trình)",
-      "description": "Content for the four-quadrant template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the four-quadrant template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-quote": {
       "type": "object",
@@ -1590,7 +1729,8 @@
       },
       "additionalProperties": false,
       "title": "10. Quote / Key Takeaway (Tuyên Ngôn Thương Hiệu)",
-      "description": "Content for the quote template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the quote template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-kpi-dashboard": {
       "type": "object",
@@ -1658,7 +1798,8 @@
       },
       "additionalProperties": false,
       "title": "11. KPI Dashboard (Chỉ Số Tuyển Sinh & Đào Tạo)",
-      "description": "Content for the kpi-dashboard template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the kpi-dashboard template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-charts": {
       "type": "object",
@@ -1726,7 +1867,8 @@
       },
       "additionalProperties": false,
       "title": "12. Charts & Data Visualization (Biểu Đồ Năng Lực)",
-      "description": "Content for the charts template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the charts template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-data-table": {
       "type": "object",
@@ -1802,7 +1944,8 @@
       },
       "additionalProperties": false,
       "title": "13. Data Table (Khung Chương Trình Đào Tạo)",
-      "description": "Content for the data-table template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the data-table template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-timeline": {
       "type": "object",
@@ -1843,7 +1986,8 @@
       },
       "additionalProperties": false,
       "title": "14. Timeline / Roadmap (Lộ Trình Triển Khai Năm)",
-      "description": "Content for the timeline template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the timeline template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-comparison": {
       "type": "object",
@@ -1916,7 +2060,8 @@
       },
       "additionalProperties": false,
       "title": "15. Comparison / Two-Pane (Cam Kết & Đầu Ra)",
-      "description": "Content for the comparison template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the comparison template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-track-architecture": {
       "type": "object",
@@ -1978,7 +2123,8 @@
       },
       "additionalProperties": false,
       "title": "16. Track Deep-Dive & Learning Approach (Bonus)",
-      "description": "Content for the track-architecture template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the track-architecture template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-process-flow": {
       "type": "object",
@@ -2016,7 +2162,8 @@
       },
       "additionalProperties": false,
       "title": "17. Process Flow",
-      "description": "Content for the process-flow template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the process-flow template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-conversion-funnel": {
       "type": "object",
@@ -2057,7 +2204,8 @@
       },
       "additionalProperties": false,
       "title": "18. Conversion Funnel",
-      "description": "Content for the conversion-funnel template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the conversion-funnel template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-cycle-loop": {
       "type": "object",
@@ -2101,7 +2249,8 @@
       },
       "additionalProperties": false,
       "title": "19. Continuous Improvement Cycle",
-      "description": "Content for the cycle-loop template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the cycle-loop template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-strategy-pyramid": {
       "type": "object",
@@ -2145,7 +2294,8 @@
       },
       "additionalProperties": false,
       "title": "20. Strategy Pyramid",
-      "description": "Content for the strategy-pyramid template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the strategy-pyramid template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-decision-matrix": {
       "type": "object",
@@ -2195,7 +2345,8 @@
       },
       "additionalProperties": false,
       "title": "21. Decision Matrix",
-      "description": "Content for the decision-matrix template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the decision-matrix template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-org-chart": {
       "type": "object",
@@ -2245,7 +2396,8 @@
       },
       "additionalProperties": false,
       "title": "22. Organization / Governance",
-      "description": "Content for the org-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the org-chart template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-swimlane": {
       "type": "object",
@@ -2292,7 +2444,8 @@
       },
       "additionalProperties": false,
       "title": "23. Swimlane Plan",
-      "description": "Content for the swimlane template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the swimlane template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-hub-spoke": {
       "type": "object",
@@ -2336,7 +2489,8 @@
       },
       "additionalProperties": false,
       "title": "24. Hub & Spoke",
-      "description": "Content for the hub-spoke template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the hub-spoke template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-learner-journey": {
       "type": "object",
@@ -2380,7 +2534,8 @@
       },
       "additionalProperties": false,
       "title": "25. Learner Journey",
-      "description": "Content for the learner-journey template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the learner-journey template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-layered-architecture": {
       "type": "object",
@@ -2421,7 +2576,8 @@
       },
       "additionalProperties": false,
       "title": "26. Layered Architecture",
-      "description": "Content for the layered-architecture template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the layered-architecture template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-sankey-flow": {
       "type": "object",
@@ -2493,7 +2649,8 @@
       },
       "additionalProperties": false,
       "title": "27. Sankey / Allocation Flow",
-      "description": "Content for the sankey-flow template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the sankey-flow template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-heatmap": {
       "type": "object",
@@ -2540,7 +2697,8 @@
       },
       "additionalProperties": false,
       "title": "28. Capability Heatmap",
-      "description": "Content for the heatmap template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the heatmap template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {}
     },
     "content-composer": {
       "type": "object",
@@ -2570,7 +2728,8 @@
           }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "x-v1-limits": {}
     },
     "content-venn-diagram": {
       "type": "object",
@@ -2614,7 +2773,10 @@
       },
       "additionalProperties": false,
       "title": "29. Venn Diagram",
-      "description": "Content for the venn-diagram template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the venn-diagram template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "sets": 3
+      }
     },
     "content-swot-analysis": {
       "type": "object",
@@ -2658,7 +2820,11 @@
       },
       "additionalProperties": false,
       "title": "30. SWOT Analysis",
-      "description": "Content for the swot-analysis template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the swot-analysis template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "quadrants": 4,
+        "quadrants.items": 4
+      }
     },
     "content-priority-matrix": {
       "type": "object",
@@ -2711,7 +2877,11 @@
       },
       "additionalProperties": false,
       "title": "31. Priority Matrix",
-      "description": "Content for the priority-matrix template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the priority-matrix template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "quadrantLabels": 4,
+        "items": 8
+      }
     },
     "content-mind-map": {
       "type": "object",
@@ -2758,7 +2928,11 @@
       },
       "additionalProperties": false,
       "title": "32. Mind Map",
-      "description": "Content for the mind-map template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the mind-map template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "branches": 6,
+        "branches.leaves": 3
+      }
     },
     "content-fishbone": {
       "type": "object",
@@ -2805,7 +2979,11 @@
       },
       "additionalProperties": false,
       "title": "33. Fishbone / Root Cause",
-      "description": "Content for the fishbone template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the fishbone template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "categories": 6,
+        "categories.causes": 3
+      }
     },
     "content-staircase": {
       "type": "object",
@@ -2846,7 +3024,10 @@
       },
       "additionalProperties": false,
       "title": "34. Maturity Staircase",
-      "description": "Content for the staircase template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the staircase template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "levels": 5
+      }
     },
     "content-concentric-circles": {
       "type": "object",
@@ -2884,7 +3065,10 @@
       },
       "additionalProperties": false,
       "title": "35. Concentric Circles",
-      "description": "Content for the concentric-circles template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the concentric-circles template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "layers": 5
+      }
     },
     "content-value-chain": {
       "type": "object",
@@ -2928,7 +3112,11 @@
       },
       "additionalProperties": false,
       "title": "36. Value Chain (Chevron)",
-      "description": "Content for the value-chain template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the value-chain template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "stages": 6,
+        "stages.items": 3
+      }
     },
     "content-decision-tree": {
       "type": "object",
@@ -2996,7 +3184,11 @@
       },
       "additionalProperties": false,
       "title": "37. Decision Tree",
-      "description": "Content for the decision-tree template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the decision-tree template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "branches": 3,
+        "branches.children": 2
+      }
     },
     "content-system-architecture": {
       "type": "object",
@@ -3046,7 +3238,11 @@
       },
       "additionalProperties": false,
       "title": "38. System Architecture",
-      "description": "Content for the system-architecture template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the system-architecture template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "zones": 5,
+        "zones.items": 4
+      }
     },
     "content-kanban-board": {
       "type": "object",
@@ -3099,7 +3295,11 @@
       },
       "additionalProperties": false,
       "title": "39. Kanban Board",
-      "description": "Content for the kanban-board template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the kanban-board template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "columns": 5,
+        "columns.cards": 4
+      }
     },
     "content-gantt-roadmap": {
       "type": "object",
@@ -3170,7 +3370,12 @@
       },
       "additionalProperties": false,
       "title": "40. Gantt Roadmap",
-      "description": "Content for the gantt-roadmap template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the gantt-roadmap template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "periods": 12,
+        "tasks": 8,
+        "milestones": 4
+      }
     },
     "content-line-chart": {
       "type": "object",
@@ -3235,7 +3440,12 @@
       },
       "additionalProperties": false,
       "title": "41. Line Trend Chart",
-      "description": "Content for the line-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the line-chart template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "labels": 12,
+        "series": 3,
+        "series.values": 12
+      }
     },
     "content-waterfall-chart": {
       "type": "object",
@@ -3296,7 +3506,10 @@
       },
       "additionalProperties": false,
       "title": "42. Waterfall Chart",
-      "description": "Content for the waterfall-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the waterfall-chart template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "items": 8
+      }
     },
     "content-bar-ranking": {
       "type": "object",
@@ -3347,7 +3560,10 @@
       },
       "additionalProperties": false,
       "title": "43. Bar Ranking",
-      "description": "Content for the bar-ranking template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the bar-ranking template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "items": 8
+      }
     },
     "content-radar-chart": {
       "type": "object",
@@ -3404,7 +3620,12 @@
       },
       "additionalProperties": false,
       "title": "44. Radar Chart",
-      "description": "Content for the radar-chart template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the radar-chart template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "axes": 8,
+        "series": 2,
+        "series.values": 8
+      }
     },
     "content-progress-rings": {
       "type": "object",
@@ -3447,7 +3668,10 @@
       },
       "additionalProperties": false,
       "title": "45. Progress Rings",
-      "description": "Content for the progress-rings template. Omitted fields use renderer defaults; unknown field names are rejected."
+      "description": "Content for the progress-rings template. Omitted fields use renderer defaults; unknown field names are rejected.",
+      "x-v1-limits": {
+        "rings": 5
+      }
     },
     "content-custom-html": {
       "type": "object",
@@ -3464,7 +3688,8 @@
       },
       "additionalProperties": false,
       "title": "46. Custom HTML",
-      "description": "Content for the custom-html template. Omitted fields use renderer defaults; unknown field names are rejected. content.html is trusted author markup inserted without sanitizing."
+      "description": "Content for the custom-html template. Omitted fields use renderer defaults; unknown field names are rejected. Compiler untrusted mode sanitizes markup; trusted mode inserts author markup.",
+      "x-v1-limits": {}
     },
     "content-custom-diagram": {
       "type": "object",
@@ -3490,7 +3715,8 @@
       },
       "additionalProperties": false,
       "title": "47. Custom SVG Diagram",
-      "description": "Content for the custom-diagram template. Omitted fields use renderer defaults; unknown field names are rejected. content.svg is trusted author markup inserted without sanitizing."
+      "description": "Content for the custom-diagram template. Omitted fields use renderer defaults; unknown field names are rejected. Compiler untrusted mode sanitizes markup; trusted mode inserts author markup.",
+      "x-v1-limits": {}
     },
     "slide": {
       "type": "object",

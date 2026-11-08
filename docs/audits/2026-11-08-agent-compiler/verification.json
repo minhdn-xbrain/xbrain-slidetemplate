@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-08",
+  "runtime": "index.html",
+  "release": "1.0.0",
+  "schemaVersion": "1.0",
+  "unitTests": {
+    "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "run": 79,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "browserEnabled": true
+  },
+  "browserSuites": [
+    "tests/browser_improvements.mjs",
+    "tests/browser_header.mjs",
+    "tests/browser_agent_engine.mjs"
+  ],
+  "malformedInputProbe": {
+    "calls": 324,
+    "uncaughtExceptions": 0
+  },
+  "schemaGenerated": true,
+  "diffWhitespaceCheck": true
+}

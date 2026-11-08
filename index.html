@@ -2957,7 +2957,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 .v1-component.v1-heading{padding:15px 0}.v1-heading{font:800 38px/1.16 Manrope,Arial;color:#425453}
 .v1-component.v1-paragraph,.v1-component.v1-text{padding:12px 5px}.v1-text{font:600 25px/1.5 Nunito,Arial}
 .v1-component.v1-markdown,.v1-component.v1-code,.v1-component.v1-list{background:#F8FBF9;padding:28px 33px;border:1px solid #E1EBE6}.v1-markdown h2{font:800 30px Manrope,Arial;margin:0 0 18px}.v1-markdown h3{font:750 25px Manrope,Arial;margin:0 0 16px}.v1-markdown p,.v1-markdown li{font:600 22px/1.5 Nunito,Arial;margin:0 0 10px}.v1-markdown ul,.v1-list{padding-left:30px;margin:4px 0}.v1-list li{font-size:25px;line-height:1.55;margin-bottom:12px;list-style:disc}
-.v1-component.v1-table{border:1px solid #E1EBE6}.v1-table{width:100%;border-collapse:collapse;font:600 21px/1.2 Nunito,Arial}.v1-table th{background:#425453;color:#fff;font:800 19px/1.2 Manrope,Arial;text-align:left;padding:19px 23px}.v1-table td{padding:20px 23px;border-bottom:1px solid #E6EEEA}.v1-table tr:nth-child(even) td{background:#F6FAF8}
+.v1-component.v1-table{border:1px solid #E1EBE6}.v1-table{width:100%;table-layout:fixed;border-collapse:collapse;font:600 21px/1.2 Nunito,Arial}.v1-table th{background:#425453;color:#fff;font:800 19px/1.2 Manrope,Arial;text-align:left;padding:19px 23px;overflow-wrap:anywhere}.v1-table td{padding:20px 23px;border-bottom:1px solid #E6EEEA;overflow-wrap:anywhere}.v1-table tr:nth-child(even) td{background:#F6FAF8}
 .v1-component.v1-quote{background:#F4FAF6;padding:21px 40px}.v1-quote{font:760 34px/1.38 Manrope,Arial;border-left:9px solid #F97C00;padding-left:36px;margin:0}.v1-quote small{font:700 20px Nunito,Arial;display:block;color:#F97C00;margin-top:16px}
 .v1-component.v1-progress{padding:24px 22px;background:#FAFCFB;border:1px solid #E1EBE6}.v1-progress-head{display:flex;justify-content:space-between;font:700 21px Manrope,Arial;margin-bottom:19px}.v1-track{background:#E7EEE9;border-radius:99px;height:20px;overflow:hidden}.v1-track>div{height:100%;border-radius:99px}
 .v1-nested-card{background:#F7FAF8;padding:26px;border:1px solid #E3EBE6;border-radius:16px;display:flex;flex-direction:column;gap:15px;height:100%}.v1-nested-grid{display:grid;gap:16px;height:100%}.v1-row{display:flex;gap:16px;height:100%}.v1-stack{display:flex;flex-direction:column;gap:16px;height:100%}.v1-nested-card>.v1-component,.v1-nested-grid>.v1-component{min-height:0;min-width:0}
@@ -4153,6 +4153,10 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
 
     /* Crisp, editable, print-safe native SVG charts (no Chart.js dependency). */
     function renderBarChart(c) {
+      if(XB_RENDER_OPTS.strict){const raw=XB_RENDER_CTX?.slide?.content||c;
+        if(!Array.isArray(raw.barData))XBDiag.report('data.missing','error','charts.barData is required in strict mode');
+        return deckChart({type:'chart',variant:'grouped-bar',data:(raw.barData||[]).map(r=>({label:r.label,Pre:r.pre,Post:r.post}))},{width:910,height:410});}
+
       const data = Array.isArray(c.barData) ? c.barData.slice(0,7) : [];
       const width = 910, height = 410, left = 60, top = 24, bottom = 75, plotW = 820, plotH = height - top - bottom;
       const safeNumber = (n) => Math.max(0, Math.min(100, Number(n) || 0));
@@ -4173,6 +4177,10 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
       return `<svg data-chart="bar" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Biểu đồ cột minh họa: điểm trước và sau đào tạo">${grid}${bars}</svg>`;
     }
     function renderDoughnutChart(c) {
+      if(XB_RENDER_OPTS.strict){const raw=XB_RENDER_CTX?.slide?.content||c;
+        if(!Array.isArray(raw.doughnutData))XBDiag.report('data.missing','error','charts.doughnutData is required in strict mode; no sample is inserted');
+        return deckChart({type:'chart',variant:'donut',data:raw.doughnutData||[]},{width:760,height:300});}
+
       const fallback=[{label:'Labs',value:45,color:'#F97C00'},{label:'Capstone',value:25,color:'#25AC9D'},{label:'Mentorship',value:15,color:'#007BC1'},{label:'Theory',value:15,color:'#F6AF2F'}];
       const data = (Array.isArray(c.doughnutData) ? c.doughnutData : fallback).slice(0,6);
       const valid = data.map((d,i)=>({...d, v:Math.max(0,Number(d.value)||0),col:/^#[0-9a-fA-F]{6}$/.test(d.color||'')?d.color:['#F97C00','#25AC9D','#007BC1','#F6AF2F'][i%4]}));
@@ -4213,7 +4221,12 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
     function dgHub(c){let a=(c.nodes||[]).slice(0,6),n=a.length||1,cx=864,cy=298,o=`<circle cx="${cx}" cy="${cy}" r="172" fill="#FFF5ED" stroke="#FBCAAB" stroke-width="4"/>`+dgT(cx,cy-17,c.center||'XBrain',42,'#425453','middle',18,1)+dgT(cx,cy+40,c.centerSub||'LEARNING ENGINE',22,'#F97C00','middle',23,1);a.forEach((t,i)=>{let ang=-Math.PI/2+i*2*Math.PI/n,x=cx+575*Math.cos(ang),y=cy+192*Math.sin(ang),k=DG_COLORS[i%5];o+=`<path d="M${cx+Math.cos(ang)*182} ${cy+Math.sin(ang)*182}L${x-Math.cos(ang)*147} ${y-Math.sin(ang)*75}" stroke="${k}" stroke-width="4" fill="none"/>`+dgR(x-159,y-72,318,147,'white','#DBE6E0',19)+`<circle cx="${x-122}" cy="${y-33}" r="11" fill="${k}"/>`+dgT(x,y,t.title,24,'#425453','middle',25,2)+dgT(x,y+46,t.desc,18,'#6B7B77','middle',29,2,500);});return o;}
     function dgJourney(c){let a=(c.stages||[]).slice(0,5),w=316,gap=26,o='<path d="M85 206H1650" stroke="#CBD9D2" stroke-width="7"/>';a.forEach((t,i)=>{let x=30+i*(w+gap),cx=x+w/2,k=DG_COLORS[i%5];o+=`<circle cx="${cx}" cy="206" r="29" fill="${k}" stroke="white" stroke-width="5"/>`+dgT(cx,215,i+1,23,'white','middle')+dgT(cx,103,t.channel,20,k,'middle',26,1)+dgR(x,259,w,256,'white','#DEE8E2',18)+dgT(x+20,305,t.title,27,'#425453','start',21,2)+dgT(x+20,377,t.action,20,'#647873','start',26,3,500)+dgR(x+18,449,w-36,48,i?'#E8F6F1':'#FFF1E5','none',10)+dgT(cx,478,t.metric,17,i?'#168D7D':'#E77800','middle',28,1,700);});return o;}
     function dgLayers(c){let a=(c.tiers||[]).slice(0,5),o='';a.forEach((t,i)=>{let y=30+i*112,k=DG_COLORS[i%5];o+=dgR(110,y,1500,103,i%2?'#F8FAF9':'#FFF8F1','#DEE8E2',18)+`<rect x="110" y="${y}" width="15" height="103" rx="7" fill="${k}"/>`+dgT(177,y+44,t.title,27,'#425453','start',46,1)+dgT(179,y+78,t.desc,20,'#667875','start',89,1,500)+dgR(1370,y+28,201,46,k,'none',23)+dgT(1470,y+59,t.tag,19,'white','middle',16,1);});return o;}
-    function dgSankey(c){let left=(c.sources||[]).slice(0,4),right=(c.targets||[]).slice(0,4),links=(c.links||[]).slice(0,15),o='',Y=(i,n)=>56+i*(474/Math.max(1,n-1));links.forEach((l,i)=>{let a=Math.trunc(dgN(l.from,-1)),b=Math.trunc(dgN(l.to,-1));if(a<0||b<0||a>=left.length||b>=right.length)return;let y1=Y(a,left.length),y2=Y(b,right.length),width=Math.max(10,dgClamp(l.value,2,70)*1.4);o+=`<path d="M330 ${y1} C650 ${y1},1050 ${y2},1370 ${y2}" stroke="${DG_COLORS[a%5]}" stroke-width="${width}" stroke-opacity=".27" stroke-linecap="round" fill="none"/>`;});left.forEach((t,i)=>{let y=Y(i,left.length),k=DG_COLORS[i%5];o+=dgR(24,y-47,306,95,k,'none',16)+dgT(177,y+7,t.label,23,'white','middle',24,2);});right.forEach((t,i)=>{let y=Y(i,right.length);o+=dgR(1370,y-47,326,95,'white','#D6E3DC',16)+dgT(1533,y+7,t.label,22,'#425453','middle',26,2);});return o;}
+    function dgSankey(c){if(XB_RENDER_OPTS.strict){
+      const raw=XB_RENDER_CTX?.slide?.content||c,left=raw.sources||[],right=raw.targets||[];
+      const nodes=[...left.map((n,i)=>({id:'v1-source-'+i,label:n.label})),...right.map((n,i)=>({id:'v1-target-'+i,label:n.label}))];
+      const edges=(raw.links||[]).map(e=>({from:Number.isInteger(e.from)&&e.from>=0&&e.from<left.length?'v1-source-'+e.from:'v1-missing-source',to:Number.isInteger(e.to)&&e.to>=0&&e.to<right.length?'v1-target-'+e.to:'v1-missing-target',value:e.value}));
+      return deckDiagram({type:'diagram',variant:'sankey',nodes,edges,maxNodes:30},{width:1728,height:600}).replace('<svg ','<svg width="1728" height="600" ');
+    }let left=(c.sources||[]).slice(0,4),right=(c.targets||[]).slice(0,4),links=(c.links||[]).slice(0,15),o='',Y=(i,n)=>56+i*(474/Math.max(1,n-1));links.forEach((l,i)=>{let a=Math.trunc(dgN(l.from,-1)),b=Math.trunc(dgN(l.to,-1));if(a<0||b<0||a>=left.length||b>=right.length)return;let y1=Y(a,left.length),y2=Y(b,right.length),width=Math.max(10,dgClamp(l.value,2,70)*1.4);o+=`<path d="M330 ${y1} C650 ${y1},1050 ${y2},1370 ${y2}" stroke="${DG_COLORS[a%5]}" stroke-width="${width}" stroke-opacity=".27" stroke-linecap="round" fill="none"/>`;});left.forEach((t,i)=>{let y=Y(i,left.length),k=DG_COLORS[i%5];o+=dgR(24,y-47,306,95,k,'none',16)+dgT(177,y+7,t.label,23,'white','middle',24,2);});right.forEach((t,i)=>{let y=Y(i,right.length);o+=dgR(1370,y-47,326,95,'white','#D6E3DC',16)+dgT(1533,y+7,t.label,22,'#425453','middle',26,2);});return o;}
     function dgHeat(c){let cols=(c.columns||[]).slice(0,7),rows=(c.rows||[]).slice(0,6),x0=318,y0=102,cw=182,ch=72,colors=['#F1F4F2','#DFEEE8','#B4E6D5','#7FD7BB','#25AC9D','#166C62'],o='';cols.forEach((t,j)=>{o+=dgT(x0+j*cw+cw/2,y0-26,t,20,'#566B65','middle',14,1);});rows.forEach((t,i)=>{let y=y0+i*84;o+=dgT(56,y+46,t.label,23,'#425453','start',20,1);(t.values||[]).slice(0,cols.length).forEach((v,j)=>{let n=Math.round(dgClamp(v,0,5)),x=x0+j*cw;o+=dgR(x+4,y,cw-11,ch,colors[n],'none',12)+dgT(x+cw/2,y+46,n,24,n>3?'white':'#425453','middle');});});o+=dgT(1180,577,'0 = Not ready      5 = Advanced',20,'#70827D','start',43,1,500);return o;}
     /* Diagram library mở rộng (17 diagram/biểu đồ SVG): dùng chung khung dgPage và bảng màu thương hiệu. */
     const XB_THEME = Object.freeze({"colors": {"primary": "#F97C00", "primaryMid": "#FF8B2C", "primaryBright": "#FF991D", "peach": "#FBCAAB", "peachSoft": "#FFF5ED", "peachSurface": "#FDECE1", "darkTeal": "#425453", "heading": "#2B3736", "gray": "#B6B7B7", "grayLight": "#D3D1CF", "white": "#FFFFFF", "line": "#DEE8E2", "muted": "#5E6E6D", "teal": "#25AC9D", "mint": "#7FD7BB", "mintSoft": "#E5F4EF", "purple": "#85439A", "indigo": "#24338A", "blue": "#007BC1", "cyan": "#00B3D8", "redOrange": "#FE4A0B", "amber": "#F6AF2F", "yellow": "#FFD54C"}, "chartSeries": ["#F97C00", "#25AC9D", "#425453", "#007BC1", "#85439A", "#F6AF2F"], "diagramSeries": ["#F97C00", "#25AC9D", "#007BC1", "#85439A", "#F6AF2F", "#425453"]});
@@ -4604,7 +4617,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
     function renderDiagramSlide(slide,index){
       const content=escapedContent(slide.content||{});
       // custom-diagram: content.svg is trusted author SVG placed as-is in the 1728×600 drawing area.
-      if(slide.type==='custom-diagram') return dgPage(content,index,String(slide.content?.svg??''));
+      if(slide.type==='custom-diagram') return dgPage(content,index,xbTrustedHtml(slide.content?.svg??'','custom-diagram content.svg'));
       return dgPage(content,index,DIAGRAM_RENDERERS[slide.type](content));
     }
 
@@ -4619,6 +4632,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
  the interactive editor keeps the legacy defaults (sample data allowed, trusted code). */
 const XB_RENDER_DEFAULTS=Object.freeze({strict:false,trust:'trusted'});
 let XB_RENDER_OPTS={...XB_RENDER_DEFAULTS};
+const xbNeedsCode=(slide,doc)=>slide&&(slide.render!==undefined||slide.template!==undefined||slide.frame!==undefined||slide.css!==undefined||(xbIsObj(doc?.layouts)&&Object.prototype.hasOwnProperty.call(doc.layouts,slide.type)));
 // Collects structured diagnostics while rendering; a no-op outside XBDiag.collect().
 const XBDiag=(()=>{
  let sink=null;const path=[];
@@ -4774,10 +4788,11 @@ function deckYAxis(sc,x0,x1,Y,o={}){
  let g='';for(const t of sc.ticks){const y=Y(t);g+=deckLine(x0,r1(y),x1,r1(y),t===0?DECK_AXIS:DECK_GRID,t===0?2:1);g+=deckText(x0-10,r1(y+5),deckFmt(t,o.fmt),14,DECK_MUTED,'end',600);}
  return g;
 }
-function deckRowsFor(c,variant,{max=12}={}){
+function deckRowsFor(c,variant){
+ const max=CHART_VARIANTS[variant]?.constraints.maxRows??Infinity;
  let rows=deckRows(deckData(c));
  if(!rows.length&&(c.dataRef||c.data||c.dataset))XBDiag.report('data.empty','warning',`${variant}: the data source has no rows`);
- if(rows.length>max){XBDiag.report('data.truncated','warning',`${variant}: showing the first ${max} of ${rows.length} rows; aggregate (transform.groupBy/limit) or split the chart`,{rows:rows.length,max});rows=rows.slice(0,max);}
+ if(rows.length>max){XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: showing the first ${max} of ${rows.length} rows; aggregate (transform.groupBy/limit) or split the chart`,{rows:rows.length,max});rows=rows.slice(0,max);}
  return rows;
 }
 function deckNumeric(rows,variant,get=r=>r.value,field='value'){
@@ -4785,10 +4800,15 @@ function deckNumeric(rows,variant,get=r=>r.value,field='value'){
  if(bad.length)XBDiag.report(bad.some(r=>get(r)===undefined)?'data.field-missing':'data.non-numeric','error',`${variant}: ${bad.length} row(s) without a numeric "${field}" (${bad.slice(0,4).map(r=>r.label).join(', ')}) are not drawn`,{field,rows:bad.map(r=>r.label)});
  return rows.filter(r=>Number.isFinite(get(r)));
 }
+function deckSelectSeries(rows,variant){
+ const keys=deckSeriesKeys(rows),max=CHART_VARIANTS[variant]?.constraints.maxSeries;
+ if(max&&keys.length>max)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: showing ${max} of ${keys.length} series; project or split the chart`,{series:keys,omitted:keys.slice(max),max});
+ return max?keys.slice(0,max):keys;
+}
 function deckSeries(rows,variant,{min=2}={}){
- const keys=deckSeriesKeys(rows);
- if(keys.length<min){XBDiag.report('data.series-missing','warning',`${variant} needs ≥${min} numeric series fields per row (e.g. {label, A:1, B:2}); found ${keys.length ? keys.join(', ') : 'none'} — drawn as one series`,{found:keys});return null;}
- return keys.slice(0,6);
+ const keys=deckSelectSeries(rows,variant);
+ if(keys.length<min){XBDiag.report('data.series-missing',XB_RENDER_OPTS.strict?'error':'warning',`${variant} needs ≥${min} numeric series fields per row (e.g. {label, A:1, B:2}); found ${keys.length ? keys.join(', ') : 'none'} — drawn as one series`,{found:keys});return null;}
+ return keys;
 }
 const deckSeriesValue=(r,k)=>deckToNumber(r.raw?.[k]);
 function deckCatLabel(cx,y,label,band){return deckLabel(cx,y,label,{w:Math.max(30,band-8),size:15,minSize:11,lines:2,valign:'top',what:'Category label'});}
@@ -4814,7 +4834,7 @@ function deckColumns(c,variant){
 }
 // Horizontal bars, bullet (value vs target), range-bar (start→end) and dumbbell (before→after).
 function deckHBars(c,variant){
- let rows=deckRowsFor(c,variant,{max:10});
+ let rows=deckRowsFor(c,variant);
  const two=variant==='range-bar'?['start','end']:variant==='dumbbell'?['before','after']:null;
  if(two)rows=deckNumeric(deckNumeric(rows,variant,r=>deckField(r,two[0]),two[0]),variant,r=>deckField(r,two[1]),two[1]);
  else rows=deckNumeric(rows,variant);
@@ -4840,12 +4860,14 @@ function deckHBars(c,variant){
 }
 // Multi-series columns: grouped, stacked, 100% stacked and Mekko (width ∝ row total).
 function deckMultiColumns(c,variant){
- const rows=deckRowsFor(c,variant,{max:variant==='marimekko'?8:10});
+ let rows=deckRowsFor(c,variant);
  const keys=deckSeries(rows,variant);
- if(!keys)return deckColumns(c,'bar');
- const val=(r,k)=>{const v=deckSeriesValue(r,k);return Number.isFinite(v)?v:0;};
- const missing=rows.filter(r=>keys.some(k=>!Number.isFinite(deckSeriesValue(r,k))));
- if(missing.length)XBDiag.report('data.non-numeric','warning',`${variant}: ${missing.length} row(s) miss a numeric value for some series; drawn as 0`,{rows:missing.map(r=>r.label)});
+ if(!keys)return XB_RENDER_OPTS.strict?deckEmpty(variant,'At least two numeric series are required'):deckColumns(c,'bar');
+ const val=(r,k)=>deckSeriesValue(r,k);
+ const missing=rows.filter(r=>keys.some(k=>!Number.isFinite(val(r,k))));
+ if(missing.length){XBDiag.report('data.non-numeric','error',`${variant}: ${missing.length} incomplete row(s) are excluded; missing series are never zero`,{rows:missing.map(r=>r.label)});rows=rows.filter(r=>!missing.includes(r));}
+ if(['stacked-100','marimekko'].includes(variant)&&rows.some(r=>keys.some(k=>val(r,k)<0))){XBDiag.report('data.negative','error',`${variant}: rows with negative shares are excluded`);rows=rows.filter(r=>keys.every(k=>val(r,k)>=0));}
+ if(!rows.length)return deckEmpty(variant,'No complete rows to draw');
  const x0=90,x1=DECK_VB.w-30,y0=64,y1=380;let g=deckSvgOpen(variant,c.title)+deckLegend(keys.map((k,j)=>({label:k,color:DECK_COLORS[j%DECK_COLORS.length]})),x0,24,x1-x0);
  if(variant==='grouped-bar'||variant==='stacked-bar'){
   const tops=rows.map(r=>variant==='grouped-bar'?keys.map(k=>val(r,k)):[keys.reduce((s,k)=>s+Math.max(0,val(r,k)),0),keys.reduce((s,k)=>s+Math.min(0,val(r,k)),0)]).flat();
@@ -4867,8 +4889,8 @@ function deckMultiColumns(c,variant){
 }
 // Lines: one or more series on a categorical x axis; gaps where values are missing.
 function deckLines(c,variant){
- const rows=deckRowsFor(c,variant,{max:24});if(!rows.length)return deckEmpty(variant,'No rows to draw');
- const keys=variant==='sparkline'?null:deckSeriesKeys(rows).length>=2?deckSeriesKeys(rows).slice(0,5):null;
+ const rows=deckRowsFor(c,variant);if(!rows.length)return deckEmpty(variant,'No rows to draw');
+ const allKeys=variant==='sparkline'?[]:deckSelectSeries(rows,variant),keys=allKeys.length>=2?allKeys:null;
  const series=keys?keys.map((k,j)=>({name:k,color:DECK_COLORS[j%DECK_COLORS.length],get:r=>deckSeriesValue(r,k)})):[{name:'value',color:c.color||DECK_COLORS[0],get:r=>r.value}];
  const vals=rows.flatMap(r=>series.map(s=>s.get(r)));
  if(!vals.some(Number.isFinite))return deckEmpty(variant,'No numeric values to draw');
@@ -4949,7 +4971,7 @@ function deckPie(c,variant){
  return g+'</svg>';
 }
 function deckRings(c,variant){
- const rows=deckNumeric(deckRowsFor(c,variant,{max:variant==='gauge'?1:5}),variant);if(!rows.length)return deckEmpty(variant,'No numeric rows to draw');
+ const rows=deckNumeric(deckRowsFor(c,variant),variant);if(!rows.length)return deckEmpty(variant,'No numeric rows to draw');
  const maxOf=r=>deckField(r,'target')??deckToNumber(c.options?.max)??100;let g=deckSvgOpen(variant,c.title);
  const n=rows.length,slot=1000/n,R=variant==='gauge'?190:Math.min(150,slot/2-30),cy=variant==='gauge'?270:205;
  rows.forEach((r,i)=>{const max=Number.isFinite(maxOf(r))&&maxOf(r)>0?maxOf(r):100,p=r.value/max;
@@ -4963,7 +4985,7 @@ function deckRings(c,variant){
  return g+'</svg>';
 }
 function deckRadar(c,variant){
- const rows=deckRowsFor(c,variant,{max:10});if(rows.length<3)return deckEmpty(variant,'Radar needs at least 3 axes (rows)');
+ const rows=deckRowsFor(c,variant);if(rows.length<3)return deckEmpty(variant,'Radar needs at least 3 axes (rows)');
  const keys=deckSeriesKeys(rows).length>=2?deckSeriesKeys(rows):null;
  const series=keys?keys.map((k,j)=>({name:k,color:DECK_COLORS[j%DECK_COLORS.length],get:r=>deckSeriesValue(r,k)})):[{name:'value',color:DECK_COLORS[0],get:r=>r.value}];
  const vals=rows.flatMap(r=>series.map(s=>s.get(r)));if(vals.some(v=>Number.isFinite(v)&&v<0))XBDiag.report('data.negative','warning','radar: negative values are drawn at the centre');
@@ -4978,7 +5000,7 @@ function deckRadar(c,variant){
  return g+'</svg>';
 }
 function deckScatter(c,variant){
- let rows=deckRowsFor(c,variant,{max:60});const xs=rows.map(r=>deckField(r,'x'));
+ let rows=deckRowsFor(c,variant);const xs=rows.map(r=>deckField(r,'x'));
  const hasX=xs.some(v=>v!==undefined);
  if(!hasX){XBDiag.report('data.field-missing',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: rows need numeric "x" and "y" (or value) fields`,{field:'x'});return deckEmpty(variant,'Scatter needs numeric x and y per row');}
  const X_=r=>deckField(r,'x'),Yv=r=>deckField(r,'y')??r.value,S=r=>deckField(r,'size')??r.value;
@@ -4999,10 +5021,10 @@ function deckScatter(c,variant){
 }
 function deckHeatColor(t){const a=[255,245,237],b=[249,124,0],m=a.map((v,i)=>Math.round(v+(b[i]-v)*deckClamp(t,0,1)));return '#'+m.map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
 function deckHeatmap(c,variant){
- const rows=deckRowsFor(c,variant,{max:12});let cols,cell;
+ const rows=deckRowsFor(c,variant);let cols,cell;
  const coord=rows.every(r=>r.raw&&r.raw.row!=null&&(r.raw.col!=null||r.raw.column!=null));
  if(coord){const rk=[...new Set(rows.map(r=>String(r.raw.row)))],ck=[...new Set(rows.map(r=>String(r.raw.col??r.raw.column)))];cols=ck;cell=(ri,ci)=>{const r=rows.find(x=>String(x.raw.row)===rk[ri]&&String(x.raw.col??x.raw.column)===ck[ci]);return r?r.value:NaN;};return deckHeatGrid(c,variant,rk,cols,cell);}
- const keys=deckSeriesKeys(rows);cols=keys.length?keys.slice(0,8):['value'];
+ const keys=deckSelectSeries(rows,variant);cols=keys.length?keys:['value'];
  return deckHeatGrid(c,variant,rows.map(r=>r.label),cols,(ri,ci)=>keys.length?deckSeriesValue(rows[ri],cols[ci]):rows[ri].value);
 }
 function deckHeatGrid(c,variant,rowNames,cols,cell){
@@ -5021,7 +5043,7 @@ function deckHeatGrid(c,variant,rowNames,cols,cell){
 }
 // Squarified treemap: rectangle areas are proportional to values.
 function deckTreemap(c,variant){
- let rows=deckNumeric(deckRowsFor(c,variant,{max:20}),variant);
+ let rows=deckNumeric(deckRowsFor(c,variant),variant);
  if(rows.some(r=>r.value<=0)){XBDiag.report('data.negative','warning','treemap: zero or negative values have no area and are omitted');rows=rows.filter(r=>r.value>0);}
  if(!rows.length)return deckEmpty(variant,'Treemap needs positive values');
  const items=rows.map((r,i)=>({r,i,v:r.value})).sort((a,b)=>b.v-a.v||a.i-b.i),total=items.reduce((s,x)=>s+x.v,0),out=[];
@@ -5038,7 +5060,7 @@ function deckTreemap(c,variant){
  return g+'</svg>';
 }
 function deckFunnel(c,variant){
- const rows=deckNumeric(deckRowsFor(c,variant,{max:8}),variant);if(!rows.length)return deckEmpty(variant,'No numeric rows to draw');
+ const rows=deckNumeric(deckRowsFor(c,variant),variant);if(!rows.length)return deckEmpty(variant,'No numeric rows to draw');
  const max=Math.max(...rows.map(r=>r.value),1),n=rows.length,h=(440-(n-1)*6)/n,mid=DECK_VB.w/2,full=DECK_VB.w-140;let g=deckSvgOpen(variant,c.title);
  rows.forEach((r,i)=>{const w=Math.max(60,full*Math.max(0,r.value)/max),y=20+i*(h+6),next=rows[i+1]?Math.max(60,full*Math.max(0,rows[i+1].value)/max):w*.92;
   g+=`<polygon data-mark="stage" data-v="${r.value}" points="${r1(mid-w/2)},${r1(y)} ${r1(mid+w/2)},${r1(y)} ${r1(mid+next/2)},${r1(y+h)} ${r1(mid-next/2)},${r1(y+h)}" fill="${DECK_COLORS[i%DECK_COLORS.length]}"/>`;
@@ -5047,7 +5069,7 @@ function deckFunnel(c,variant){
  return g+'</svg>';
 }
 function deckWaffle(c,variant){
- let rows=deckNumeric(deckRowsFor(c,variant,{max:8}),variant).filter(r=>r.value>0);const total=rows.reduce((s,r)=>s+r.value,0);
+ let rows=deckNumeric(deckRowsFor(c,variant),variant).filter(r=>r.value>0);const total=rows.reduce((s,r)=>s+r.value,0);
  if(!total)return deckEmpty(variant,'Waffle needs positive values');
  const exact=rows.map(r=>r.value/total*100),cells=exact.map(Math.floor);let left=100-cells.reduce((a,b)=>a+b,0);
  exact.map((v,i)=>({i,f:v-Math.floor(v)})).sort((a,b)=>b.f-a.f||a.i-b.i).slice(0,left).forEach(x=>cells[x.i]++); // largest remainder → exactly 100 cells
@@ -5057,7 +5079,7 @@ function deckWaffle(c,variant){
  return g+'</svg>';
 }
 function deckSlope(c,variant){
- const rows=deckNumeric(deckNumeric(deckRowsFor(c,variant,{max:10}),variant,r=>deckField(r,'before'),'before'),variant,r=>deckField(r,'after'),'after');
+ const rows=deckNumeric(deckNumeric(deckRowsFor(c,variant),variant,r=>deckField(r,'before'),'before'),variant,r=>deckField(r,'after'),'after');
  if(!rows.length)return deckEmpty(variant,'Slope needs numeric "before" and "after" per row');
  const sc=deckNiceScale(rows.flatMap(r=>[deckField(r,'before'),deckField(r,'after')]),{zero:false}),Y=v=>sc.map(v,420,60),xa=330,xb=670,names=c.options?.labels||['Before','After'];
  let g=deckSvgOpen(variant,c.title)+deckLine(xa,50,xa,430,DECK_AXIS,2)+deckLine(xb,50,xb,430,DECK_AXIS,2)+deckText(xa,32,names[0],17,DECK_INK,'middle',800)+deckText(xb,32,names[1],17,DECK_INK,'middle',800);
@@ -5069,7 +5091,7 @@ function deckSlope(c,variant){
  return g+'</svg>';
 }
 function deckDiverging(c,variant){
- const rows=deckNumeric(deckRowsFor(c,variant,{max:10}),variant);if(!rows.length)return deckEmpty(variant,'No numeric rows to draw');
+ const rows=deckNumeric(deckRowsFor(c,variant),variant);if(!rows.length)return deckEmpty(variant,'No numeric rows to draw');
  const max=Math.max(...rows.map(r=>Math.abs(r.value)),1),labelW=Math.max(170,Math.min(250,DECK_VB.w*.25)),half=Math.round((DECK_VB.w-labelW-120)/2),cx=Math.round(labelW+60+half),top=36,slot=(440-top)/rows.length,h=Math.min(40,slot*.62);
  let g=deckSvgOpen(variant,c.title)+deckLine(cx,top-10,cx,top+slot*rows.length,DECK_INK,2);
  rows.forEach((r,i)=>{const yc=top+slot*(i+.5),w=Math.abs(r.value)/max*half,neg=r.value<0;
@@ -5080,38 +5102,38 @@ function deckDiverging(c,variant){
 }
 // Registry: label, data contract (fields the renderer reads) and renderer. DECK_DESCRIPTORS.chart derives from it.
 const CHART_VARIANTS={
- 'bar':{label:'Column chart',data:'rows: label + value (number); negatives drawn below zero',render:deckColumns},
- 'bar-horizontal':{label:'Horizontal bar',data:'rows: label + value',render:deckHBars},
- 'grouped-bar':{label:'Grouped columns',data:'rows: label + ≥2 numeric series fields',render:deckMultiColumns},
- 'stacked-bar':{label:'Stacked columns',data:'rows: label + ≥2 numeric series fields',render:deckMultiColumns},
- 'line':{label:'Line chart',data:'rows: label + value, or ≥2 numeric series fields',render:deckLines},
- 'area':{label:'Area chart',data:'rows: label + value, or ≥2 numeric series fields',render:deckLines},
- 'step-line':{label:'Step line',data:'rows: label + value, or ≥2 numeric series fields',render:deckLines},
- 'lollipop':{label:'Lollipop',data:'rows: label + value',render:deckColumns},
- 'dot-plot':{label:'Dot plot',data:'rows: label + value',render:deckColumns},
- 'waterfall':{label:'Waterfall',data:'rows: label + value (delta); total:true rows show the running total',render:deckWaterfall},
- 'donut':{label:'Donut',data:'rows: label + value ≥ 0; >7 rows aggregate into Other',render:deckPie},
- 'pie':{label:'Pie',data:'rows: label + value ≥ 0; >7 rows aggregate into Other',render:deckPie},
- 'radar':{label:'Radar',data:'rows = axes (≥3): label + value, or ≥2 numeric series fields',render:deckRadar},
- 'scatter':{label:'Scatter',data:'rows: label + x + y (numbers)',render:deckScatter},
- 'bubble':{label:'Bubble',data:'rows: label + x + y + size',render:deckScatter},
- 'heatmap':{label:'Heatmap',data:'rows: label + numeric series fields (matrix), or row/col/value cells',render:deckHeatmap},
- 'histogram':{label:'Histogram',data:'rows: pre-binned label + count, or observations with options.bins',render:deckColumns},
- 'pareto':{label:'Pareto',data:'rows: label + value ≥ 0 (sorted, cumulative %)',render:deckPareto},
- 'gauge':{label:'Gauge',data:'one row: value + target/max (options.max, default 100)',render:deckRings},
- 'bullet':{label:'Bullet',data:'rows: label + value + target (or options.target)',render:deckHBars},
- 'progress-ring':{label:'Progress ring',data:'rows (≤5): label + value + target/max (default 100)',render:deckRings},
- 'sparkline':{label:'Sparkline',data:'rows: label + value (one series)',render:deckLines},
- 'treemap':{label:'Treemap',data:'rows: label + value > 0 (area ∝ value)',render:deckTreemap},
- 'funnel-chart':{label:'Funnel chart',data:'rows: stage label + value (width ∝ value)',render:deckFunnel},
- 'slope':{label:'Slope chart',data:'rows: label + before + after',render:deckSlope},
- 'waffle':{label:'Waffle chart',data:'rows: label + value > 0 (exactly 100 cells)',render:deckWaffle},
- 'range-bar':{label:'Range bar',data:'rows: label + start + end (aliases low/high, min/max, from/to)',render:deckHBars},
- 'dumbbell':{label:'Dumbbell',data:'rows: label + before + after',render:deckHBars},
- 'marimekko':{label:'Mekko / composition',data:'rows: label + ≥2 numeric series (width ∝ row total)',render:deckMultiColumns},
- 'combo':{label:'Combo · bar + line',data:'rows: label + value (bars) + target (line)',render:deckCombo},
- 'stacked-100':{label:'100% stacked columns',data:'rows: label + ≥2 numeric series fields',render:deckMultiColumns},
- 'diverging-bar':{label:'Diverging bar',data:'rows: label + value (negative left, positive right)',render:deckDiverging}
+ 'bar':{constraints:{"maxRows":12,"maxSeries":null},label:'Column chart',data:'rows: label + value (number); negatives drawn below zero',render:deckColumns},
+ 'bar-horizontal':{constraints:{"maxRows":10,"maxSeries":null},label:'Horizontal bar',data:'rows: label + value',render:deckHBars},
+ 'grouped-bar':{constraints:{"maxRows":10,"maxSeries":6},label:'Grouped columns',data:'rows: label + ≥2 numeric series fields',render:deckMultiColumns},
+ 'stacked-bar':{constraints:{"maxRows":10,"maxSeries":6},label:'Stacked columns',data:'rows: label + ≥2 numeric series fields',render:deckMultiColumns},
+ 'line':{constraints:{"maxRows":24,"maxSeries":5},label:'Line chart',data:'rows: label + value, or ≥2 numeric series fields',render:deckLines},
+ 'area':{constraints:{"maxRows":24,"maxSeries":5},label:'Area chart',data:'rows: label + value, or ≥2 numeric series fields',render:deckLines},
+ 'step-line':{constraints:{"maxRows":24,"maxSeries":5},label:'Step line',data:'rows: label + value, or ≥2 numeric series fields',render:deckLines},
+ 'lollipop':{constraints:{"maxRows":12,"maxSeries":null},label:'Lollipop',data:'rows: label + value',render:deckColumns},
+ 'dot-plot':{constraints:{"maxRows":12,"maxSeries":null},label:'Dot plot',data:'rows: label + value',render:deckColumns},
+ 'waterfall':{constraints:{"maxRows":12,"maxSeries":null},label:'Waterfall',data:'rows: label + value (delta); total:true rows show the running total',render:deckWaterfall},
+ 'donut':{constraints:{"maxRows":null,"maxSeries":null},label:'Donut',data:'rows: label + value ≥ 0; >7 rows aggregate into Other',render:deckPie},
+ 'pie':{constraints:{"maxRows":null,"maxSeries":null},label:'Pie',data:'rows: label + value ≥ 0; >7 rows aggregate into Other',render:deckPie},
+ 'radar':{constraints:{"maxRows":10,"maxSeries":null},label:'Radar',data:'rows = axes (≥3): label + value, or ≥2 numeric series fields',render:deckRadar},
+ 'scatter':{constraints:{"maxRows":60,"maxSeries":null},label:'Scatter',data:'rows: label + x + y (numbers)',render:deckScatter},
+ 'bubble':{constraints:{"maxRows":60,"maxSeries":null},label:'Bubble',data:'rows: label + x + y + size',render:deckScatter},
+ 'heatmap':{constraints:{"maxRows":12,"maxSeries":8},label:'Heatmap',data:'rows: label + numeric series fields (matrix), or row/col/value cells',render:deckHeatmap},
+ 'histogram':{constraints:{"maxRows":12,"maxSeries":null},label:'Histogram',data:'rows: pre-binned label + count, or observations with options.bins',render:deckColumns},
+ 'pareto':{constraints:{"maxRows":12,"maxSeries":null},label:'Pareto',data:'rows: label + value ≥ 0 (sorted, cumulative %)',render:deckPareto},
+ 'gauge':{constraints:{"maxRows":1,"maxSeries":null},label:'Gauge',data:'one row: value + target/max (options.max, default 100)',render:deckRings},
+ 'bullet':{constraints:{"maxRows":10,"maxSeries":null},label:'Bullet',data:'rows: label + value + target (or options.target)',render:deckHBars},
+ 'progress-ring':{constraints:{"maxRows":5,"maxSeries":null},label:'Progress ring',data:'rows (≤5): label + value + target/max (default 100)',render:deckRings},
+ 'sparkline':{constraints:{"maxRows":24,"maxSeries":null},label:'Sparkline',data:'rows: label + value (one series)',render:deckLines},
+ 'treemap':{constraints:{"maxRows":20,"maxSeries":null},label:'Treemap',data:'rows: label + value > 0 (area ∝ value)',render:deckTreemap},
+ 'funnel-chart':{constraints:{"maxRows":8,"maxSeries":null},label:'Funnel chart',data:'rows: stage label + value (width ∝ value)',render:deckFunnel},
+ 'slope':{constraints:{"maxRows":10,"maxSeries":null},label:'Slope chart',data:'rows: label + before + after',render:deckSlope},
+ 'waffle':{constraints:{"maxRows":8,"maxSeries":null},label:'Waffle chart',data:'rows: label + value > 0 (exactly 100 cells)',render:deckWaffle},
+ 'range-bar':{constraints:{"maxRows":10,"maxSeries":null},label:'Range bar',data:'rows: label + start + end (aliases low/high, min/max, from/to)',render:deckHBars},
+ 'dumbbell':{constraints:{"maxRows":10,"maxSeries":null},label:'Dumbbell',data:'rows: label + before + after',render:deckHBars},
+ 'marimekko':{constraints:{"maxRows":8,"maxSeries":6},label:'Mekko / composition',data:'rows: label + ≥2 numeric series (width ∝ row total)',render:deckMultiColumns},
+ 'combo':{constraints:{"maxRows":12,"maxSeries":null},label:'Combo · bar + line',data:'rows: label + value (bars) + target (line)',render:deckCombo},
+ 'stacked-100':{constraints:{"maxRows":10,"maxSeries":6},label:'100% stacked columns',data:'rows: label + ≥2 numeric series fields',render:deckMultiColumns},
+ 'diverging-bar':{constraints:{"maxRows":10,"maxSeries":null},label:'Diverging bar',data:'rows: label + value (negative left, positive right)',render:deckDiverging}
 };
 function deckChart(c,box){
  const variant=c.variant||'bar',entry=CHART_VARIANTS[variant];
@@ -5129,7 +5151,7 @@ function deckGraph(c,variant,{max=12}={}){
  nodes.forEach((n,i)=>{if(!n.label)XBDiag.report('data.field-missing','warning',`${variant}: node ${i+1} has no label`,{at:[source==='nodes'?(c.nodes?'nodes':'steps'):'data',i],field:'label'});});
  const seen=new Set();for(const n of nodes){if(seen.has(n.id))XBDiag.report('graph.duplicate-id','error',`${variant}: duplicate node id "${n.id}"`,{id:n.id});seen.add(n.id);}
  const limit=deckClamp(deckNum(c.maxNodes,max),2,30);
- if(nodes.length>limit){XBDiag.report('data.truncated','warning',`${variant}: showing ${limit} of ${nodes.length} nodes; split the diagram or raise maxNodes (≤30) if the layout allows`,{nodes:nodes.length,max:limit});nodes=nodes.slice(0,limit);}
+ if(nodes.length>limit){XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: showing ${limit} of ${nodes.length} nodes; split the diagram or raise maxNodes (≤30) if the layout allows`,{nodes:nodes.length,max:limit});nodes=nodes.slice(0,limit);}
  const byKey=k=>nodes.find(n=>n.id===String(k))||nodes.find(n=>n.label===String(k));
  const edges=[];(Array.isArray(c.edges)?c.edges:[]).forEach((e,i)=>{const a=byKey(e?.from),b=byKey(e?.to);
   if(!a||!b){XBDiag.report('graph.dangling-edge','error',`${variant}: edge ${e?.from} → ${e?.to} references a missing node`,{at:['edges',i]});return;}
@@ -5249,7 +5271,12 @@ function deckFlow(c,variant){
  return g+links+'</svg>';
 }
 const DECK_DATE_RE=/^(\d{4})-(\d{2})(?:-(\d{2}))?$/;
-function deckTime(v){if(typeof v==='number')return Number.isFinite(v)?v:NaN;const m=DECK_DATE_RE.exec(String(v??'').trim());if(m)return Date.UTC(+m[1],+m[2]-1,+(m[3]||1))/864e5;return deckToNumber(v);}
+function deckTime(v){
+ if(typeof v==='number')return Number.isFinite(v)?v:NaN;
+ const m=DECK_DATE_RE.exec(String(v??'').trim());if(!m)return deckToNumber(v);
+ const year=+m[1],month=+m[2]-1,day=+(m[3]||1),date=new Date(0);date.setUTCFullYear(year,month,day);date.setUTCHours(0,0,0,0);
+ return date.getUTCFullYear()===year&&date.getUTCMonth()===month&&date.getUTCDate()===day?date.getTime()/864e5:NaN;
+}
 function deckTimeLabel(t,dateMode){if(!dateMode)return deckFmt(t);const d=new Date(t*864e5);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`;}
 function deckTimeScale(times,x0,x1,dateMode){
  const lo=Math.min(...times),hi=Math.max(...times),span=hi-lo||1,X=t=>x0+(t-lo)/span*(x1-x0),ticks=[];
@@ -5275,7 +5302,9 @@ function deckTimeline(c,variant){
 function deckGantt(c,variant){
  const G=deckGraph(c,variant,{max:variant==='gantt'?10:16});if(!G.nodes.length)return deckEmpty(variant,'Add tasks as nodes with start/end');
  const S=n=>deckTime(n.start??n.from??n.begin),E=n=>deckTime(n.end??n.to??n.finish??n.start);
- const timed=G.nodes.filter(n=>Number.isFinite(S(n))&&Number.isFinite(E(n)));
+ const reversed=G.nodes.filter(n=>Number.isFinite(S(n))&&Number.isFinite(E(n))&&E(n)<S(n));
+ if(reversed.length)XBDiag.report('data.inconsistent','error',`${variant}: end precedes start; no bar is drawn`,{rows:reversed.map(n=>n.label)});
+ const timed=G.nodes.filter(n=>Number.isFinite(S(n))&&Number.isFinite(E(n))&&E(n)>=S(n));
  const lanesOf=variant!=='gantt';
  if(variant==='gantt'&&timed.length<G.nodes.length)XBDiag.report('data.field-missing','error',`gantt: ${G.nodes.length-timed.length} task(s) without numeric/ISO start and end are listed without bars`,{field:'start/end',rows:G.nodes.filter(n=>!timed.includes(n)).map(n=>n.label)});
  const lanes=lanesOf?(Array.isArray(c.options?.lanes)?c.options.lanes.map(String):[...new Set(G.nodes.map(n=>String(n.lane??n.group??'')))]):G.nodes.map(n=>n.label);
@@ -5310,7 +5339,7 @@ function deckKanban(c,variant){
   g+=deckRect(r1(x),20,r1(cw),440,'#F3F8F5','#DCE8E0',12,2)+deckRect(r1(x),20,r1(cw),52,DECK_COLORS[i%DECK_COLORS.length],'none',11)+deckLabel(x+cw/2,46,`${name} · ${cards.length}`,{w:cw-16,size:17,color:'#FFFFFF',valign:'middle',what:'Column title'});
   cards.slice(0,5).forEach((m,j)=>g+=`<rect data-node="${deckSafe(m.id)}" x="${r1(x+10)}" y="${84+j*72}" width="${r1(cw-20)}" height="62" rx="9" fill="#FFFFFF" stroke="#DFE7E2" stroke-width="2"/>`+deckBoxText(x+10,84+j*72,cw-20,62,m.label,{size:15,lines:2}));
   if(cards.length>5){g+=deckText(r1(x+cw/2),448,`+${cards.length-5} more`,14,DECK_MUTED,'middle',750);XBDiag.report('data.truncated','info',`kanban: column "${name}" shows 5 of ${cards.length} cards`);}});
- if(cols.length>n)XBDiag.report('data.truncated','warning',`kanban: showing ${n} of ${cols.length} columns`);
+ if(cols.length>n)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`kanban: showing ${n} of ${cols.length} columns`);
  return g+'</svg>';
 }
 function deckTree(c,variant){
@@ -5322,7 +5351,7 @@ function deckTree(c,variant){
 function deckRadial(c,variant){
  const G=deckGraph(c,variant,{max:variant==='mindmap'||variant==='radial-tree'?24:10});if(!G.nodes.length)return deckEmpty(variant,'Add nodes to place around the centre');
  const ring=['cycle','lifecycle'].includes(variant);let center=c.center??null,nodes=G.nodes,children=new Map();
- if(variant==='concentric'||variant==='nested-circle'){const k=Math.min(5,G.nodes.length);let g=deckSvgOpen(variant,c.title);G.nodes.slice(0,k).forEach((nd,i)=>{const rr=225-i*(185/k);g+=`<circle data-node="${deckSafe(nd.id)}" cx="500" cy="240" r="${r1(rr)}" fill="${i%2?'#FFF1E4':'#E7F5EF'}" stroke="${DECK_COLORS[i%DECK_COLORS.length]}" stroke-width="3"/>`+deckLabel(500,240-rr+24,nd.label,{w:Math.max(80,rr*1.2),size:15,what:'Layer label'});});if(G.nodes.length>k)XBDiag.report('data.truncated','warning',`${variant}: showing ${k} of ${G.nodes.length} layers`);return g+'</svg>';}
+ if(variant==='concentric'||variant==='nested-circle'){const k=Math.min(5,G.nodes.length);let g=deckSvgOpen(variant,c.title);G.nodes.slice(0,k).forEach((nd,i)=>{const rr=225-i*(185/k);g+=`<circle data-node="${deckSafe(nd.id)}" cx="500" cy="240" r="${r1(rr)}" fill="${i%2?'#FFF1E4':'#E7F5EF'}" stroke="${DECK_COLORS[i%DECK_COLORS.length]}" stroke-width="3"/>`+deckLabel(500,240-rr+24,nd.label,{w:Math.max(80,rr*1.2),size:15,what:'Layer label'});});if(G.nodes.length>k)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: showing ${k} of ${G.nodes.length} layers`);return g+'</svg>';}
  if(variant==='stakeholder'&&nodes.every(n=>Number.isFinite(deckToNumber(n.x))&&Number.isFinite(deckToNumber(n.y))))return deckQuadrantPlot(c,variant,nodes,{xLabel:c.options?.xLabel||'Interest',yLabel:c.options?.yLabel||'Influence',names:c.options?.quadrants||['Keep satisfied','Manage closely','Monitor','Keep informed']});
  if(!ring){const roots=nodes.filter(n=>!G.edges.some(e=>e.b===n));
   if(center==null){const hub=G.edges.length&&roots.length===1?roots[0]:nodes[0];center=hub.label;nodes=nodes.filter(n=>n!==hub);if(!G.edges.length&&c.center==null)XBDiag.report('graph.implicit-hierarchy','info',`${variant}: no "center" given; the first node is used as the centre`);
@@ -5336,7 +5365,7 @@ function deckRadial(c,variant){
   const ch=children.get(nd)||[];const h=ch.length?96:76;
   g+=`<rect data-node="${deckSafe(nd.id)}" x="${r1(x-82)}" y="${r1(y-h/2)}" width="164" height="${h}" rx="14" fill="#FFFFFF" stroke="${col}" stroke-width="3"/>`+deckBoxText(x-82,y-h/2,164,ch.length?46:h,nd.label,{size:16,lines:2});
   if(ch.length)g+=deckLabel(x,y+4,ch.map(k=>k.label).join(' · '),{w:150,size:12,lines:2,valign:'top',color:DECK_MUTED,font:'body',what:'Child labels'});});
- if(nodes.length>n)XBDiag.report('data.truncated','warning',`${variant}: showing ${n} of ${nodes.length} nodes around the centre`);
+ if(nodes.length>n)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: showing ${n} of ${nodes.length} nodes around the centre`);
  return g+links+'</svg>';
 }
 function deckLayers(c,variant){
@@ -5383,13 +5412,13 @@ function deckMatrix(c,variant){
  const cols=['pestel'].includes(variant)?3:['swot','bcg','ansoff','quadrant','risk-matrix','priority','portfolio','balanced-scorecard'].includes(variant)?2:Math.min(4,Math.max(2,Math.ceil(Math.sqrt(nodes.length))));
  const cells=grouped?cats.map((name,k)=>({title:name,items:nodes.filter(n=>{const gname=String(n.group).toLowerCase();return gname===name.toLowerCase()||gname===name[0].toLowerCase()||gname===String(k);})})):(cats||nodes.map(n=>n.label)).map((name,k)=>({title:cats?name:'',body:cats?nodes[k]:nodes[k],items:[]}));
  if(grouped){const lost=nodes.filter(n=>!cells.some(cl=>cl.items.includes(n)));if(lost.length)XBDiag.report('data.unmapped','warning',`${variant}: ${lost.length} node(s) have a group that matches no category (${cats.join(', ')})`,{rows:lost.map(n=>n.label)});}
- else if(cats&&nodes.length>cats.length)XBDiag.report('data.truncated','warning',`${variant}: ${nodes.length-cats.length} node(s) beyond the ${cats.length} categories are not drawn; use node.group to list several items per category`);
+ else if(cats&&nodes.length>cats.length)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: ${nodes.length-cats.length} node(s) beyond the ${cats.length} categories are not drawn; use node.group to list several items per category`);
  const rows=Math.ceil(cells.length/cols),cw=(DECK_VB.w-80)/cols,ch=440/rows;let g=deckSvgOpen(variant,c.title);
  cells.forEach((cl,k)=>{const x=40+(k%cols)*cw,y=20+Math.floor(k/cols)*ch,col=DECK_COLORS[k%DECK_COLORS.length];
   g+=deckRect(r1(x),r1(y),r1(cw-12),r1(ch-12),k%2?'#E9F6F0':'#FFF2E8','#DBE6E0',12,2)+deckRect(r1(x),r1(y),r1(cw-12),8,col,'none',3);
   if(grouped){g+=deckLabel(x+20,y+40,cl.title,{w:cw-50,size:21,anchor:'start',what:'Category title'});
    const lim=Math.max(1,Math.floor((ch-70)/30));cl.items.slice(0,lim).forEach((it,j)=>g+=`<circle cx="${r1(x+26)}" cy="${r1(y+68+j*30)}" r="4" fill="${col}"/>`+deckLabel(x+38,y+73+j*30,it.label,{w:cw-70,size:16,anchor:'start',what:'Item label'}));
-   if(cl.items.length>lim){g+=deckText(r1(x+38),r1(y+73+lim*30),`+${cl.items.length-lim} more`,14,DECK_MUTED,'start',700);XBDiag.report('data.truncated','warning',`${variant}: "${cl.title}" shows ${lim} of ${cl.items.length} items`);}}
+   if(cl.items.length>lim){g+=deckText(r1(x+38),r1(y+73+lim*30),`+${cl.items.length-lim} more`,14,DECK_MUTED,'start',700);XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`${variant}: "${cl.title}" shows ${lim} of ${cl.items.length} items`);}}
   else{const body=cl.body,same=body&&cl.title&&body.label.toLowerCase()===cl.title.toLowerCase();
    if(cl.title)g+=deckLabel(x+20,y+40,cl.title,{w:cw-50,size:body&&!same?18:24,anchor:'start',color:body&&!same?DECK_MUTED:DECK_INK,what:'Category title'});
    if(body&&!same)g+=deckBoxText(x,y+(cl.title?24:0),cw-12,ch-12-(cl.title?24:0),body.label,{size:cols===2?24:19,lines:3});}});
@@ -5433,7 +5462,7 @@ function deckFishbone(c,variant){
  cats.forEach((cat,i)=>{const top=i%2===0,k=Math.floor(i/2),x=120+k*step,yEnd=top?60:420,col=DECK_COLORS[i%DECK_COLORS.length];
   g+=deckLine(r1(x),yEnd,r1(x+90),240,col,4)+deckLabel(x,top?yEnd-12:yEnd+26,cat.label,{w:step-10,size:17,what:'Category label'});
   const list=causes(cat);list.slice(0,3).forEach((t,j)=>{const yy=top?100+j*42:380-j*42,xx=x+90*((yy-yEnd)/(240-yEnd));g+=deckLine(r1(xx-70),yy,r1(xx),yy,'#C3D2CB',2)+deckLabel(xx-74,yy-4,t,{w:step-30,size:13,anchor:'end',color:DECK_MUTED,what:'Cause label'});});
-  if(list.length>3)XBDiag.report('data.truncated','warning',`fishbone: "${cat.label}" shows 3 of ${list.length} causes`);});
+  if(list.length>3)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`fishbone: "${cat.label}" shows 3 of ${list.length} causes`);});
  return g+'</svg>';
 }
 function deckSequence(c,variant){
@@ -5444,7 +5473,7 @@ function deckSequence(c,variant){
  msgs.forEach((e,i)=>{const y=118+i*dy,x1=X(e.a),x2=X(e.b);const col=DECK_COLORS[i%DECK_COLORS.length];
   g+=x1===x2?`<path d="M${r1(x1)} ${r1(y)}h40v${r1(dy*.6)}h-30" fill="none" stroke="${col}" stroke-width="3"/>`:deckArrow(x1,y,x2,y,col,3,{id:`${e.a.id}->${e.b.id}`,dash:e.kind==='return'||e.kind==='async'?'8 6':''});
   if(e.label)g+=deckLabel((x1+x2)/2+(x1===x2?60:0),y-7,`${i+1}. ${e.label}`,{w:Math.max(120,Math.abs(x2-x1)-16),size:13,what:'Message label'});});
- if(G.edges.length>10)XBDiag.report('data.truncated','warning',`sequence: showing 10 of ${G.edges.length} messages`);
+ if(G.edges.length>10)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`sequence: showing 10 of ${G.edges.length} messages`);
  return g+'</svg>';
 }
 // Sankey: node columns from longest path, link widths ∝ edge.value, node height ∝ max(in, out).
@@ -5490,7 +5519,7 @@ function deckBowtie(c,variant){
  if(!left.length&&!right.length){const h=Math.ceil(G.nodes.length/2);left=G.nodes.slice(0,h);right=G.nodes.slice(h);if(G.nodes.length)XBDiag.report('graph.implicit-hierarchy','info','bowtie: set node.group to "cause" or "consequence"; the list was split in half');}
  let g=deckSvgOpen(variant,c.title)+`<polygon points="60,60 470,240 60,420" fill="#FFF1E5" stroke="${DECK_COLORS[0]}" stroke-width="4"/><polygon points="940,60 530,240 940,420" fill="#E5F4EF" stroke="${DECK_COLORS[1]}" stroke-width="4"/>`+deckRect(400,195,200,90,DECK_INK,'none',14)+deckLabel(500,240,c.center||'Event',{w:180,size:18,lines:3,color:'#FFFFFF',valign:'middle',what:'Event label'});
  const list=(arr,x,anchor)=>arr.slice(0,5).forEach((n,i)=>g+=deckLabel(x,120+i*(260/Math.max(1,Math.min(5,arr.length)-1||1)),n.label,{w:260,size:16,lines:2,anchor,valign:'middle',what:'Bowtie item'}));
- list(left,80,'start');list(right,920,'end');if(left.length>5||right.length>5)XBDiag.report('data.truncated','warning','bowtie: showing 5 items per side');
+ list(left,80,'start');list(right,920,'end');if(left.length>5||right.length>5)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning','bowtie: showing 5 items per side');
  return g+'</svg>';
 }
 function deckVTimeline(c,variant){
@@ -5511,7 +5540,7 @@ function deckProsCons(c,variant){
  [[pros,heads[0],DECK_POS,'#EAF7F2','+'],[cons,heads[1],DECK_NEG,'#FFF1EA','−']].forEach(([list,head,col,bg,sym],k)=>{const x=40+k*470;
   g+=deckRect(x,20,450,440,bg,'none',18)+deckRect(x,20,450,64,col,'none',18)+deckRect(x,60,450,24,col,'none',0)+deckLabel(x+225,54,head,{w:420,size:22,color:'#FFFFFF',valign:'middle',weight:800,what:'Column title'});
   list.slice(0,5).forEach((it,i)=>{const y=106+i*70;g+=`<circle data-node="${deckSafe(it.id)}" cx="${x+38}" cy="${y+18}" r="17" fill="${col}"/>`+deckText(x+38,y+26,sym,24,'#FFFFFF','middle',800)+deckLabel(x+68,y+(it.desc?16:25),it.label,{w:360,size:19,anchor:'start',weight:800,what:'Item label'});if(it.desc)g+=deckLabel(x+68,y+40,it.desc,{w:360,size:15,anchor:'start',color:DECK_MUTED,font:'body',what:'Item description'});});
-  if(list.length>5)XBDiag.report('data.truncated','warning',`pros-cons: "${head}" shows 5 of ${list.length} items`);});
+  if(list.length>5)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`pros-cons: "${head}" shows 5 of ${list.length} items`);});
  return g+'</svg>';
 }
 function deckIceberg(c,variant){
@@ -5522,7 +5551,7 @@ function deckIceberg(c,variant){
  g+=deckText(40,150,cap[0],16,'#007BC1','start',800)+deckText(40,205,cap[1],16,'#007BC1','start',800);
  top.forEach((it,i)=>{const y=82+i*36;g+=deckLine(560,r1(y+30-i*20),640,r1(y-6),'#007BC1',2)+deckLabel(650,y,it.label,{w:330,size:20,anchor:'start',weight:800,what:'Visible item'});});
  deep.slice(0,5).forEach((it,i)=>g+=deckLabel(500,222+i*48,it.label,{w:380-Math.abs(2-i)*20,size:19,what:'Hidden item'}));
- if(deep.length>5)XBDiag.report('data.truncated','warning',`iceberg: showing 5 of ${deep.length} items below the surface`);
+ if(deep.length>5)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`iceberg: showing 5 of ${deep.length} items below the surface`);
  return g+'</svg>';
 }
 // Registry: label, family, data contract and renderer. DECK_DESCRIPTORS.flow/structure derive from it.
@@ -5673,7 +5702,7 @@ function deckCoerce(v){
 }
 function deckSource(key){
  if(key==null)return[];let definition=key;
- if(typeof key==='string'){const sets=getConfig().datasets||{},name=key.replace(/^datasets\./,'');definition=sets[key]??sets[name];
+ if(typeof key==='string'){const sets=getConfig().datasets||{},name=key.replace(/^datasets\./,'');definition=Object.prototype.hasOwnProperty.call(sets,key)?sets[key]:Object.prototype.hasOwnProperty.call(sets,name)?sets[name]:undefined;
   if(definition===undefined){report('data.unknown-ref','error',`Dataset "${name}" does not exist (available: ${Object.keys(sets).join(', ')||'none'})`,{ref:name});return[];}}
  if(Array.isArray(definition))return definition;
  if(typeof definition==='string'){try{return JSON.parse(definition);}catch{return deckCSV(definition);}}
@@ -5884,10 +5913,20 @@ function xbScopeCss(cssText,scope){
  return parse(source);
 }
 function xbSlideCss(slide,index,css){return xbScopeCss(xbTrustedCss(css,'customCss'),`[data-slide-id="${deckSafe(slide.id||'slide-'+(index+1))}"]`);}
+// Equal-width table columns are shared by CSS, the solver and pagination. Measurements are
+// conservative estimates; browser QA still verifies real font and author-style differences.
+function deckTablePlan(c,width,rows){
+ const cols=c.columns||Object.keys(rows[0]||{}).slice(0,6),cellWidth=Math.max(8,width/Math.max(1,cols.length)-48)/(XB_RENDER_OPTS.textSafety||1);
+ const lines=(text,size,weight)=>Math.max(1,XBText.wrap(String(text??''),cellWidth/1.08,size,Infinity,weight).lines.length);
+ const header=Math.max(64,40+Math.max(1,...cols.map(k=>lines(typeof k==='object'?k.label:k,19,800)))*22.8);
+ const heights=rows.map(row=>Math.max(67,41+Math.max(1,...cols.map(k=>lines(deckShowCell(row?.[typeof k==='object'?k.key:k]),21,600)))*25.2));
+ return {cols,header,heights,need:2+header+heights.reduce((a,b)=>a+b,0)};
+}
 function deckTable(c){
  let rows=deckData(c);if(!Array.isArray(rows))rows=[];const cols=c.columns||Object.keys(rows[0]||{}).slice(0,6);
+ const omitted=c.columns?[]:Object.keys(rows[0]||{}).slice(6);if(omitted.length)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning','table: inferred columns omit '+omitted.join(', ')+'; declare columns explicitly',{omitted});
  cols.forEach(k=>{const key=typeof k==='object'?k.key:k;if(rows.length&&!rows.some(r=>r&&typeof r==='object'&&key in r))XBDiag.report('data.field-missing','warning',`table: column "${key}" is not present in any row`,{field:key});});
- if(rows.length>12)XBDiag.report('data.truncated','warning',`table: showing 12 of ${rows.length} rows; filter, aggregate or split the table`,{rows:rows.length,max:12});
+ if(rows.length>12)XBDiag.report('data.truncated',XB_RENDER_OPTS.strict?'error':'warning',`table: showing 12 of ${rows.length} rows; filter, aggregate or split the table`,{rows:rows.length,max:12});
  return `<table class="v1-table"><thead><tr>${cols.map(k=>`<th>${deckSafe(typeof k==='object'?k.label:k)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0,12).map(r=>`<tr>${cols.map(k=>`<td>${deckSafe(deckShowCell(r?.[typeof k==='object'?k.key:k]))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 function deckShowCell(v){return typeof v==='number'?deckFmt(v):v==null?'':typeof v==='object'?JSON.stringify(v):String(v);}
@@ -6002,7 +6041,7 @@ function deckContainerNeed(c,width,depth=0){
 }
 function deckTextNeed(c,width){
  width=Math.max(80,width);
- const type=c.type||'text',lines=(t,size,lh,w,weight=650)=>t?XBText.wrap(String(t),w,size,Infinity,weight).lines.length*size*lh:0;
+ const type=c.type||'text',lines=(t,size,lh,w,weight=650)=>t?XBText.wrap(String(t),Math.max(8,w)/(XB_RENDER_OPTS.textSafety||1),size,Infinity,weight).lines.length*size*lh:0;
  switch(type){
   case 'text':case 'paragraph':return lines(c.text??c.content,25,1.5,width-10,600)+26;
   case 'heading':case 'title':return lines(c.text||c.title,38,1.16,width,800)+30;
@@ -6012,7 +6051,7 @@ function deckTextNeed(c,width){
   case 'markdown':{let h=58;for(const ln of String(c.markdown||c.content||c.text||'').split(/\r?\n/)){if(!ln.trim())continue;const t=ln.replace(/^#+\s*|^\s*[-*]\s+/,'');h+=/^##\s/.test(ln)?lines(t,30,1.25,width-66,800)+18:/^###\s/.test(ln)?lines(t,25,1.25,width-66,750)+16:lines(t,22,1.5,width-(/^\s*[-*]/.test(ln)?96:66),600)+10;}return h;}
   case 'metric':case 'kpi':return 54+26+6+71+(c.delta||c.subtitle?6+24:0);
   case 'progress':return 48+30+19+22;
-  case 'table':{const d=c.dataRef||c.data||c.dataset?XBDiag.mute(()=>deckData(c)):[];return 2+64+Math.min(12,Array.isArray(d)?d.length:0)*67;}
+  case 'table':{const d=c.dataRef||c.data||c.dataset?XBDiag.mute(()=>deckData(c)):[];return deckTablePlan(c,width,Array.isArray(d)?d.slice(0,12):[]).need;}
   case 'code':return 58+String(c.code||c.text||'').split(/\r?\n/).reduce((s,l)=>s+Math.max(1,Math.ceil(XBText.width(l,21,500)/(width-66)))*31.5,0);
   case 'stat-grid':{const n=Array.isArray(c.items)?c.items.length:0;return Math.ceil(n/2)*(17*1.4+39*1.25+40)+Math.max(0,Math.ceil(n/2)-1)*12;}
   case 'scorecard':{const n=Array.isArray(c.items)?c.items.length:0;return 44+40+n*(20*1.4+25);}
@@ -7613,11 +7652,12 @@ function deckRefreshCounts(){
       XB_ERRORS.length = 0; XB_LAYOUT_FNS.clear(); XB_SLIDE_FNS.clear();
       for (const k of Object.keys(XB_CTX)) delete XB_CTX[k];
       Object.defineProperties(XB_CTX, Object.getOwnPropertyDescriptors(xbBaseContext()));
-      for (const [name, src] of Object.entries(config?.helpers || {})) {
+      const customConfig=xbUntrusted()?{}:config;
+      for (const [name, src] of Object.entries(customConfig?.helpers || {})) {
         try { xbSetCtx(name, xbCompileHelper(name, src)); } catch (e) { XB_ERRORS.push(`helper ${name}: ${e.message}`); }
       }
       for (let i = LAYOUT_CATALOG.length - 1; i >= 0; i--) if (LAYOUT_CATALOG[i].custom) LAYOUT_CATALOG.splice(i, 1);
-      for (const [type, d] of Object.entries(config?.layouts || {})) {
+      for (const [type, d] of Object.entries(customConfig?.layouts || {})) {
         if (!xbIsObj(d)) continue;
         XB_LAYOUT_FNS.set(type, xbCompileRender(d, `layout ${type}`));
         if (!LAYOUT_CATALOG.some(l => l.type === type))
@@ -7658,7 +7698,7 @@ function deckRefreshCounts(){
         ${renderStandardWhiteHeader(c.sectionTag || 'CUSTOM', numStr)}
         <div style="position:relative;z-index:10;flex:1;padding:36px 96px 90px;display:flex;flex-direction:column">
           <h1 class="font-heading" style="font-weight:800;font-size:48px;color:#2B3736;margin:0 0 32px" ${ce} data-field="title">${c.title || ''}</h1>
-          <div style="flex:1" ${ce} data-field="html">${String(raw.html ?? '')}</div>
+          <div style="flex:1" ${ce} data-field="html">${xbTrustedHtml(raw.html??'','custom-html content.html')}</div>
         </div>
         ${renderStandardWhiteFooter(numStr, false)}
       </div>`;
@@ -7752,6 +7792,7 @@ function deckRefreshCounts(){
       const previousCtx = XB_RENDER_CTX;
       XB_RENDER_CTX = { slide, ce: xbEditAttr(isThumbnail) };
       try {
+        if(xbUntrusted()&&xbNeedsCode(slide,DECK_CONFIG)){XBDiag.report('security.code-blocked','error','Untrusted template code is not executed');return xbErrorSlide('Code blocked','Compile trusted documents explicitly to execute template code.');}
         const custom = xbCustomRender(slide);
         if (custom) return xbRenderCustom(custom, slide, index, isThumbnail);
         if (slide.type === 'composer') return deckComposer(slide,index,isThumbnail);
@@ -8985,6 +9026,9 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     function xbSchema(){
       const s=xbClone(XB_SCHEMA_BASE),d=s.$defs,builtins=LAYOUT_CATALOG.filter(l=>!l.custom).map(l=>l.type);
       d.chartVariant.enum=Object.keys(CHART_VARIANTS);
+      d.chartVariant['x-v1-constraints']=Object.fromEntries(Object.entries(CHART_VARIANTS).map(([id,v])=>[id,xbClone(v.constraints)]));
+      for(const layout of LAYOUT_CATALOG.filter(l=>!l.custom))if(d['content-'+layout.type])d['content-'+layout.type]['x-v1-limits']=xbClone(layout.limits||{});
+      for(const type of ['custom-html','custom-diagram'])d['content-'+type].description=d['content-'+type].description.replace(/ content\.(html|svg) is trusted author markup inserted without sanitizing\./,' Compiler untrusted mode sanitizes markup; trusted mode inserts author markup.');
       d.diagramVariant.enum=[...Object.keys(CHART_VARIANTS),...Object.keys(DIAGRAM_VARIANT_LOOKUP)];
       d.componentType.enum=Object.keys(COMPONENT_RENDERERS);
       d.slide.properties.type.enum=builtins.slice();
@@ -8998,7 +9042,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     // JSON Schema 2020-12 subset used by the contract ($ref, type, enum, const, properties, required,
     // additionalProperties, items, min/max*, pattern, propertyNames, anyOf, allOf, not, if/then/else).
     function xbSchemaValidate(root,doc){
-      const defs=root.$defs||{},isObj=v=>!!v&&typeof v==='object'&&!Array.isArray(v),eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+      const defs=root.$defs||{},isObj=v=>!!v&&typeof v==='object'&&!Array.isArray(v),eq=(a,b)=>xbCanonical(a)===xbCanonical(b);
       const ptr=p=>p.length?'/'+p.map(k=>String(k).replace(/~/g,'~0').replace(/\//g,'~1')).join('/'):'';
       const typeOf=v=>v===null?'null':Array.isArray(v)?'array':typeof v==='number'?(Number.isInteger(v)?'integer':'number'):typeof v;
       const is=(t,v)=>t==='number'?typeof v==='number'&&Number.isFinite(v):t==='integer'?Number.isInteger(v):t==='array'?Array.isArray(v):t==='object'?isObj(v):t==='null'?v===null:typeof v===t;
@@ -9006,16 +9050,20 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       function check(s,x,path,out){
         if(s===true||s==null)return true;
         let ok=true;const add=(keyword,message,extra={},at=path)=>{out.push({path:ptr(at),keyword,message,...extra});ok=false;};
+        if(s===false){add('false','value is not allowed');return false;}
         if(s.$ref){const m=/^#\/\$defs\/(.+)$/.exec(s.$ref),t=m&&defs[m[1]];if(!t)add('$ref','unresolved reference '+s.$ref);else if(!check(t,x,path,out))ok=false;}
         if(s.type){const ts=[].concat(s.type);if(!ts.some(t=>is(t,x))){add('type',`expected ${ts.join(' or ')}, got ${typeOf(x)}`,{expected:ts,actual:typeOf(x)});return false;}}
         if('const' in s&&!eq(x,s.const))add('const',`must equal ${JSON.stringify(s.const)}`,{expected:s.const});
         if(s.enum&&!s.enum.some(e=>eq(e,x)))add('enum',`${JSON.stringify(x)} is not allowed`,{allowed:s.enum,actual:x});
-        if(typeof x==='string'){if(s.minLength!=null&&[...x].length<s.minLength)add('minLength',`must have at least ${s.minLength} character(s)`);if(s.pattern&&!re(s.pattern).test(x))add('pattern',`must match ${s.pattern}`,{pattern:s.pattern});}
+        if(typeof x==='string'){if(s.minLength!=null&&[...x].length<s.minLength)add('minLength',`must have at least ${s.minLength} character(s)`);if(s.maxLength!=null&&[...x].length>s.maxLength)add('maxLength',`must have at most ${s.maxLength} character(s)`);if(s.pattern&&!re(s.pattern).test(x))add('pattern',`must match ${s.pattern}`,{pattern:s.pattern});}
         if(typeof x==='number'){if(s.minimum!=null&&x<s.minimum)add('minimum',`must be ≥ ${s.minimum}`,{limit:s.minimum,actual:x});if(s.maximum!=null&&x>s.maximum)add('maximum',`must be ≤ ${s.maximum}`,{limit:s.maximum,actual:x});if(s.exclusiveMinimum!=null&&x<=s.exclusiveMinimum)add('exclusiveMinimum',`must be > ${s.exclusiveMinimum}`,{limit:s.exclusiveMinimum,actual:x});if(s.exclusiveMaximum!=null&&x>=s.exclusiveMaximum)add('exclusiveMaximum',`must be < ${s.exclusiveMaximum}`,{limit:s.exclusiveMaximum,actual:x});}
         if(Array.isArray(x)){if(s.minItems!=null&&x.length<s.minItems)add('minItems',`must have at least ${s.minItems} item(s)`,{limit:s.minItems});if(s.maxItems!=null&&x.length>s.maxItems)add('maxItems',`must have at most ${s.maxItems} item(s)`,{limit:s.maxItems,actual:x.length});
-          if(s.items)x.forEach((it,i)=>{if(!check(s.items,it,[...path,i],out))ok=false;});}
+          if(s.uniqueItems){const seen=new Set();x.forEach((it,i)=>{const key=xbCanonical(it);if(seen.has(key))add('uniqueItems','items must be unique',{index:i});seen.add(key);});}
+          if(s.items!==undefined)x.forEach((it,i)=>{if(!check(s.items,it,[...path,i],out))ok=false;});}
         if(isObj(x)){
-          for(const k of s.required||[])if(!(k in x))add('required',`missing required property "${k}"`,{property:k});
+          if(s.minProperties!=null&&Object.keys(x).length<s.minProperties)add('minProperties',`must have at least ${s.minProperties} properties`);
+          if(s.maxProperties!=null&&Object.keys(x).length>s.maxProperties)add('maxProperties',`must have at most ${s.maxProperties} properties`);
+          for(const k of s.required||[])if(!Object.prototype.hasOwnProperty.call(x,k))add('required',`missing required property "${k}"`,{property:k});
           if(s.propertyNames)for(const k of Object.keys(x)){if(!check(s.propertyNames,k,[...path,k],[]))add('propertyNames',`property name "${k}" is not allowed`,{property:k},[...path,k]);}
           const props=s.properties||{};
           for(const [k,v] of Object.entries(x)){
@@ -9107,11 +9155,12 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       'slide.duplicate-id':'Duplicate slide id; it is made unique on normalization.'
     });
     const XB_SEVERITY_WEIGHT={error:25,warning:4,info:0};
-    const xbIsCodeSlide=(slide,doc)=>slide&&(slide.render!==undefined||slide.template!==undefined||slide.frame!==undefined||slide.css!==undefined||(xbIsObj(doc?.layouts)&&Object.prototype.hasOwnProperty.call(doc.layouts,slide.type)));
+    const xbIsCodeSlide=xbNeedsCode;
+
     // Render with the given document and options, then restore the editor state exactly.
     function xbWithDeck(input,opts,fn){
       const prev={config:DECK_CONFIG,slides,opts:XB_RENDER_OPTS,cache:new Map(DECK_DATA_CACHE)};
-      XB_RENDER_OPTS={...XB_RENDER_DEFAULTS,strict:opts.strict!==false,trust:opts.trust==='trusted'?'trusted':'untrusted'};
+      XB_RENDER_OPTS={...XB_RENDER_DEFAULTS,...xbOptions(opts)};
       try{
         const defaults=XB_RENDER_OPTS.strict?{...DECK_DEFAULT_CONFIG,datasets:{},metadata:{}}:DECK_DEFAULT_CONFIG;
         const doc=Array.isArray(input)?{version:'1.0',slides:input}:input;
@@ -9131,7 +9180,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       return null;
     }
     function xbContentChecks(doc){
-      const out=[],list=Array.isArray(doc)?doc:doc.slides||[],sets=Array.isArray(doc)?{}:doc.datasets||{},assets=Array.isArray(doc)?{}:doc.assets||{};
+      const out=[],list=Array.isArray(doc)?doc:Array.isArray(doc.slides)?doc.slides:[],sets=xbIsObj(doc.datasets)?doc.datasets:{},assets=xbIsObj(doc.assets)?doc.assets:{};
       const ids=new Map();
       for(const [name,definition] of Object.entries(sets))if(definition?.url&&definition.value===undefined&&definition.data===undefined)out.push({code:'determinism.external-missing',severity:'error',path:'/datasets/'+name.replace(/~/g,'~0').replace(/\//g,'~1'),message:`Dataset "${name}" has an external URL without an inline snapshot; use --prefetch before compiling`});
       list.forEach((s,i)=>{if(!xbIsObj(s))return;const base=`/slides/${i}`;
@@ -9148,8 +9197,8 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
             else if(xbIsObj(v))Object.entries(v).forEach(([k,x])=>walk(x,`${path}/${k}`,k));};
           walk(s.content,`${base}/content`,'content');}
         const comps=(c,path)=>{if(!xbIsObj(c))return;const ref=typeof c.dataRef==='string'?c.dataRef:typeof c.data?.$ref==='string'?c.data.$ref:null;
-          if(ref){const name=ref.replace(/^datasets\./,'');if(!(name in sets))out.push({code:'data.unknown-ref',severity:'error',path:path+(c.dataRef?'/dataRef':'/data/$ref'),message:`Dataset "${name}" does not exist (available: ${Object.keys(sets).join(', ')||'none'})`,ref:name,suggestion:xbNearest(name,Object.keys(sets),{aliases:false})});}
-          if(c.assetRef&&!(c.assetRef in assets))out.push({code:'data.unknown-ref',severity:'error',path:path+'/assetRef',message:`Asset "${c.assetRef}" does not exist`});
+          if(ref){const name=ref.replace(/^datasets\./,'');if(!Object.prototype.hasOwnProperty.call(sets,name))out.push({code:'data.unknown-ref',severity:'error',path:path+(c.dataRef?'/dataRef':'/data/$ref'),message:`Dataset "${name}" does not exist (available: ${Object.keys(sets).join(', ')||'none'})`,ref:name,suggestion:xbNearest(name,Object.keys(sets),{aliases:false})});}
+          if(c.assetRef&&!Object.prototype.hasOwnProperty.call(assets,c.assetRef))out.push({code:'data.unknown-ref',severity:'error',path:path+'/assetRef',message:`Asset "${c.assetRef}" does not exist`});
           for(const key of ['children','components'])if(Array.isArray(c[key]))c[key].forEach((x,j)=>comps(x,`${path}/${key}/${j}`));};
         (Array.isArray(s.components)?s.components:[]).forEach((c,j)=>comps(c,`${base}/components/${j}`));
         (Array.isArray(s.content?.components)?s.content.components:[]).forEach((c,j)=>comps(c,`${base}/content/components/${j}`));
@@ -9202,8 +9251,9 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       return out;
     }
     function xbSummary(diags,count){const n=s=>diags.filter(d=>d.severity===s).length,e=n('error'),w=n('warning'),i=n('info');return {slides:count,errors:e,warnings:w,info:i,score:Math.max(0,100-diags.reduce((s,d)=>s+(XB_SEVERITY_WEIGHT[d.severity]||0),0)/Math.max(1,count))};}
+    function xbOptions(opts){const textSafety=Number.isFinite(opts.textSafety)?deckClamp(opts.textSafety,1,2):1;return {strict:opts.strict!==false,trust:opts.trust==='trusted'?'trusted':'untrusted',...(textSafety>1?{textSafety}:{})};}
     function compile(doc,opts={}){
-      const o={strict:opts.strict!==false,trust:opts.trust==='trusted'?'trusted':'untrusted'};
+      const o=xbOptions(opts);
       const checked=validate(doc,o),gate=xbVersionGate(doc);
       if(gate)return {ok:false,compiler:XB_COMPILER_VERSION,options:o,slides:[],diagnostics:checked.diagnostics,summary:xbSummary(checked.diagnostics,0)};
       let result;
@@ -9217,7 +9267,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           const diagnostics=[...r.diagnostics,...xbSemanticCheck(r.value).map(d=>({...d,path:`/slides/${i}`}))];
           return {index:i,id:slide.id,type:slide.type,html:r.value,hash:xbHash(r.value),diagnostics};});
         return {document:DeckModel.serialize(next.config,next.slides),slides:out,compileErrors};});}
-      catch(e){const d={code:'schema.invalid',severity:'error',path:'',message:e.message};return {ok:false,compiler:XB_COMPILER_VERSION,options:o,slides:[],diagnostics:[...checked.diagnostics,d],summary:xbSummary([d],0)};}
+      catch(e){const d={code:'schema.invalid',severity:'error',path:'',message:e.message},diagnostics=[...checked.diagnostics,d];return {ok:false,compiler:XB_COMPILER_VERSION,options:o,slides:[],diagnostics,summary:xbSummary(diagnostics,0)};}
       const diagnostics=[...checked.diagnostics,...result.compileErrors,...result.slides.flatMap(s=>s.diagnostics)];
       const seen=new Set(),uniq=diagnostics.filter(d=>{const k=d.code+'|'+d.path+'|'+d.message;if(seen.has(k))return false;seen.add(k);return true;});
       const summary=xbSummary(uniq,result.slides.length);
@@ -9240,12 +9290,13 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       const label=el=>el.getAttribute('data-component-id')?'component '+el.getAttribute('data-component-id'):el.getAttribute('data-field')?'field '+el.getAttribute('data-field'):el.getAttribute('data-chrome')?'chrome '+el.getAttribute('data-chrome'):(typeof el.className==='string'&&el.className.trim()?'.'+el.className.trim().split(/\s+/).slice(0,2).join('.'):el.tagName.toLowerCase());
       const ownsText=el=>[...el.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());
       root.querySelectorAll('[data-xb-slide]').forEach(page=>{const i=Number(page.getAttribute('data-xb-slide')),P=page.getBoundingClientRect(),tol=2*(P.width/1920||1);
-        const push=(key,message,selector)=>{if(seen.has(key))return;seen.add(key);out.push({code:'layout.measured-overflow',severity:'warning',path:'/slides/'+i,message,selector});};
+        const push=(key,message,selector,details={})=>{if(seen.has(key))return;seen.add(key);out.push({code:'layout.measured-overflow',severity:'warning',path:'/slides/'+i,message,selector,...details});};
         page.querySelectorAll('*').forEach(el=>{const tag=el.tagName.toLowerCase();if(tag==='style'||tag==='script'||tag==='title'||!ownsText(el))return;
           const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden')return;const r=el.getBoundingClientRect();if(!r.width||!r.height)return;
           const txt=el.textContent.trim().replace(/\s+/g,' ').slice(0,60);
+          if(el.namespaceURI!=='http://www.w3.org/2000/svg'&&/(hidden|clip)/.test(cs.overflow+cs.overflowX+cs.overflowY)&&(el.scrollHeight>el.clientHeight+2||el.scrollWidth>el.clientWidth+2))push(i+'|self|'+label(el),label(el)+': text exceeds its clipping box ("'+txt+'")',label(el),{requiredHeight:el.scrollHeight,availableHeight:el.clientHeight,reflowRatio:Math.max(1,el.scrollHeight/Math.max(1,el.clientHeight))});
           for(let p=el.parentElement;p&&p!==page;p=p.parentElement){if(p.closest('svg')&&p.tagName.toLowerCase()!=='svg')continue;const pc=getComputedStyle(p);if(!/(hidden|clip)/.test(pc.overflow+pc.overflowX+pc.overflowY))continue;const B=p.getBoundingClientRect();
-            if(r.right>B.right+tol||r.bottom>B.bottom+tol||r.left<B.left-tol||r.top<B.top-tol){push(i+'|'+label(p)+'|'+label(el),label(p)+': text is clipped ("'+txt+'")',label(p));return;}}
+            if(r.right>B.right+tol||r.bottom>B.bottom+tol||r.left<B.left-tol||r.top<B.top-tol){push(i+'|'+label(p)+'|'+label(el),label(p)+': text is clipped ("'+txt+'")',label(p),{requiredHeight:p.scrollHeight,availableHeight:p.clientHeight,reflowRatio:Math.max(1,p.scrollHeight/Math.max(1,p.clientHeight))});return;}}
           if(r.right>P.right+tol||r.bottom>P.bottom+tol||r.left<P.left-tol||r.top<P.top-tol)push(i+'|slide|'+label(el),label(el)+': text extends beyond the slide ("'+txt+'")',label(el));});});
       root.querySelectorAll('[data-xb-slide]').forEach(page=>{
         const index=Number(page.getAttribute('data-xb-slide'));
@@ -9269,16 +9320,32 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     /* Deterministic repairs: only changes whose meaning is unambiguous. Everything else stays a diagnostic. */
     function xbGet(doc,path){return path.split('/').slice(1).map(k=>k.replace(/~1/g,'/').replace(/~0/g,'~')).reduce((o,k)=>o==null?undefined:o[Array.isArray(o)?Number(k):k],doc);}
     function xbParentOf(doc,path){const parts=path.split('/').slice(1).map(k=>k.replace(/~1/g,'/').replace(/~0/g,'~'));const key=parts.pop();return {parent:parts.reduce((o,k)=>o==null?undefined:o[Array.isArray(o)?Number(k):k],doc),key};}
-    function xbCoerceNumber(v){if(typeof v!=='string')return undefined;const t=v.trim().replace(/%$/,'').replace(/\s/g,'');if(/^[-+]?\d{1,3}(,\d{3})+(\.\d+)?$/.test(t))return Number(t.replace(/,/g,''));if(/^[-+]?\d+(\.\d+)?$/.test(t))return Number(t);if(/^[-+]?\d+,\d+$/.test(t))return Number(t.replace(',','.'));return undefined;}
-    function xbSplitOverflow(doc,changes){
+    function xbCoerceNumber(v,percent=false){if(typeof v!=='string')return undefined;const t=(percent?v.trim().replace(/%$/,''):v.trim()).replace(/\s/g,'');let n;if(/^[-+]?\d{1,3}(,\d{3})+(\.\d+)?$/.test(t))n=Number(t.replace(/,/g,''));else if(/^[-+]?\d+(\.\d+)?$/.test(t))n=Number(t);else if(/^[-+]?\d+,\d+$/.test(t))n=Number(t.replace(',','.'));return Number.isFinite(n)?n:undefined;}
+    function xbSplitOverflow(doc,changes,opts){
       const out=[],ids=new Set((doc.slides||[]).map(s=>s.id).filter(Boolean));
       const fragment=(c,width,available,depth=0)=>{
         if(!c||depth>7)return [c];
         if(c.type==='table'){
-          const rows=deckData(c),per=Math.max(1,Math.min(12,Math.floor((available-66)/67)));
-          if(!Array.isArray(rows)||rows.length<=per)return [c];
+          const resolved=XBDiag.collect(()=>deckData(c)),rows=resolved.value;
+          // A snapshot must never erase a failed transform or source diagnostic.
+          if(resolved.diagnostics.some(d=>d.severity==='error')||!Array.isArray(rows)||!rows.length||(!c.columns&&Object.keys(rows[0]||{}).length>6))return [c];
+          const plan=deckTablePlan(c,width,rows),groups=[];let group=[],height=2+plan.header;
+          rows.forEach((row,i)=>{if(group.length&&(group.length>=12||height+plan.heights[i]>available)){groups.push(group);group=[];height=2+plan.header;}group.push(row);height+=plan.heights[i];});if(group.length)groups.push(group);
+          if(groups.length<2)return [c];
           // Snapshot the transformed rows so grouping/joins are never repeated after slicing.
-          const parts=[];for(let i=0;i<rows.length;i+=per){const copy=xbClone(c);delete copy.dataRef;delete copy.dataset;delete copy.transform;copy.data=rows.slice(i,i+per);delete copy.height;delete copy.minHeight;parts.push(copy);}return parts;
+          return groups.map(data=>{const copy=xbClone(c);delete copy.dataRef;delete copy.dataset;delete copy.transform;copy.data=data;copy.columns=xbClone(plan.cols);delete copy.height;copy.minHeight=Math.ceil(deckTablePlan(copy,width,data).need);return copy;});
+        }
+        if(['text','paragraph'].includes(c.type)&&typeof (c.text??c.content)==='string'){
+          const key=c.text!==undefined?'text':'content',source=c[key],parts=[];let text='';
+          const wrap=value=>{const copy=xbClone(c);copy[key]=value;delete copy.height;copy.minHeight=Math.ceil(deckTextNeed(copy,width));return copy;};
+          for(const token of source.match(/\S+\s*|\s+/gu)||[]){const trial=text+token;if(text&&deckTextNeed(wrap(trial),width)>available){parts.push(wrap(text));text=token;}else text=trial;}
+          if(text)parts.push(wrap(text));return parts.length>1?parts:[c];
+        }
+        if(c.type==='list'&&Array.isArray(c.items)){
+          const parts=[];let items=[];
+          const wrap=values=>{const copy=xbClone(c);copy.items=values;delete copy.height;copy.minHeight=Math.ceil(deckTextNeed(copy,width));return copy;};
+          for(const item of c.items){const trial=items.concat([item]);if(items.length&&deckTextNeed(wrap(trial),width)>available){parts.push(wrap(items));items=[item];}else items=trial;}
+          if(items.length)parts.push(wrap(items));return parts.length>1?parts:[c];
         }
         if(!DECK_CONTAINERS.has(c.type))return [c];
         const key=Array.isArray(c.children)?'children':'components',kids=c[key]||[],plan=deckContainerPlan(c,width),pad=c.type==='card'?54:0,childAvailable=Math.max(80,available-pad);
@@ -9295,7 +9362,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       (doc.slides||[]).forEach((slide,i)=>{
         const list=slide?.components||slide?.content?.components;
         if(slide?.type!=='composer'||!Array.isArray(list)||slide.layout==='freeform'){out.push(slide);return;}
-        const chunks=xbWithDeck(doc,{strict:true,trust:'untrusted'},()=>XBDiag.mute(()=>{
+        const chunks=xbWithDeck(doc,{...opts,strict:true,trust:'untrusted'},()=>XBDiag.mute(()=>{
           const original=xbSolveGrid(list),expanded=list.flatMap((c,j)=>fragment(c,original.widths[j],XB_SCENE.height));
           const chunks=[];let cur=[];
           for(const c of expanded){const trial=cur.concat(c);if(cur.length&&!xbSolveGrid(trial).fits){chunks.push(cur);cur=[c];}else cur=trial;}
@@ -9314,7 +9381,6 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     function repair(input,opts={}){
       const changes=[];let doc=xbClone(input);
       if(Array.isArray(doc)){doc={version:'1.0',slides:doc};changes.push({path:'',action:'wrap',reason:'raw slide array wrapped into a v1 document'});}
-      if(xbIsObj(doc)&&doc.version===undefined&&Array.isArray(doc.slides)){doc.version='1.0';changes.push({path:'/version',action:'set',to:'1.0',reason:'version was missing'});}
       if(xbVersionGate(doc))return {ok:false,document:input,changes:[],diagnostics:[xbVersionGate(doc)]};
       const schema=xbSchema();
       for(let pass=0;pass<6;pass++){
@@ -9329,9 +9395,9 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           else if(e.keyword==='enum'&&typeof e.actual==='string'){const to=xbNearest(e.actual,e.allowed.filter(a=>typeof a==='string'));
             if(to&&to!==e.actual){parent[key]=to;changes.push({path:e.path,action:'replace',from:e.actual,to,reason:'value not allowed; nearest allowed value'});changed=true;}
             else if(key==='variant'&&parent.type==='chart'&&DIAGRAM_VARIANT_LOOKUP[e.actual]){parent.type='diagram';changes.push({path:e.path.replace(/\/variant$/,'/type'),action:'replace',from:'chart',to:'diagram',reason:`"${e.actual}" is a diagram variant`});changed=true;}}
-          else if(e.keyword==='type'&&(e.expected||[]).some(t=>t==='number'||t==='integer')){const before=parent[key],n=xbCoerceNumber(before);if(n!==undefined){parent[key]=e.expected.includes('integer')&&!e.expected.includes('number')?Math.round(n):n;changes.push({path:e.path,action:'coerce',from:before,to:parent[key],reason:'numeric string converted to number'});changed=true;}}
-          else if(e.keyword==='type'&&e.expected?.includes('integer')&&typeof parent[key]==='number'){parent[key]=Math.round(parent[key]);changes.push({path:e.path,action:'round',to:parent[key],reason:'integer expected'});changed=true;}
-          else if((e.keyword==='minimum'||e.keyword==='maximum')&&typeof parent[key]==='number'){const to=e.limit;parent[key]=to;changes.push({path:e.path,action:'clamp',from:e.actual,to,reason:`out of range (${e.message})`});changed=true;}
+          else if(e.keyword==='type'&&(e.expected||[]).some(t=>t==='number'||t==='integer')){const before=parent[key],n=xbCoerceNumber(before,parent.type==='progress'&&key==='value');if(n!==undefined&&(!e.expected.includes('integer')||e.expected.includes('number')||Number.isInteger(n))){parent[key]=n;changes.push({path:e.path,action:'coerce',from:before,to:n,reason:'numeric string converted to number without rounding'});changed=true;}}
+          // Only geometry may be clamped. Business values, counts and measurements remain author data.
+          else if((e.keyword==='minimum'||e.keyword==='maximum')&&['span','height','minHeight','gap','maxNodes'].includes(key)&&typeof parent[key]==='number'){const to=e.limit;parent[key]=to;changes.push({path:e.path,action:'clamp',from:e.actual,to,reason:`layout bound (${e.message})`});changed=true;}
           else if(e.keyword==='required'&&e.property==='content'&&xbIsObj(xbGet(doc,e.path))){xbGet(doc,e.path).content={};changes.push({path:e.path+'/content',action:'set',to:{},reason:'layout slides require a content object'});changed=true;}
         }
         // dataRef typos: nearest dataset name
@@ -9339,10 +9405,12 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         for(const d of xbContentChecks(doc))if(d.code==='data.unknown-ref'&&d.suggestion&&d.ref){const {parent,key}=xbParentOf(doc,d.path);if(parent&&parent[key]===d.ref||parent?.[key]==='datasets.'+d.ref){parent[key]=d.suggestion;changes.push({path:d.path,action:'replace',from:d.ref,to:d.suggestion,reason:`dataset not found; nearest of ${sets.join(', ')}`});changed=true;}}
         if(!changed)break;
       }
+      // Invalid shapes must not reach layout/data code; leave them available for agent correction.
+      if(xbSchemaValidate(schema,doc).length){const report=qa(doc,opts);return {ok:false,document:doc,changes,diagnostics:report.diagnostics,summary:report.summary};}
       // Freeform: move components back into the scene.
       (doc.slides||[]).forEach((s,i)=>{if(s?.layout!=='freeform')return;const list=s.components||s.content?.components||[];list.forEach((c,j)=>{const p=c?.position;if(!xbIsObj(p))return;const W=XB_SCENE.width,H=XB_SCENE.height,w=Math.min(deckNum(p.width,520),W),h=Math.min(deckNum(p.height,340),H),x=deckClamp(deckNum(p.x),0,W-w),y=deckClamp(deckNum(p.y),0,H-h);
         if(x!==deckNum(p.x)||y!==deckNum(p.y)||w!==deckNum(p.width,520)||h!==deckNum(p.height,340)){const from={...p};Object.assign(p,{x,y,width:w,height:h});changes.push({path:`/slides/${i}/${s.components?'components':'content/components'}/${j}/position`,action:'move',from,to:{...p},reason:'component was outside the 1728×642 scene'});}});});
-      xbSplitOverflow(doc,changes);
+      xbSplitOverflow(doc,changes,opts);
       const report=qa(doc,opts);
       return {ok:report.ok,document:doc,changes,diagnostics:report.diagnostics,summary:report.summary};
     }
@@ -9352,11 +9420,12 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         scene:{slide:{width:1920,height:1080},composer:{...XB_SCENE},svgViewBox:{width:1000,height:480},diagramPage:{width:1728,height:600}},
         layouts:LAYOUT_CATALOG.filter(l=>!l.custom).map(l=>({type:l.type,group:l.group,name:l.name,desc:l.desc,limits:l.limits||{},contentSchema:d['content-'+l.type]||null,sample:xbClone(xbSampleFor(l.type))})),
         components:Object.keys(COMPONENT_RENDERERS),
-        variants:{chart:Object.entries(CHART_VARIANTS).map(([id,v])=>({id,label:v.label,data:v.data})),
+        variants:{chart:Object.entries(CHART_VARIANTS).map(([id,v])=>({id,label:v.label,data:v.data,constraints:xbClone(v.constraints)})),
           ...Object.fromEntries(Object.entries(DIAGRAM_VARIANTS).map(([fam,items])=>[fam,Object.entries(items).map(([id,[label,data]])=>({id,label,data}))])),
           mermaid:Object.entries(DECK_DESCRIPTORS.mermaid).map(([id,label])=>({id,label,data:'mermaid component: source string (enhanced renderer only)'}))},
         fieldAliases:DECK_FIELD_ALIASES,diagnostics:XB_DIAGNOSTIC_CODES,
-        options:{strict:'default true: no sample data, missing data is an error',trust:'default "untrusted": no template code, HTML/SVG/CSS sanitized; "trusted" runs layouts/helpers'}};
+        repairPolicy:{preserves:['business values','item order','text','transformed table rows'],automatic:['unambiguous names','numeric strings without rounding','layout bounds','pagination'],requiresAuthor:['missing version','missing values','invalid ranges','ambiguous relations','unsupported code']},
+        options:{strict:'default true: no sample data, missing data is an error',trust:'default "untrusted": no template code, HTML/SVG/CSS sanitized; "trusted" runs layouts/helpers',textSafety:'default 1, bounded [1,2]: deterministic body/table text width reserve; pipeline may calibrate it from browser overflow'}};
     }
     // Static, script-free page with every compiled slide (deterministic; CSS and sprite are passed in).
     function staticPage(compiled,{css='',sprite='',title,fonts=''}={}){

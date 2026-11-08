@@ -1,0 +1,135 @@
+{
+  "before": {
+    "slides": 6,
+    "summary": {
+      "slides": 6,
+      "errors": 2,
+      "warnings": 0,
+      "info": 0,
+      "score": 91.66666666666667
+    },
+    "changes": [
+      {
+        "path": "/slides/0",
+        "action": "split-slide",
+        "reason": "deep pagination into 2 slides within the 642px scene",
+        "parts": 2
+      }
+    ],
+    "measured": [
+      {
+        "code": "layout.measured-overflow",
+        "severity": "warning",
+        "path": "/slides/0",
+        "message": ".v1-component.v1-table: text is clipped (\"District 4\")",
+        "selector": ".v1-component.v1-table",
+        "requiredHeight": 993,
+        "availableHeight": 600,
+        "reflowRatio": 1.655
+      },
+      {
+        "code": "layout.measured-overflow",
+        "severity": "warning",
+        "path": "/slides/1",
+        "message": ".v1-component.v1-table: text is clipped (\"District 10\")",
+        "selector": ".v1-component.v1-table",
+        "requiredHeight": 527,
+        "availableHeight": 332,
+        "reflowRatio": 1.5873493975903614
+      },
+      {
+        "code": "layout.measured-overflow",
+        "severity": "warning",
+        "path": "/slides/2",
+        "message": ".v1-scene.v1-auto: text is clipped (\"Item 11: Tiếng Việt có dấu và nội dung cần được giữ nguyên.\")",
+        "selector": ".v1-scene.v1-auto",
+        "requiredHeight": 1685,
+        "availableHeight": 642,
+        "reflowRatio": 2.6246105919003115
+      },
+      {
+        "code": "layout.measured-overflow",
+        "severity": "warning",
+        "path": "/slides/3",
+        "message": ".v1-component.v1-paragraph: text is clipped (\"Một đoạn nội dung dài, có dấu. Một đoạn nội dung dài, có dấu\")",
+        "selector": ".v1-component.v1-paragraph",
+        "requiredHeight": 1224,
+        "availableHeight": 964,
+        "reflowRatio": 1.2697095435684647
+      }
+    ]
+  },
+  "after": {
+    "slides": 15,
+    "summary": {
+      "slides": 15,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    "changes": [
+      {
+        "path": "/slides/0",
+        "action": "split-slide",
+        "reason": "deep pagination into 6 slides within the 642px scene",
+        "parts": 6
+      },
+      {
+        "path": "/slides/1",
+        "action": "split-slide",
+        "reason": "deep pagination into 4 slides within the 642px scene",
+        "parts": 4
+      },
+      {
+        "path": "/slides/2",
+        "action": "split-slide",
+        "reason": "deep pagination into 3 slides within the 642px scene",
+        "parts": 3
+      }
+    ],
+    "measured": [],
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 11,
+        "overflows": 5,
+        "measured": true
+      },
+      {
+        "pass": 2,
+        "textSafety": 1.41,
+        "slides": 15,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "manifest": {
+      "release": "1.0.0",
+      "schemaVersion": "1.0",
+      "compiler": "1.0.0-agent.1",
+      "options": {
+        "strict": true,
+        "trust": "untrusted",
+        "textSafety": 1.41
+      },
+      "runtimeSha256": "5d7ee262a75fd3eecc8ae99f952333038905a5b00cbf2d87cc656ebf489537d6",
+      "schemaSha256": "8de109f5ee5a52f4373c1bad0667abec431e00d2c2b6b8993f336904f46ec0a1",
+      "inputSha256": "ad03d1835e3a23b84164b32565dc2894aea703a87e5419398bdb748ad700d30a",
+      "documentSha256": "3b50f8f3701b5624f5c7dd615dc53b647f3d8846f0adadaaa16c223ea04233d7",
+      "htmlSha256": "dfa66216e858714773be0262cd03ff3fbd5769a5b5e01f4e9c0db650e50d649b"
+    }
+  },
+  "print": {
+    "slides": 15,
+    "diagnostics": 0
+  },
+  "editable": {
+    "reopenedViaFile": true,
+    "htmlAndSvgSanitized": true,
+    "helperAndSlideCodeBlocked": true,
+    "cdnRequests": 0
+  },
+  "pageErrors": []
+}

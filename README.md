@@ -27,7 +27,16 @@ node tools/xbrain.mjs qa deck.repaired.json --json
 node tools/xbrain.mjs build deck.repaired.json -o deck.html
 ```
 
-Sửa các lỗi QA trước khi build. Có thể gộp quy trình bằng `node tools/xbrain.mjs pipeline deck.json -o deck.html`.
+Sửa các lỗi QA trước khi build. Có thể gộp quy trình bằng `node tools/xbrain.mjs pipeline deck.json -o deck.html`. Pipeline chỉ ghi HTML khi đạt QA; bản sửa, diagnostic và manifest SHA-256 nằm trong `.repaired.json`, `.qa.json`.
+
+Để agent đo hình học thực tế và tự reflow tối đa 3 lượt, cấu hình `CHROME_PATH` rồi chạy:
+
+```bash
+node tools/xbrain.mjs pipeline deck.json --require-browser --offline \
+  --fail-on text.truncated,layout.legibility,layout.text-collision -o deck.html
+```
+
+Xem [audit và kết quả kiểm thử compiler](docs/audits/2026-11-08-agent-compiler/README.md) cho các cải tiến, deck mẫu và giới hạn đã biết.
 
 Compiler mặc định dùng `strict` và `untrusted`. Chỉ thêm `--trusted` để chạy layout/helper viết bằng JavaScript từ nguồn tin cậy. Trong Studio, mã trong JSON chạy với quyền của trang, nên chỉ mở JSON từ nguồn tin cậy.
 

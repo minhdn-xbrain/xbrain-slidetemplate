@@ -128,6 +128,22 @@ class JsonContractTest(unittest.TestCase):
         self.assertEqual(charts, set(definitions["chartVariant"]["enum"]))
         self.assertEqual(diagrams, set(definitions["diagramVariant"]["enum"]))
 
+    def test_executable_registry_constraints_are_exported_without_changing_v1(self):
+        contract = json.loads(subprocess.run(
+            ["node", "tools/xbrain.mjs", "contract"], cwd=ROOT, check=True,
+            capture_output=True, text=True, timeout=15,
+        ).stdout)
+        self.assertEqual(contract["release"], "1.0.0")
+        self.assertEqual(contract["schemaVersion"], "1.0")
+        definitions = self.schema["$defs"]
+        self.assertEqual(definitions["chartVariant"]["x-v1-constraints"], {
+            v["id"]: v["constraints"] for v in contract["variants"]["chart"]
+        })
+        for layout in contract["layouts"]:
+            self.assertEqual(layout["limits"], definitions["content-" + layout["type"]]["x-v1-limits"])
+        for key in ["select", "exclude"]:
+            self.assertInvalid(self.deck({"type": "table", "transform": {key: ["value", "value"]}}))
+
     def test_version_contract_and_normalization(self):
         for version in ["0.9", "2.0", 1, None]:
             with self.subTest(version=version):

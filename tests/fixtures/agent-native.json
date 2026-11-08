@@ -1,0 +1,194 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "name": "Agent compiler regression"
+  },
+  "slides": [
+    {
+      "id": "table",
+      "type": "composer",
+      "title": "Table with wrapped cells",
+      "components": [
+        {
+          "type": "table",
+          "span": 12,
+          "columns": [
+            "name",
+            "description"
+          ],
+          "data": [
+            {
+              "name": "District 0",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 1",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 2",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 3",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 4",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 5",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 6",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 7",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 8",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 9",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 10",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            },
+            {
+              "name": "District 11",
+              "description": "Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. Dữ liệu cần được trình bày đầy đủ. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "list",
+      "type": "composer",
+      "title": "All list items are preserved",
+      "components": [
+        {
+          "type": "card",
+          "span": 12,
+          "children": [
+            {
+              "type": "list",
+              "items": [
+                "Item 0: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 1: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 2: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 3: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 4: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 5: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 6: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 7: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 8: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 9: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 10: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 11: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 12: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 13: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 14: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 15: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 16: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 17: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 18: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 19: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 20: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 21: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 22: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 23: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 24: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 25: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 26: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 27: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 28: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 29: Tiếng Việt có dấu và nội dung cần được giữ nguyên.",
+                "Item 30: Tiếng Việt có dấu và nội dung cần được giữ nguyên."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "paragraph",
+      "type": "composer",
+      "title": "Long paragraphs can be paginated",
+      "components": [
+        {
+          "type": "paragraph",
+          "span": 12,
+          "text": "Một đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\nMột đoạn nội dung dài, có dấu.\n"
+        }
+      ]
+    },
+    {
+      "id": "legacy",
+      "type": "charts",
+      "content": {
+        "title": "Values retain their scale",
+        "barData": [
+          {
+            "label": "A & B",
+            "pre": -20,
+            "post": 140
+          }
+        ],
+        "doughnutData": [
+          {
+            "label": "A",
+            "value": 70
+          },
+          {
+            "label": "B",
+            "value": 20
+          },
+          {
+            "label": "C",
+            "value": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "sankey",
+      "type": "sankey-flow",
+      "content": {
+        "title": "One common scale",
+        "sources": [
+          {
+            "label": "Source"
+          }
+        ],
+        "targets": [
+          {
+            "label": "One"
+          },
+          {
+            "label": "Two"
+          }
+        ],
+        "links": [
+          {
+            "from": 0,
+            "to": 0,
+            "value": 10
+          },
+          {
+            "from": 0,
+            "to": 1,
+            "value": 1000
+          }
+        ]
+      }
+    }
+  ]
+}

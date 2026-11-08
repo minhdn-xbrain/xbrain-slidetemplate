@@ -1,0 +1,314 @@
+[
+  {
+    "fixture": "qbr-deck.json",
+    "trust": "untrusted",
+    "exit": 0,
+    "published": true,
+    "summary": {
+      "slides": 12,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    "browser": {
+      "measured": true,
+      "findings": 0
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 12,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": true,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": []
+  },
+  {
+    "fixture": "recursive-pipeline.json",
+    "trust": "untrusted",
+    "exit": 0,
+    "published": true,
+    "summary": {
+      "slides": 12,
+      "errors": 0,
+      "warnings": 0,
+      "info": 1,
+      "score": 100
+    },
+    "browser": {
+      "measured": true,
+      "findings": 0
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 12,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": true,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": [
+      "graph.cycle"
+    ]
+  },
+  {
+    "fixture": "deck-partnership-proposal.json",
+    "trust": "untrusted",
+    "exit": 0,
+    "published": true,
+    "summary": {
+      "slides": 11,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    "browser": {
+      "measured": true,
+      "findings": 0
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 11,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": true,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": []
+  },
+  {
+    "fixture": "deck-quarterly-ops-report.json",
+    "trust": "untrusted",
+    "exit": 0,
+    "published": true,
+    "summary": {
+      "slides": 12,
+      "errors": 0,
+      "warnings": 7,
+      "info": 1,
+      "score": 97.66666666666667
+    },
+    "browser": {
+      "measured": true,
+      "findings": 0
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 12,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": true,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": [
+      "text.truncated",
+      "layout.legibility",
+      "render.enhanced-only"
+    ]
+  },
+  {
+    "fixture": "deck-template-as-code.json",
+    "trust": "trusted",
+    "exit": 0,
+    "published": true,
+    "summary": {
+      "slides": 10,
+      "errors": 0,
+      "warnings": 2,
+      "info": 1,
+      "score": 99.2
+    },
+    "browser": {
+      "measured": true,
+      "findings": 0
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 10,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": true,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": [
+      "security.code-blocked",
+      "layout.text-collision"
+    ]
+  },
+  {
+    "fixture": "agent-native.json",
+    "trust": "untrusted",
+    "exit": 0,
+    "published": true,
+    "summary": {
+      "slides": 15,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    "browser": {
+      "measured": true,
+      "findings": 0
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 11,
+        "overflows": 5,
+        "measured": true
+      },
+      {
+        "pass": 2,
+        "textSafety": 1.41,
+        "slides": 15,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": true,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": []
+  },
+  {
+    "fixture": "edge-cases.json",
+    "trust": "untrusted",
+    "exit": 1,
+    "published": false,
+    "summary": {
+      "slides": 9,
+      "errors": 8,
+      "warnings": 16,
+      "info": 2,
+      "score": 70.66666666666667
+    },
+    "browser": {
+      "measured": true,
+      "findings": 2
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 9,
+        "overflows": 2,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": false,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 2
+    },
+    "codes": [
+      "content.truncated",
+      "layout.legibility",
+      "data.non-numeric",
+      "data.negative",
+      "graph.implicit-hierarchy",
+      "data.missing",
+      "data.empty",
+      "data.field-missing",
+      "data.inconsistent",
+      "graph.cycle",
+      "graph.dangling-edge",
+      "layout.overlap",
+      "text.overflow",
+      "layout.measured-overflow"
+    ]
+  },
+  {
+    "fixture": "paradox_xbrain.json",
+    "trust": "untrusted",
+    "exit": 1,
+    "published": false,
+    "summary": {
+      "slides": 42,
+      "errors": 28,
+      "warnings": 46,
+      "info": 1,
+      "score": 78.95238095238095
+    },
+    "browser": {
+      "measured": true,
+      "findings": 8
+    },
+    "attempts": [
+      {
+        "pass": 1,
+        "textSafety": 1,
+        "slides": 42,
+        "overflows": 0,
+        "measured": true
+      }
+    ],
+    "quality": {
+      "passed": false,
+      "failOn": [
+        "layout.measured-overflow"
+      ],
+      "findings": 0
+    },
+    "codes": [
+      "content.truncated",
+      "layout.text-collision",
+      "text.truncated",
+      "layout.legibility",
+      "data.series-missing",
+      "data.truncated",
+      "data.field-missing",
+      "text.hidden"
+    ]
+  }
+]
