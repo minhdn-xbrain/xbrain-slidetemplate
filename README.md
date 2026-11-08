@@ -19,7 +19,16 @@ Mỗi deck cần `"version": "1.0"` và mảng `slides`. Mỗi slide chọn `typ
 
 Trong Studio, mở **AI / JSON → Schema / Contract** để đọc **Schema JSON** hoặc **Agent Contract**, sao chép và tải JSON. Nội dung hiển thị trực tiếp để extension AI có thể đọc qua giao diện; tính năng dùng được offline và lấy dữ liệu từ compiler hiện tại.
 
-Bắt đầu từ [deck mẫu](contracts/example-deck-v1.json), tra cấu trúc trong [JSON Schema](contracts/xbrain-deck-v1.schema.json), rồi chạy với **Node.js ≥ 18**:
+Bắt đầu với deck tối thiểu sau trong `deck.json`, hoặc tham khảo [deck QBR](tests/fixtures/qbr-deck.json) và [JSON Schema](contracts/xbrain-deck-v1.schema.json):
+
+```json
+{
+  "version": "1.0",
+  "slides": [{ "type": "cover", "content": { "titleLine1": "Bài trình bày" } }]
+}
+```
+
+Chạy với **Node.js ≥ 18**:
 
 ```bash
 node tools/xbrain.mjs repair deck.json -o deck.repaired.json

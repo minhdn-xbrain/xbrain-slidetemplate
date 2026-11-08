@@ -88,7 +88,7 @@ class CompilerTest(unittest.TestCase):
 
     def test_builtin_validator_agrees_with_jsonschema(self):
         docs = [load("qbr-deck.json"), load("edge-cases.json"), load("untrusted.json"),
-                json.loads((ROOT / "contracts/example-deck-v1.json").read_text(encoding="utf-8")),
+                load("deck-quarterly-ops-report.json"),
                 self.deck({"type": "text", "span": 0}), self.deck({"type": "chart", "variant": "flowchart"}),
                 self.deck({"type": "diagram", "variant": "iceberg", "nodes": ["a"]}),
                 {"version": "1.0", "slides": [{"type": "cover", "content": {"titel": "x"}}]},

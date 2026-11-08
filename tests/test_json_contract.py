@@ -12,7 +12,6 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "contracts/xbrain-deck-v1.schema.json"
-EXAMPLE = ROOT / "contracts/example-deck-v1.json"
 # Complete decks authored only in JSON (no HTML changes); each must validate, load and render.
 FIXTURES = ROOT / "tests/fixtures"
 FIXTURE_DECKS = ["deck-partnership-proposal.json", "deck-quarterly-ops-report.json", "deck-template-as-code.json"]
@@ -88,7 +87,6 @@ class JsonContractTest(unittest.TestCase):
     def setUpClass(cls):
         cls.schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
         cls.validator = Draft202012Validator(cls.schema)
-        cls.example = json.loads(EXAMPLE.read_text(encoding="utf-8"))
         cls.source = json.loads(subprocess.run(
             ["node", "-e", EXTRACT], cwd=ROOT, check=True,
             capture_output=True, text=True, encoding="utf-8", timeout=15,
@@ -113,8 +111,7 @@ class JsonContractTest(unittest.TestCase):
     def test_schema_meta_validation(self):
         Draft202012Validator.check_schema(self.schema)
 
-    def test_examples_and_all_builtin_slides(self):
-        self.assertValid(self.example)
+    def test_all_builtin_slides(self):
         self.assertValid(self.source["document"])
 
     def test_registry_matches_contract(self):
