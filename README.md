@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Vite phục vụ mã nguồn trong lúc phát triển. Để tạo bản HTML độc lập có thể mở bằng `file://` và hoạt động offline:
+Vite dùng `public/index.html` làm điểm vào và phục vụ mã nguồn trong lúc phát triển. Để tạo bản HTML độc lập có thể mở bằng `file://` và hoạt động offline:
 
 ```sh
 npm run build

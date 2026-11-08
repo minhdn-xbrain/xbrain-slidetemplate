@@ -47,14 +47,19 @@ function inlineBinaryAssetsPlugin(): Plugin {
 }
 
 export default defineConfig({
+    root: process.env.VITEST ? import.meta.dirname : path.resolve(import.meta.dirname, 'public'),
+    publicDir: false,
     base: './',
     plugins: [inlineBinaryAssetsPlugin(), react(), tailwindcss(), viteSingleFile()],
     resolve: {
       alias: {
+        '/src': path.resolve(import.meta.dirname, 'src'),
         '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     build: {
+      outDir: path.resolve(import.meta.dirname, 'dist'),
+      emptyOutDir: true,
       target: 'es2022',
       assetsInlineLimit: 100000000,
       chunkSizeWarningLimit: 100000000,
