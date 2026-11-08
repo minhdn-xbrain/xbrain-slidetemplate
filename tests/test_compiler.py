@@ -61,6 +61,7 @@ class CompilerTest(unittest.TestCase):
         cls.validator = Draft202012Validator(json.loads(SCHEMA.read_text(encoding="utf-8")))
 
     def compile(self, deck, **opts):
+        opts.setdefault("trust", "untrusted")
         return runtime("process.stdout.write(JSON.stringify(rt.call('compile',input.deck,input.opts)));",
                        {"deck": deck, "opts": opts}, trusted=opts.get("trust") == "trusted")
 
@@ -101,6 +102,18 @@ class CompilerTest(unittest.TestCase):
                 self.assertEqual(valid, self.validator.is_valid(doc))
 
     # --- semantic visualization -------------------------------------------------------------
+    def test_cli_and_compiler_default_to_trusted_author_code(self):
+        deck = load("deck-template-as-code.json")
+        result = runtime("process.stdout.write(JSON.stringify(rt.call('compile',input)));", deck, trusted=True)
+        self.assertEqual(result["options"]["trust"], "trusted")
+        self.assertFalse(codes(result["diagnostics"], "error"), result["diagnostics"])
+        code, out = cli("qa", FIX / "deck-template-as-code.json", "--json")
+        self.assertEqual(code, 0, out[:2000])
+        self.assertEqual(json.loads(out)["options"]["trust"], "trusted")
+        code, out = cli("qa", FIX / "deck-template-as-code.json", "--untrusted", "--json")
+        self.assertEqual(code, 1)
+        self.assertIn("security.code-blocked", codes(json.loads(out)["diagnostics"], "error"))
+
     def test_realistic_deck_compiles_clean_in_strict_untrusted_mode(self):
         code, out = cli("qa", FIX / "qbr-deck.json", "--json")
         report = json.loads(out)

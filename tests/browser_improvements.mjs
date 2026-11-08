@@ -139,7 +139,7 @@ try{
  await page.locator('#tab-btn-gallery').click();assert.equal(await page.locator('#gallery-view').isVisible(),true);await page.screenshot({path:path.join(dir,'gallery.png')});
  await page.locator('#tab-btn-workspace').click();
  const color=await page.evaluate(()=>{const ids=['scoped','unscoped'];return ids.map(id=>{const i=XB.getDeck().slides.findIndex(s=>s.id===id);XB.select(i);return getComputedStyle(document.querySelector('#active-slide-viewport .v1-text')).color;});});
- assert.equal(color[0],'rgb(195, 0, 0)');assert.notEqual(color[0],color[1]);results.colors=color;
+ assert.equal(color[0],'rgb(195, 0, 0)');assert.equal(color[0],color[1]);results.colors=color;
  const beforeExport=await page.evaluate(()=>JSON.stringify(XB.getDeck()));
  await page.locator('#v1-menu-ai-trigger').click();await page.locator('#v1-contract-trigger').click();await page.locator('#v1-contract-tab-contract').click();
  fs.writeFileSync(path.join(dir,'exported-app.html'),await page.evaluate(()=>XB.exportHTML()));

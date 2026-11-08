@@ -6,7 +6,7 @@
  node:vm context: no host objects are passed in (only primitive strings cross the boundary),
  every call has a timeout, and for untrusted JSON documents string code generation (eval /
  new Function) is disabled in that context, so template-as-code cannot run at all.
- node:vm is not an OS security sandbox; --trusted and --html require trusted code.
+ The default executes author code; --untrusted enables the restricted legacy mode.
 
    node tools/xbrain.mjs contract                     agent contract: schema, layouts, variants, codes
    node tools/xbrain.mjs schema [--write]             derived JSON Schema (--write updates contracts/)
@@ -18,7 +18,7 @@
    node tools/xbrain.mjs render deck.json --slide 3 -o slide.html
    node tools/xbrain.mjs pipeline deck.json -o deck.html   repair → qa → static build (+ .repaired.json, .qa.json)
 
- Options: --trusted (execute layouts/helpers; default untrusted) --lenient (allow legacy sample data)
+ Options: --untrusted (restrict author code; default trusted) --lenient (allow legacy sample data)
           --prefetch (fetch and embed dataset snapshots before entering the VM; explicit opt-in)
           --require-browser (fail if pixel QA cannot run) --fail-on <code,code> (quality gate)
           --text-safety <1..2> (replay the body/table width reserve from a pipeline manifest)
@@ -63,7 +63,7 @@ export function readRuntimeParts(htmlFile = DEFAULT_HTML) {
   return { html, script, css, sprite, fonts };
 }
 
-export function loadRuntime({ htmlFile = DEFAULT_HTML, trusted = false, timeout = 30000 } = {}) {
+export function loadRuntime({ htmlFile = DEFAULT_HTML, trusted = true, timeout = 30000 } = {}) {
   const parts = readRuntimeParts(htmlFile);
   // The global must belong to the new realm: a host-created sandbox object would expose the host
   // Function constructor through globalThis.constructor.constructor (classic vm escape → process).
@@ -196,7 +196,7 @@ const sha256 = text => createHash('sha256').update(text).digest('hex');
 
 export async function main(argv = process.argv.slice(2)) {
   const { _: [cmd, file], flags } = parseArgs(argv);
-  const opts = { strict: !flags.lenient, trust: flags.trusted ? 'trusted' : 'untrusted' };
+  const opts = { strict: !flags.lenient, trust: flags.untrusted ? 'untrusted' : 'trusted' };
   if(flags['text-safety']!==undefined){const value=Number(flags['text-safety']);if(!Number.isFinite(value)||value<1||value>2)throw new Error('--text-safety must be between 1 and 2');opts.textSafety=value;}
   if (flags.prefetch && flags.offline) throw new Error('--prefetch and --offline cannot be combined');
   const readInput = async () => {
@@ -204,7 +204,7 @@ export async function main(argv = process.argv.slice(2)) {
     return flags.prefetch ? prefetchDeck(deck) : deck;
   };
   if (!cmd || cmd === 'help' || flags.help) { process.stdout.write(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\*\n?/, '') + '\n'); return 0; }
-  const rt = loadRuntime({ htmlFile: flags.html || DEFAULT_HTML, trusted: !!flags.trusted, timeout: Number(flags.timeout) || 30000 });
+  const rt = loadRuntime({ htmlFile: flags.html || DEFAULT_HTML, trusted: !flags.untrusted, timeout: Number(flags.timeout) || 30000 });
   if(flags['fail-on'])for(const code of String(flags['fail-on']).split(',').filter(Boolean))if(!Object.hasOwn(rt.call('contract').diagnostics,code))throw new Error('Unknown diagnostic in --fail-on: '+code);
   const staticHtml = (compiled, title) => rt.call('staticPage', compiled, { css: rt.parts.css, sprite: rt.parts.sprite, fonts: flags.offline ? '' : rt.parts.fonts, title });
   const appHtml = deck => {
@@ -214,8 +214,8 @@ export async function main(argv = process.argv.slice(2)) {
     const policy=/const XB_RENDER_DEFAULTS=Object\.freeze\(\{[^\n]*\}\);/;
     if(!policy.test(html))throw new Error('Cannot persist render policy in this runtime');
     html=html.replace(policy,()=>`const XB_RENDER_DEFAULTS=Object.freeze(${JSON.stringify(opts)});`);
-    // Optional libraries execute page code; they are only enabled for explicitly trusted apps.
-    if(flags.offline||!flags.trusted)html=html.replace(/<script\b[^>]*\bsrc=["']https?:\/\/[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<script\b[^>]*\btype=["']module["'][^>]*>[\s\S]*?<\/script>/gi,'');
+    // Optional libraries are omitted for offline and untrusted apps.
+    if(flags.offline||flags.untrusted)html=html.replace(/<script\b[^>]*\bsrc=["']https?:\/\/[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<script\b[^>]*\btype=["']module["'][^>]*>[\s\S]*?<\/script>/gi,'');
     if(flags.offline)html=html.replace(/<link\b[^>]*\bhref=["']https?:\/\/[^>]*>/gi,'');
     return html;
   };

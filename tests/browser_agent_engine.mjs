@@ -59,7 +59,7 @@ try{
     {type:'custom-html',content:{title:'Safe HTML',html:'<b>Custom safe</b><img src=x onerror="globalThis.PWNED=2">'}},
     {type:'custom-diagram',content:{title:'Safe SVG',svg:'<svg onload="globalThis.PWNED=3"><text x="10" y="40">SVG safe</text></svg>'}}
   ]}));
-  execFileSync(process.execPath,[path.join(root,'tools/xbrain.mjs'),'build',input,'--app','--offline','-o',app]);
+  execFileSync(process.execPath,[path.join(root,'tools/xbrain.mjs'),'build',input,'--app','--offline','--untrusted','-o',app]);
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await page.goto(pathToFileURL(app).href);await page.waitForFunction(()=>window.XB&&XB.getDeck().slides.length===3);
   assert.ok((await page.locator('#active-slide-viewport').innerText()).includes('Safe content'));

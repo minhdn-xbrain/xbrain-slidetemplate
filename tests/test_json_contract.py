@@ -111,6 +111,11 @@ class JsonContractTest(unittest.TestCase):
     def test_schema_meta_validation(self):
         Draft202012Validator.check_schema(self.schema)
 
+    def test_authored_markup_style_and_url_match_v1_contract(self):
+        self.assertValid(self.deck({"type": "html", "html": "<b>Author</b><script>void 0</script>",
+                                    "style": {"color": "red"}}))
+        self.assertValid(self.deck({"type": "link", "text": "Action", "href": "javascript:void(0)"}))
+
     def test_all_builtin_slides(self):
         self.assertValid(self.source["document"])
 

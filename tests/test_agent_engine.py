@@ -95,7 +95,7 @@ class AgentEngineTest(unittest.TestCase):
     def test_untrusted_editable_build_preserves_render_policy(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "app.html"
-            code, report = cli("build", "-", "--app", "--offline", "-o", out,
+            code, report = cli("build", "-", "--app", "--offline", "--untrusted", "-o", out,
                                stdin=json.dumps(self.deck({"type": "html", "html": '<b>Safe</b><img src=x onerror="globalThis.PWNED=1">'})))
             self.assertEqual(code, 0, report)
             html = out.read_text()

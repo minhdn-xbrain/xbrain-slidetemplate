@@ -1,0 +1,148 @@
+{
+  "ok": true,
+  "compiler": "1.0.0-agent.1",
+  "hash": "29f7b4ce90c8817a",
+  "options": {
+    "strict": true,
+    "trust": "untrusted"
+  },
+  "summary": {
+    "slides": 12,
+    "errors": 0,
+    "warnings": 0,
+    "info": 0,
+    "score": 100
+  },
+  "slides": [
+    {
+      "index": 0,
+      "id": "slide-1",
+      "type": "cover",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 1,
+      "id": "slide-2",
+      "type": "agenda",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 2,
+      "id": "enrolment",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 3,
+      "id": "revenue",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 4,
+      "id": "outcomes",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 5,
+      "id": "kpi-status",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 6,
+      "id": "slide-7",
+      "type": "section-divider",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 7,
+      "id": "roadmap",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 8,
+      "id": "governance",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 9,
+      "id": "risks",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 10,
+      "id": "funnel",
+      "type": "composer",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    },
+    {
+      "index": 11,
+      "id": "slide-12",
+      "type": "closing",
+      "slides": 1,
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "score": 100
+    }
+  ],
+  "diagnostics": [],
+  "browser": {
+    "measured": true,
+    "findings": 0
+  },
+  "quality": {
+    "passed": true,
+    "failOn": [],
+    "findings": 0
+  }
+}

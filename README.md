@@ -19,6 +19,8 @@ Mỗi deck cần `"version": "1.0"` và mảng `slides`. Mỗi slide chọn `typ
 
 Trong Studio, mở **AI / JSON → Schema / Contract** để đọc **Schema JSON** hoặc **Agent Contract**, sao chép và tải JSON. Nội dung hiển thị trực tiếp để extension AI có thể đọc qua giao diện; tính năng dùng được offline và lấy dữ liệu từ compiler hiện tại.
 
+Mở **AI / JSON → AI Console** để nạp candidate JSON, kiểm tra, render, xem diagnostic, áp dụng JSON Patch và xuất HTML tĩnh sau QA. Browser agent có thể dùng giao diện này hoặc `window.XB.agent`; candidate chỉ vào Studio sau thao tác commit được kiểm tra. Xem [API Agent](docs/agent-console-api.md) và [browser runbook](docs/agent-console-browser-runbook.md). Agent ưu tiên linh hoạt: nội dung tác giả có thể chạy HTML, CSS, JavaScript và tải tài nguyên ngoài với quyền của trang. XBrain đo hình học trong browser; việc xem ảnh và đánh giá thị giác do agent bên ngoài thực hiện.
+
 Bắt đầu với deck tối thiểu sau trong `deck.json`, hoặc tham khảo [deck QBR](tests/fixtures/qbr-deck.json) và [JSON Schema](contracts/xbrain-deck-v1.schema.json):
 
 ```json
@@ -47,7 +49,7 @@ node tools/xbrain.mjs pipeline deck.json --require-browser --offline \
 
 Xem [audit và kết quả kiểm thử compiler](docs/audits/2026-11-08-agent-compiler/README.md) cho các cải tiến, deck mẫu và giới hạn đã biết.
 
-Compiler mặc định dùng `strict` và `untrusted`. Chỉ thêm `--trusted` để chạy layout/helper viết bằng JavaScript từ nguồn tin cậy. Trong Studio, mã trong JSON chạy với quyền của trang, nên chỉ mở JSON từ nguồn tin cậy.
+Compiler, CLI, Agent API và Studio mặc định dùng chế độ `trusted`, cho phép layout/helper JavaScript. CLI vẫn hỗ trợ `--untrusted` khi cần chế độ giới hạn.
 
 Xem [hướng dẫn compiler và API](docs/agent-compiler.md) để tra lệnh, chẩn đoán và hợp đồng chart/diagram.
 

@@ -3051,6 +3051,41 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
     .v1-chrome-actions button:disabled { opacity: .4; cursor: default; }
     @media print { .v1-chrome-backdrop { display: none !important; } }
     .v1-cut::after { content: 'Đã cắt'; position: absolute; top: -9px; right: 12px; z-index: 5; padding: 1px 9px; border-radius: 999px; background: #F97C00; color: #fff; font: 800 10px/1.6 Manrope, Arial, sans-serif; letter-spacing: .04em; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+    /* Agent Console is a structured control surface over the same compiler. */
+    .v1-agent-console[hidden] { display:none !important; }
+    .v1-agent-console { position:fixed;inset:0;z-index:10000;overflow:auto;background:#eef1ef;color:#243332;font:14px/1.45 Arial,sans-serif; }
+    .v1-agent-console * { box-sizing:border-box; }
+    .v1-agent-header { display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 24px;background:#263735;color:#fff;flex-wrap:wrap; }
+    .v1-agent-header h1 { font-size:20px;margin:0;letter-spacing:-.02em; }
+    .v1-agent-header p { margin:3px 0 0;color:#c5d1ce;font-size:12px; }
+    .v1-agent-toolbar,.v1-agent-buttons { display:flex;gap:8px;flex-wrap:wrap;align-items:center; }
+    .v1-agent-console button { border:1px solid #b4c1bd;border-radius:5px;background:#fff;color:#263735;padding:8px 11px;font:600 13px Arial,sans-serif;cursor:pointer; }
+    .v1-agent-console button:hover { border-color:#e97500; }
+    .v1-agent-console button:focus-visible,.v1-agent-console textarea:focus-visible { outline:3px solid #e97500;outline-offset:2px; }
+    .v1-agent-console button:disabled { opacity:.55;cursor:wait; }
+    .v1-agent-console .v1-agent-primary { background:#ed7600;border-color:#ed7600;color:white; }
+    .v1-agent-body { max-width:1800px;margin:auto;padding:18px 24px 32px; }
+    .v1-agent-status { display:flex;flex-wrap:wrap;gap:16px;padding:0 0 14px;font-size:12px;overflow-wrap:anywhere; }
+    .v1-agent-grid { display:grid;grid-template-columns:minmax(180px,1fr) minmax(400px,2.4fr) minmax(240px,1.1fr);gap:1px;background:#c5d1cd;border:1px solid #c5d1cd; }
+    .v1-agent-panel { min-width:0;background:#fff;padding:16px; }
+    .v1-agent-panel h2,.v1-agent-section h2 { margin:0 0 10px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#526964; }
+    .v1-agent-tree { overflow:auto;max-height:430px;margin:0;padding:0;list-style:none; }
+    .v1-agent-tree button { width:100%;text-align:left;border:0;border-radius:0;border-bottom:1px solid #e3e9e6;overflow-wrap:anywhere; }
+    .v1-agent-tree button[aria-selected="true"] { background:#fff0e0;color:#8c4800; }
+    .v1-agent-preview { position:relative;width:100%;aspect-ratio:16/9;background:#d6dfdb;overflow:hidden; }
+    .v1-agent-preview iframe { display:block;border:0;width:1920px;height:1080px;transform-origin:top left; }
+    .v1-agent-highlight { position:absolute;border:2px solid #d63c2e;background:rgba(214,60,46,.12);pointer-events:none; }
+    .v1-agent-highlight[hidden] { display:none; }
+    .v1-agent-findings { max-height:380px;overflow:auto;overflow-wrap:anywhere; }
+    .v1-agent-findings p { padding:8px 0;margin:0;border-bottom:1px solid #e3e9e6; }
+    .v1-agent-findings button { display:block;text-align:left;width:100%;border:0;border-bottom:1px solid #e3e9e6;border-radius:0; }
+    .v1-agent-section { background:#fff;border:1px solid #c5d1cd;margin-top:14px;padding:16px; }
+    .v1-agent-inputs { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+    .v1-agent-console label { display:block;font-weight:bold;margin:0 0 6px; }
+    .v1-agent-console textarea { width:100%;min-height:130px;resize:vertical;border:1px solid #b4c1bd;background:#f8faf9;color:#263735;padding:10px;font:12px/1.5 monospace; }
+    .v1-agent-output,.v1-agent-log { white-space:pre-wrap;overflow:auto;overflow-wrap:anywhere;max-height:300px;background:#f3f6f4;padding:12px;color:#253633;font:12px/1.5 monospace; }
+    @media(max-width:900px) { .v1-agent-grid { grid-template-columns:1fr; }.v1-agent-tree { max-height:180px; }.v1-agent-inputs { grid-template-columns:1fr; }.v1-agent-body { padding:14px; } }
+    @media print { .v1-agent-console { display:none !important; } }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col">
@@ -3209,6 +3244,7 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
           <div class="v1-header-menu-host" data-v1-menu="ai">
             <button id="v1-menu-ai-trigger" type="button" class="v1-header-button" aria-haspopup="menu" aria-controls="v1-menu-ai" aria-expanded="false" data-v1-menu-trigger="ai" data-click-action="toggleHeaderMenu" data-click-arg="'ai'">AI / JSON <i data-lucide="chevron-down" class="v1-header-chevron"></i></button>
             <div id="v1-menu-ai" class="v1-header-menu" role="menu" aria-labelledby="v1-menu-ai-trigger" hidden>
+              <button type="button" role="menuitem" data-click-action="openAgentConsole">AI Console</button>
               <button id="v1-contract-trigger" type="button" role="menuitem" data-click-action="deckOpenContract" aria-haspopup="dialog" aria-controls="v1-contract-modal" aria-expanded="false">Schema / Contract</button>
               <div role="separator"></div>
               <button type="button" role="menuitem" data-click-action="openDataEditorModal">JSON của slide hiện tại</button>
@@ -3583,6 +3619,42 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
        PRINT CONTAINER (Renders all slides at 1920x1080 for 16:9 PDF Export)
        ========================================================================== -->
   <div id="print-all-slides-container" class="hidden"></div>
+
+  <main id="v1-agent-console" class="v1-agent-console" data-testid="xb-agent-console" data-mode="agent" hidden>
+    <header class="v1-agent-header">
+      <div><h1>XBrain / AI Console</h1><p>Structured JSON workflow · trusted author content · native rendering</p></div>
+      <div class="v1-agent-toolbar"><button type="button" data-v1-agent-action="contract">Schema / Contract</button><button type="button" data-v1-agent-action="close">Studio</button></div>
+    </header>
+    <div class="v1-agent-body">
+      <div class="v1-agent-status"><span data-testid="xb-agent-ready" data-state="initializing" role="status">Initializing</span><span>Candidate: <strong data-testid="xb-agent-revision">none</strong></span><span data-testid="xb-agent-qa-summary" role="status">QA: not measured</span></div>
+      <div class="v1-agent-toolbar" style="margin-bottom:14px">
+        <button type="button" class="v1-agent-primary" data-v1-agent-action="validate" data-testid="xb-agent-validate">Validate</button>
+        <label for="v1-agent-render-scope">Slides</label><select id="v1-agent-render-scope" data-testid="xb-agent-render-scope"><option value="all">All</option><option value="selected">Selected</option></select>
+        <button type="button" data-v1-agent-action="render" data-testid="xb-agent-render">Render and measure</button>
+        <button type="button" data-v1-agent-action="cancel" data-testid="xb-agent-cancel">Cancel render</button>
+        <button type="button" data-v1-agent-action="inspect" data-testid="xb-agent-inspect">Inspect QA</button>
+        <button type="button" data-v1-agent-action="propose" data-testid="xb-agent-propose-repair">Propose repair</button>
+        <button type="button" data-v1-agent-action="accept" data-testid="xb-agent-accept-repair">Accept repair</button>
+        <button type="button" data-v1-agent-action="commit" data-testid="xb-agent-commit">Commit to Studio</button>
+        <button type="button" data-v1-agent-action="export" data-testid="xb-agent-export-static">Export static HTML</button>
+        <button type="button" data-v1-agent-action="export-reviewed" data-testid="xb-agent-export-reviewed">Export reviewed HTML</button>
+        <button type="button" data-v1-agent-action="export-json" data-testid="xb-agent-export-json">Export JSON</button>
+        <button type="button" data-v1-agent-action="download" data-testid="xb-agent-download">Download artifact</button>
+      </div>
+      <div class="v1-agent-grid">
+        <section class="v1-agent-panel"><h2>Deck structure</h2><ol class="v1-agent-tree" data-testid="xb-agent-deck-tree" role="tree" aria-label="Candidate slides"></ol><button type="button" data-v1-agent-action="more" data-testid="xb-agent-more-slides" hidden>Show more slides</button></section>
+        <section class="v1-agent-panel"><h2>Rendered preview</h2><div class="v1-agent-preview" data-testid="xb-agent-preview" role="region" aria-label="Rendered slide preview"><iframe title="Slide preview"></iframe><div class="v1-agent-highlight" aria-hidden="true" hidden></div></div><p data-testid="xb-agent-preview-status">Visual review is performed externally.</p></section>
+        <section class="v1-agent-panel"><h2>QA inspector</h2><div class="v1-agent-findings" data-testid="xb-agent-findings" aria-label="QA findings">No run yet.</div></section>
+      </div>
+      <section class="v1-agent-section"><h2>Data actions</h2><div class="v1-agent-inputs">
+        <div><label for="v1-agent-deck-input">Candidate document JSON</label><textarea id="v1-agent-deck-input" data-testid="xb-agent-deck-input" spellcheck="false"></textarea><div class="v1-agent-buttons"><button type="button" data-v1-agent-action="load" data-testid="xb-agent-load-candidate">Load candidate</button><button type="button" data-v1-agent-action="sync">Copy Studio to candidate</button><button type="button" data-v1-agent-action="reset" data-testid="xb-agent-reset">Reset candidate</button></div></div>
+        <div><label for="v1-agent-patch-input">JSON Patch operations</label><textarea id="v1-agent-patch-input" data-testid="xb-agent-patch-input" spellcheck="false">[]</textarea><label for="v1-agent-scope">Optional scope JSON</label><input id="v1-agent-scope" data-testid="xb-agent-scope" type="text" placeholder='{"slideId":"...","sourcePath":"/slides/0"}'><div class="v1-agent-buttons"><button type="button" data-v1-agent-action="preview-patch" data-testid="xb-agent-patch-preview">Dry run</button><button type="button" data-v1-agent-action="apply-patch" data-testid="xb-agent-apply-patch">Apply patch</button></div><label><input id="v1-agent-accept-deck" data-testid="xb-agent-accept-deck" type="checkbox"> Allow proposed repair to expand to deck scope</label></div>
+      </div></section>
+      <section class="v1-agent-section"><h2>Response</h2><div class="v1-agent-buttons"><button type="button" data-v1-agent-action="state">Show status JSON</button><button type="button" data-v1-agent-action="candidate">Show candidate JSON</button><button type="button" data-v1-agent-action="copy-response">Copy response</button><button type="button" data-v1-agent-action="artifact">Show artifact text</button></div><pre class="v1-agent-output" data-testid="xb-agent-response-json" aria-live="polite">Ready for an action.</pre></section>
+      <section class="v1-agent-section"><h2>External visual review</h2><p>Record a review only after inspecting screenshots outside XBrain.</p><label for="v1-agent-review-evidence">Screenshot evidence reference</label><input id="v1-agent-review-evidence" data-testid="xb-agent-review-evidence" type="text" maxlength="500"><button type="button" data-v1-agent-action="review" data-testid="xb-agent-mark-reviewed">Record external review</button></section>
+      <section class="v1-agent-section"><h2>Execution log</h2><div class="v1-agent-buttons"><label for="v1-agent-log-filter">Filter</label><select id="v1-agent-log-filter" data-testid="xb-agent-log-filter"><option value="all">All</option><option value="error">Errors</option><option value="success">Success</option></select><button type="button" data-v1-agent-action="clear-log">Clear log</button></div><pre class="v1-agent-log" data-testid="xb-agent-execution-log" role="log" aria-live="polite"></pre></section>
+    </div>
+  </main>
 
   <script id="v1-embedded-deck" type="application/json"></script>
   <script>
@@ -5855,7 +5927,7 @@ const XBSanitize=(()=>{
 const xbUntrusted=()=>XB_RENDER_OPTS.trust==='untrusted';
 function xbTrustedHtml(src,what){const s=String(src??'');if(!xbUntrusted())return s;const clean=XBSanitize.html(s);if(clean!==s)XBDiag.report('security.sanitized','warning',`${what}: active content (scripts, event handlers, unsafe URLs or embeds) was removed`);return clean;}
 function xbTrustedCss(src,what){const s=String(src??'');if(!xbUntrusted())return s;const clean=XBSanitize.css(s);if(clean!==s)XBDiag.report('security.sanitized','warning',`${what}: unsafe CSS (@import, external url(), expressions) was removed`);return clean;}
-function xbTrustedUrl(u,what){const s=String(u??'');if(!s)return s;if(!xbUntrusted()){if(/^\s*(javascript|vbscript):/i.test(s)){XBDiag.report('security.unsafe-url','error',`${what}: script URL removed`);return '#';}return s;}const clean=XBSanitize.url(s);if(!clean)XBDiag.report('security.unsafe-url','warning',`${what}: URL "${s.slice(0,60)}" is not allowed in untrusted mode`);return clean||'#';}
+function xbTrustedUrl(u,what){const s=String(u??'');if(!s||!xbUntrusted())return s;const clean=XBSanitize.url(s);if(!clean)XBDiag.report('security.unsafe-url','warning',`${what}: URL "${s.slice(0,60)}" is not allowed in untrusted mode`);return clean||'#';}
 // Small CSS block tokenizer. Every selector is anchored inside its own slide root.
 function xbScopeCss(cssText,scope){
  const warn=message=>XBDiag.report('css.blocked','warning',message);
@@ -5912,7 +5984,7 @@ function xbScopeCss(cssText,scope){
  }
  return parse(source);
 }
-function xbSlideCss(slide,index,css){return xbScopeCss(xbTrustedCss(css,'customCss'),`[data-slide-id="${deckSafe(slide.id||'slide-'+(index+1))}"]`);}
+function xbSlideCss(slide,index,css){return xbUntrusted()?xbScopeCss(xbTrustedCss(css,'customCss'),`[data-slide-id="${deckSafe(slide.id||'slide-'+(index+1))}"]`):String(css??'');}
 // Equal-width table columns are shared by CSS, the solver and pagination. Measurements are
 // conservative estimates; browser QA still verifies real font and author-style differences.
 function deckTablePlan(c,width,rows){
@@ -8253,6 +8325,9 @@ function deckRefreshCounts(){
       doc.querySelector('#canvas-scale-wrapper')?.removeAttribute('style');
       doc.querySelector('#active-slide-viewport')?.removeAttribute('style');
       for(const selector of ['#v1-contract-json','#v1-contract-status'])doc.querySelector(selector)?.replaceChildren();
+      const agentConsole=doc.querySelector('#v1-agent-console');
+      if(agentConsole){agentConsole.hidden=true;for(const selector of ['.v1-agent-tree','.v1-agent-output','.v1-agent-log','.v1-agent-findings'])agentConsole.querySelector(selector)?.replaceChildren();for(const input of agentConsole.querySelectorAll('textarea')){input.value='';input.replaceChildren();}for(const input of agentConsole.querySelectorAll('input')){input.value='';input.checked=false;input.removeAttribute('value');input.removeAttribute('checked');}const preview=agentConsole.querySelector('.v1-agent-preview');preview?.removeAttribute('data-run-id');preview?.removeAttribute('data-slide-id');agentConsole.querySelector('iframe')?.removeAttribute('srcdoc');}
+      doc.querySelector('#app-shell')?.removeAttribute('inert');
       doc.querySelector('#v1-contract-trigger')?.setAttribute('aria-expanded','false');
       for(const menu of doc.querySelectorAll('.v1-header-menu'))menu.hidden=true;
       for(const trigger of doc.querySelectorAll('[data-v1-menu-trigger]'))trigger.setAttribute('aria-expanded','false');
@@ -8406,7 +8481,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     const HeaderStatus=createHeaderStatus({getDocument:()=>document,getInfo:()=>({name:DECK_CONFIG.metadata?.name===DECK_DEFAULT_CONFIG.metadata.name?'Bộ trình chiếu mẫu':DECK_CONFIG.metadata?.name,count:slides.length,inline:isInlineEditEnabled,mode:currentAppMode})});
     const DeckHistory=createDeckHistory({
       serialize:()=>JSON.stringify(deckDocument()),
-      onChange:state=>HeaderStatus.changed(state),
+      onChange:state=>{HeaderStatus.changed(state);XBAgent.observeStudio(state.snapshot);},
       restore:snapshot=>deckApplyDocument(JSON.parse(snapshot), {recordHistory:false,resetView:false,strictCustom:true})
     });
     const DeckStore = {
@@ -8490,6 +8565,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         deckFilterLibrary: deckFilterLibrary,
         deckOpenDeckEditor: deckOpenDeckEditor,
         deckOpenLibrary: deckOpenLibrary,
+        openAgentConsole: () => AgentConsole.open(),
         deckReloadRemote: deckReloadRemote,
         deleteCurrentSlide: deleteCurrentSlide,
         downloadEditedHTML: downloadEditedHTML,
@@ -8888,7 +8964,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       const a = document.activeElement;
       const typing = a && (a.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
       const modal = XB_MODALS.some(id => { const m = document.getElementById(id); return m && !m.classList.contains('hidden'); });
-      return !HeaderMenus.isOpen && !typing && !modal && currentAppMode !== 'brand' && !document.body.classList.contains('presentation-fullscreen');
+      return !HeaderMenus.isOpen && !typing && !modal && document.getElementById('v1-agent-console')?.hidden!==false && currentAppMode !== 'brand' && !document.body.classList.contains('presentation-fullscreen');
     }
     const focusInSlidePanel = () => !!document.activeElement?.closest?.(`#${SLIDE_PANELS.list},#${SLIDE_PANELS.grid}`);
     window.addEventListener('keydown', e => {
@@ -9213,8 +9289,8 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         if(e.keyword==='enum'&&typeof e.actual==='string'){const s=xbNearest(e.actual,e.allowed.filter(a=>typeof a==='string'));if(s)d.suggestion=s;if(e.allowed.length>30)delete d.allowed;}
         return d;});
       diagnostics.push(...xbContentChecks(wrapped));
-      const untrusted=opts.trust!=='trusted';
-      if(xbIsObj(wrapped.layouts)||xbIsObj(wrapped.helpers))diagnostics.push({code:'security.code-blocked',severity:untrusted?'error':'info',path:wrapped.layouts?'/layouts':'/helpers',message:untrusted?'layouts/helpers contain code and are not executed for untrusted documents (use trust:"trusted" only for documents you control)':'Document carries template-as-code; it runs with page privileges'});
+      const untrusted=opts.trust==='untrusted';
+      if(untrusted&&(xbIsObj(wrapped.layouts)||xbIsObj(wrapped.helpers)))diagnostics.push({code:'security.code-blocked',severity:'error',path:wrapped.layouts?'/layouts':'/helpers',message:'layouts/helpers contain code and are not executed for untrusted documents (use trust:"trusted" only for documents you control)'});
       return {ok:!diagnostics.some(d=>d.severity==='error'),diagnostics};
     }
     function xbSvgTextCollisions(svg){
@@ -9251,7 +9327,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       return out;
     }
     function xbSummary(diags,count){const n=s=>diags.filter(d=>d.severity===s).length,e=n('error'),w=n('warning'),i=n('info');return {slides:count,errors:e,warnings:w,info:i,score:Math.max(0,100-diags.reduce((s,d)=>s+(XB_SEVERITY_WEIGHT[d.severity]||0),0)/Math.max(1,count))};}
-    function xbOptions(opts){const textSafety=Number.isFinite(opts.textSafety)?deckClamp(opts.textSafety,1,2):1;return {strict:opts.strict!==false,trust:opts.trust==='trusted'?'trusted':'untrusted',...(textSafety>1?{textSafety}:{})};}
+    function xbOptions(opts){const textSafety=Number.isFinite(opts.textSafety)?deckClamp(opts.textSafety,1,2):1;return {strict:opts.strict!==false,trust:opts.trust==='untrusted'?'untrusted':'trusted',...(textSafety>1?{textSafety}:{})};}
     function compile(doc,opts={}){
       const o=xbOptions(opts);
       const checked=validate(doc,o),gate=xbVersionGate(doc);
@@ -9290,14 +9366,15 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       const label=el=>el.getAttribute('data-component-id')?'component '+el.getAttribute('data-component-id'):el.getAttribute('data-field')?'field '+el.getAttribute('data-field'):el.getAttribute('data-chrome')?'chrome '+el.getAttribute('data-chrome'):(typeof el.className==='string'&&el.className.trim()?'.'+el.className.trim().split(/\s+/).slice(0,2).join('.'):el.tagName.toLowerCase());
       const ownsText=el=>[...el.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());
       root.querySelectorAll('[data-xb-slide]').forEach(page=>{const i=Number(page.getAttribute('data-xb-slide')),P=page.getBoundingClientRect(),tol=2*(P.width/1920||1);
-        const push=(key,message,selector,details={})=>{if(seen.has(key))return;seen.add(key);out.push({code:'layout.measured-overflow',severity:'warning',path:'/slides/'+i,message,selector,...details});};
+        const evidence=el=>{const source=el.closest('[data-xb-source-path]'),r=el.getBoundingClientRect(),scale=P.width/1920||1;return {sourcePath:source?.getAttribute('data-xb-source-path')||null,bounds:{coordinateSpace:'slide-1920x1080',x:(r.left-P.left)/scale,y:(r.top-P.top)/scale,width:r.width/scale,height:r.height/scale}};};
+        const push=(key,message,selector,details={},el=page)=>{const source=el.closest('[data-xb-source-path]')?.getAttribute('data-xb-source-path')||'',dedupeKey=key+'|'+source;if(seen.has(dedupeKey))return;seen.add(dedupeKey);out.push({code:'layout.measured-overflow',severity:'warning',path:'/slides/'+i,message,selector,...details,...evidence(el)});};
         page.querySelectorAll('*').forEach(el=>{const tag=el.tagName.toLowerCase();if(tag==='style'||tag==='script'||tag==='title'||!ownsText(el))return;
           const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden')return;const r=el.getBoundingClientRect();if(!r.width||!r.height)return;
           const txt=el.textContent.trim().replace(/\s+/g,' ').slice(0,60);
-          if(el.namespaceURI!=='http://www.w3.org/2000/svg'&&/(hidden|clip)/.test(cs.overflow+cs.overflowX+cs.overflowY)&&(el.scrollHeight>el.clientHeight+2||el.scrollWidth>el.clientWidth+2))push(i+'|self|'+label(el),label(el)+': text exceeds its clipping box ("'+txt+'")',label(el),{requiredHeight:el.scrollHeight,availableHeight:el.clientHeight,reflowRatio:Math.max(1,el.scrollHeight/Math.max(1,el.clientHeight))});
+          if(el.namespaceURI!=='http://www.w3.org/2000/svg'&&/(hidden|clip)/.test(cs.overflow+cs.overflowX+cs.overflowY)&&(el.scrollHeight>el.clientHeight+2||el.scrollWidth>el.clientWidth+2))push(i+'|self|'+label(el),label(el)+': text exceeds its clipping box ("'+txt+'")',label(el),{requiredHeight:el.scrollHeight,availableHeight:el.clientHeight,reflowRatio:Math.max(1,el.scrollHeight/Math.max(1,el.clientHeight))},el);
           for(let p=el.parentElement;p&&p!==page;p=p.parentElement){if(p.closest('svg')&&p.tagName.toLowerCase()!=='svg')continue;const pc=getComputedStyle(p);if(!/(hidden|clip)/.test(pc.overflow+pc.overflowX+pc.overflowY))continue;const B=p.getBoundingClientRect();
-            if(r.right>B.right+tol||r.bottom>B.bottom+tol||r.left<B.left-tol||r.top<B.top-tol){push(i+'|'+label(p)+'|'+label(el),label(p)+': text is clipped ("'+txt+'")',label(p),{requiredHeight:p.scrollHeight,availableHeight:p.clientHeight,reflowRatio:Math.max(1,p.scrollHeight/Math.max(1,p.clientHeight))});return;}}
-          if(r.right>P.right+tol||r.bottom>P.bottom+tol||r.left<P.left-tol||r.top<P.top-tol)push(i+'|slide|'+label(el),label(el)+': text extends beyond the slide ("'+txt+'")',label(el));});});
+            if(r.right>B.right+tol||r.bottom>B.bottom+tol||r.left<B.left-tol||r.top<B.top-tol){push(i+'|'+label(p)+'|'+label(el),label(p)+': text is clipped ("'+txt+'")',label(p),{requiredHeight:p.scrollHeight,availableHeight:p.clientHeight,reflowRatio:Math.max(1,p.scrollHeight/Math.max(1,p.clientHeight))},el);return;}}
+          if(r.right>P.right+tol||r.bottom>P.bottom+tol||r.left<P.left-tol||r.top<P.top-tol)push(i+'|slide|'+label(el),label(el)+': text extends beyond the slide ("'+txt+'")',label(el),{},el);});});
       root.querySelectorAll('[data-xb-slide]').forEach(page=>{
         const index=Number(page.getAttribute('data-xb-slide'));
         page.querySelectorAll('svg').forEach((svg,svgIndex)=>{
@@ -9362,7 +9439,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       (doc.slides||[]).forEach((slide,i)=>{
         const list=slide?.components||slide?.content?.components;
         if(slide?.type!=='composer'||!Array.isArray(list)||slide.layout==='freeform'){out.push(slide);return;}
-        const chunks=xbWithDeck(doc,{...opts,strict:true,trust:'untrusted'},()=>XBDiag.mute(()=>{
+        const chunks=xbWithDeck(doc,{...opts,strict:true},()=>XBDiag.mute(()=>{
           const original=xbSolveGrid(list),expanded=list.flatMap((c,j)=>fragment(c,original.widths[j],XB_SCENE.height));
           const chunks=[];let cur=[];
           for(const c of expanded){const trial=cur.concat(c);if(cur.length&&!xbSolveGrid(trial).fits){chunks.push(cur);cur=[c];}else cur=trial;}
@@ -9425,14 +9502,32 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           mermaid:Object.entries(DECK_DESCRIPTORS.mermaid).map(([id,label])=>({id,label,data:'mermaid component: source string (enhanced renderer only)'}))},
         fieldAliases:DECK_FIELD_ALIASES,diagnostics:XB_DIAGNOSTIC_CODES,
         repairPolicy:{preserves:['business values','item order','text','transformed table rows'],automatic:['unambiguous names','numeric strings without rounding','layout bounds','pagination'],requiresAuthor:['missing version','missing values','invalid ranges','ambiguous relations','unsupported code']},
-        options:{strict:'default true: no sample data, missing data is an error',trust:'default "untrusted": no template code, HTML/SVG/CSS sanitized; "trusted" runs layouts/helpers',textSafety:'default 1, bounded [1,2]: deterministic body/table text width reserve; pipeline may calibrate it from browser overflow'}};
+        options:{strict:'default true: no sample data, missing data is an error',trust:'default "trusted": runs author layouts/helpers; "untrusted" sanitizes HTML/SVG/CSS',textSafety:'default 1, bounded [1,2]: deterministic body/table text width reserve; pipeline may calibrate it from browser overflow'}};
     }
     // Static, script-free page with every compiled slide (deterministic; CSS and sprite are passed in).
     function staticPage(compiled,{css='',sprite='',title,fonts=''}={}){
       const name=deckSafe(title||compiled.document?.metadata?.name||'XBrain presentation');
       return `<!DOCTYPE html>\n<html lang="vi">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="generator" content="XBrain compiler ${XB_COMPILER_VERSION}">\n<meta name="xbrain-build" content="${compiled.hash}">\n<title>${name}</title>\n${fonts}<style>${css}</style>\n<style>html,body{margin:0;background:#2B3736}body{display:flex;flex-direction:column;align-items:center;gap:24px;padding:24px 0}.xb-page{width:1920px;height:1080px;position:relative;overflow:hidden;background:#fff;flex:none}@media print{body{padding:0;gap:0;background:#fff}.xb-page{break-after:page;page-break-after:always}}</style>\n</head>\n<body>\n${sprite}\n${compiled.slides.map(s=>`<section class="xb-page" data-xb-slide="${s.index}" data-hash="${s.hash}">${s.html}</section>`).join('\n')}\n</body>\n</html>\n`;
     }
-    return Object.freeze({version:XB_COMPILER_VERSION,schema:xbSchema,contract,builtinDeck:()=>xbClone(deckDocument()),validate,compile,qa,repair,staticPage,measure:root=>xbMeasureSlides(root),measureSource:()=>xbMeasureSlides.toString(),hash:xbHash,codes:XB_DIAGNOSTIC_CODES});
+    // Resolve the same post-transform table rows and headers used by rendering.
+    // The agent repair gate compares these snapshots, never raw dataset guesses.
+    function tableSnapshots(doc,opts={}){
+      try{return xbWithDeck(doc,{strict:true,trust:opts.trust||'trusted'},(_,raw)=>{
+        const tables=[],errors=[];
+        function visit(c,path,depth){
+          if(!c||typeof c!=='object')return;if(depth>7){errors.push({path,code:'layout.depth'});return;}
+          if(c.type==='table'){
+            const result=XBDiag.collect(()=>{const rows=deckData(c);if(!Array.isArray(rows))throw Error('Table rows are not an array');return {rows:xbClone(rows),columns:xbClone(deckTablePlan(c,XB_SCENE.width,rows).cols)};});
+            for(const diagnostic of result.diagnostics)if(diagnostic.severity==='error')errors.push({path,code:diagnostic.code});
+            tables.push({path,...result.value});
+          }
+          if(DECK_CONTAINERS.has(c.type)){const key=c.children?'children':'components';if(Array.isArray(c[key]))c[key].forEach((child,i)=>visit(child,path+'/'+key+'/'+i,depth+1));}
+        }
+        (raw.slides||[]).forEach((slide,i)=>{if(slide?.type!=='composer')return;const list=Array.isArray(slide.components)?slide.components:slide.content?.components,base=Array.isArray(slide.components)?'/slides/'+i+'/components':'/slides/'+i+'/content/components';if(Array.isArray(list))list.forEach((c,j)=>visit(c,base+'/'+j,0));});
+        return {ok:errors.length===0,tables,errors};
+      });}catch(error){return {ok:false,tables:[],errors:[{path:'',code:'table.snapshot-failed'}]};}
+    }
+    return Object.freeze({version:XB_COMPILER_VERSION,schema:xbSchema,contract,builtinDeck:()=>xbClone(deckDocument()),validate,compile,qa,repair,staticPage,tableSnapshots,measure:root=>xbMeasureSlides(root),measureSource:()=>xbMeasureSlides.toString(),hash:xbHash,codes:XB_DIAGNOSTIC_CODES});
     })();
     globalThis.XBrainCompiler=XBrainCompiler;
     /* ==========================================================================
@@ -9489,11 +9584,466 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       exportHTML: () => buildEditedHTML(),
       exportJSON: () => JSON.stringify(deckDocument(), null, 2),
       ctx: XB_CTX,
-      // Agent-native compiler (strict + untrusted by default; pass {strict:false,trust:'trusted'} for editor parity).
+      // Agent-native compiler (strict + trusted by default; pass {trust:'untrusted'} for restricted rendering).
       compiler: XBrainCompiler,
       qa: (opts = {}) => XBrainCompiler.qa(deckDocument(), { measure: true, ...opts }),
       repair: (opts = {}) => XBrainCompiler.repair(deckDocument(), opts),
     };
+
+    /* AGENT: isolated candidate and transactional JSON Patch subset. */
+    const XBAgent=(({getDocument,getWindow,getNavigator,encodeBytes})=>{
+      const sessionId='sess-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+      let sequence=0,request=0,studioSnapshot=null,studioRevision=null,booted=false,resolveReady;
+      let candidate=null,candidateRevision=null,candidateStudioRevision=null;
+      let runSequence=0,renderQueue=Promise.resolve(),jobStatus='idle',activeJob=null;
+      const runs=new Map(),blockingCodes=new Set(['layout.measured-overflow','data.truncated','text.truncated','layout.legibility','layout.text-collision','slide.duplicate-id','render.enhanced-only']);
+      let artifactSequence=0;const artifacts=new Map();
+      let proposalSequence=0,repairAttempts=0;const proposals=new Map(),snapshots=new Map();
+      let eventSequence=0;const events=[],listeners=new Set();
+      const bootPromise=new Promise(resolve=>{resolveReady=resolve;});
+      const nextRevision=()=> 'r-'+sessionId+'-'+(++sequence);
+      function fail(code,message,details){const error=new Error(message);error.code=code;error.details=details;throw error;}
+      const own=(obj,key)=>Object.prototype.hasOwnProperty.call(obj,key);
+      function canonical(value){if(Array.isArray(value))return '['+value.map(canonical).join(',')+']';if(value&&typeof value==='object')return '{'+Object.keys(value).sort().map(key=>JSON.stringify(key)+':'+canonical(value[key])).join(',')+'}';return JSON.stringify(value);}
+      function jsonCopy(input){
+        const pending=[{value:input,depth:0}],seen=new Set();let count=0,chars=0;
+        while(pending.length){
+          const {value,depth,exit}=pending.pop();if(exit){seen.delete(value);continue;}if(++count>200000||depth>64)fail('INPUT_TOO_LARGE','JSON exceeds node or depth limit');
+          if(value===null||typeof value==='boolean')continue;
+          if(typeof value==='string'){chars+=value.length;if(chars>10485760)fail('INPUT_TOO_LARGE','JSON exceeds size limit');continue;}
+          if(typeof value==='number'&&Number.isFinite(value))continue;
+          if(typeof value!=='object')fail('INVALID_ARGUMENT','Input must contain only JSON values');
+          if(seen.has(value))fail('INVALID_ARGUMENT','Cyclic objects are not accepted');seen.add(value);pending.push({value,exit:true});
+          if(!Array.isArray(value)&&Object.getPrototypeOf(value)!==Object.prototype&&Object.getPrototypeOf(value)!==null)fail('INVALID_ARGUMENT','Input must contain plain JSON objects');
+          if(Object.getOwnPropertySymbols(value).length)fail('INVALID_ARGUMENT','Symbol properties are not JSON');
+          const keys=Object.keys(value),names=Object.getOwnPropertyNames(value);
+          if(names.length!==keys.length+(Array.isArray(value)?1:0))fail('INVALID_ARGUMENT','Non-enumerable properties are not accepted');
+          if(Array.isArray(value)&&(keys.length!==value.length||keys.some((key,i)=>key!==String(i))))fail('INVALID_ARGUMENT','Sparse arrays or extra array properties are not JSON');
+          for(const key of keys){
+            const d=Object.getOwnPropertyDescriptor(value,key);if(!d||!own(d,'value'))fail('INVALID_ARGUMENT','Accessors are not accepted');
+            chars+=key.length;if(chars>10485760)fail('INPUT_TOO_LARGE','JSON exceeds size limit');pending.push({value:d.value,depth:depth+1});
+          }
+        }
+        const text=JSON.stringify(input);if(encodeBytes(text).length>10485760)fail('INPUT_TOO_LARGE','JSON exceeds 10 MiB');
+        return JSON.parse(text);
+      }
+      function checkDocument(doc){
+        if(!doc||typeof doc!=='object'||Array.isArray(doc))fail('INVALID_ARGUMENT','Document must be an object');
+        if(doc.version!=='1.0')fail('VERSION_UNSUPPORTED','Document version must be 1.0');
+        if(!Array.isArray(doc.slides)||doc.slides.length<1)fail('INVALID_ARGUMENT','Document must contain at least one slide');
+        if(doc.slides.length>400)fail('INPUT_TOO_LARGE','Document exceeds 400 slides');
+      }
+      function guardBase(args){
+        if(!args||!own(args,'baseRevision'))fail('INVALID_ARGUMENT','baseRevision is required');
+        if(args.baseRevision!==null&&typeof args.baseRevision!=='string')fail('INVALID_ARGUMENT','baseRevision must be a string or null');
+        if(args.baseRevision!==candidateRevision)fail('REVISION_CONFLICT','Candidate revision changed',{expected:args.baseRevision,current:candidateRevision});
+      }
+      function pointer(path){
+        if(typeof path!=='string'||(path!==''&&!path.startsWith('/'))||path.length>4096)fail('PATCH_PATH_INVALID','Invalid JSON Pointer');
+        if(path==='')return [];
+        return path.slice(1).split('/').map(part=>{if(/~(?![01])/.test(part))fail('PATCH_PATH_INVALID','Invalid JSON Pointer escape');return part.replace(/~1/g,'/').replace(/~0/g,'~');});
+      }
+      function arrayIndex(key,length,add){
+        if(add&&key==='-')return length;
+        if(!/^(0|[1-9]\d*)$/.test(key))fail('PATCH_PATH_INVALID','Invalid array index');
+        const index=Number(key);if(!Number.isSafeInteger(index)||index>(add?length:length-1))fail('PATCH_PATH_INVALID','Array index out of bounds');return index;
+      }
+      function at(root,parts){
+        let value=root;for(const key of parts){if(value===null||typeof value!=='object')fail('PATCH_PATH_INVALID','Pointer parent is not a container');const k=Array.isArray(value)?arrayIndex(key,value.length,false):key;if(!own(value,k))fail('PATCH_PATH_INVALID','Pointer does not exist');value=value[k];}return value;
+      }
+      function patch(args){
+        guardBase(args);if(!candidate)fail('SOURCE_UNAVAILABLE','No candidate');
+        const operations=jsonCopy(args.operations);if(!Array.isArray(operations)||operations.length>256)fail('INPUT_TOO_LARGE','Patch must have at most 256 operations');
+        let doc=jsonCopy(candidate);const changedPaths=[];
+        let scopeParts=null;
+        if(args.scope!=null){
+          const scope=jsonCopy(args.scope);if(!scope||typeof scope!=='object'||typeof scope.sourcePath!=='string')fail('INVALID_ARGUMENT','Scope requires sourcePath');
+          scopeParts=pointer(scope.sourcePath);at(doc,scopeParts);
+          if(scope.slideId!=null){if(scopeParts[0]!=='slides'||!/^\d+$/.test(scopeParts[1]||'')||doc.slides[Number(scopeParts[1])]?.id!==scope.slideId)fail('PATCH_OUT_OF_SCOPE','Scope slide does not match candidate');}
+        }
+        for(const operation of operations){
+          if(!operation||typeof operation!=='object'||Array.isArray(operation))fail('INVALID_ARGUMENT','Invalid patch operation');
+          const op=operation.op,parts=pointer(operation.path);
+          if(!['add','remove','replace','test'].includes(op))fail('PATCH_OP_UNSUPPORTED','Unsupported patch operation');
+          if(['add','replace','test'].includes(op)&&!own(operation,'value'))fail('INVALID_ARGUMENT','Patch value is required');
+          if(op!=='test'&&scopeParts&&!scopeParts.every((v,i)=>parts[i]===v))fail('PATCH_OUT_OF_SCOPE','Patch changes data outside scope');
+          if(op==='test'){if(canonical(at(doc,parts))!==canonical(operation.value))fail('PATCH_TEST_FAILED','Patch test failed');continue;}
+          if(!parts.length){if(op==='remove')fail('PATCH_PATH_INVALID','Cannot remove document root');doc=operation.value;}
+          else{
+            const parent=at(doc,parts.slice(0,-1)),key=parts[parts.length-1];
+            if(parent===null||typeof parent!=='object')fail('PATCH_PATH_INVALID','Pointer parent is not a container');
+            if(Array.isArray(parent)){const i=arrayIndex(key,parent.length,op==='add');if(op==='add')parent.splice(i,0,operation.value);else if(op==='remove')parent.splice(i,1);else parent[i]=operation.value;}
+            else {if(op!=='add'&&!own(parent,key))fail('PATCH_PATH_INVALID','Pointer does not exist');if(op==='remove')delete parent[key];else Object.defineProperty(parent,key,{value:operation.value,writable:true,enumerable:true,configurable:true});}
+          }
+          changedPaths.push(operation.path);
+        }
+        doc=jsonCopy(doc);checkDocument(doc);
+        const indices=new Set();let allSlides=operations.some(op=>['add','remove'].includes(op.op)&&/^\/slides\/(?:\d+|-)$/.test(op.path));for(const path of changedPaths){const match=/^\/slides\/(\d+)(?:\/|$)/.exec(path);if(match)indices.add(Number(match[1]));else allSlides=true;}
+        const affectedSlideIds=[...new Set((allSlides?[...candidate.slides,...doc.slides].map(s=>s?.id):[...indices].flatMap(i=>[candidate.slides[i]?.id,doc.slides[i]?.id])).filter(Boolean))];
+        return {document:doc,changedPaths,affectedSlideIds,beforeFingerprint:XBrainCompiler.hash(canonical(candidate)),afterFingerprint:XBrainCompiler.hash(canonical(doc))};
+      }
+      function rememberCandidate(){if(candidate){snapshots.set(candidateRevision,jsonCopy(candidate));while(snapshots.size>4)snapshots.delete(snapshots.keys().next().value);}}
+      function agentContentDiagnostics(doc){
+        const out=[];
+        const hidden=(path)=>out.push({code:'data.unrendered-children',severity:'error',path,message:'This component collection is not rendered; move it to a supported container.'});
+        (doc.slides||[]).forEach((slide,index)=>{if(!slide||typeof slide!=='object')return;const base='/slides/'+index;
+          if(slide.type==='composer'&&Object.prototype.hasOwnProperty.call(slide,'components')&&Array.isArray(slide.content?.components)&&slide.content.components.length)hidden(base+'/content/components');
+          function visit(c,path,depth){if(!c||typeof c!=='object'||depth>7)return;
+            if(!DECK_CONTAINERS.has(c.type||'text'))for(const key of ['children','components'])if(Array.isArray(c[key])&&c[key].length)hidden(path+'/'+key);
+            if(DECK_CONTAINERS.has(c.type||'text')&&c.children&&Array.isArray(c.components)&&c.components.length)hidden(path+'/components');
+            for(const key of ['children','components'])if(Array.isArray(c[key]))c[key].forEach((child,i)=>visit(child,path+'/'+key+'/'+i,depth+1));
+          }
+          for(const [key,list] of [['components',slide.components],['content/components',slide.content?.components]])if(Array.isArray(list))list.forEach((c,i)=>visit(c,base+'/'+key+'/'+i,0));
+        });return out;
+      }
+      function storeCandidate(doc){
+        checkDocument(doc);const validation=XBrainCompiler.validate(doc,{strict:true,trust:'trusted'}),diagnostics=[...validation.diagnostics,...agentContentDiagnostics(doc)],seen=new Set(),normalization=[];
+        doc.slides.forEach((slide,index)=>{if(!slide||typeof slide.id!=='string'||!slide.id)normalization.push({path:'/slides/'+index+'/id',reason:'missing'});else if(seen.has(slide.id))normalization.push({path:'/slides/'+index+'/id',reason:'duplicate'});else seen.add(slide.id);});
+        candidate=doc;candidateRevision=nextRevision();candidateStudioRevision=studioRevision;repairAttempts=0;rememberCandidate();
+        return {revision:candidateRevision,data:{validation:{valid:validation.ok&&!diagnostics.some(d=>d.severity==='error')},diagnostics,normalization,validationFresh:true,qaFresh:false}};
+      }
+      function syncStudio(){
+        const snapshot=JSON.stringify(deckDocument());
+        if(snapshot!==studioSnapshot){studioSnapshot=snapshot;studioRevision=nextRevision();}
+        return studioRevision;
+      }
+      function candidateSnapshot(revision){
+        if(!candidate)fail('SOURCE_UNAVAILABLE','No candidate');
+        if(revision!=null&&typeof revision!=='string')fail('INVALID_ARGUMENT','revision must be a string');
+        if(revision!=null&&revision!==candidateRevision)fail('REVISION_CONFLICT','Candidate revision changed',{expected:revision,current:candidateRevision});
+        syncStudio();return {document:jsonCopy(candidate),revision:candidateRevision,studioRevision};
+      }
+      function runtimeAssets(){
+        const doc=getDocument();return {css:[...doc.head.querySelectorAll('style')].map(el=>el.textContent).join('\n'),sprite:doc.querySelector('svg.v1-svg-defs')?.outerHTML||'',fonts:[...doc.head.querySelectorAll('link[rel="stylesheet"][href]')].map(el=>el.outerHTML).join('\n')};
+      }
+      function agentPage(compiled,preview=false){
+        const assets=runtimeAssets();
+        let page=XBrainCompiler.staticPage(compiled,{css:assets.css,sprite:assets.sprite,fonts:assets.fonts});
+        if(preview)page=page.replace('</head>','<style>body{padding:0;gap:0}</style></head>');
+        return page;
+      }
+      function waitLimit(promise,ms){let timer;return Promise.race([promise,new Promise(resolve=>{timer=setTimeout(()=>resolve('timeout'),ms);})]).finally(()=>clearTimeout(timer));}
+      function instrumentPreview(doc,source,indices){
+        const pages=[...doc.body.children].filter(node=>node.matches('section.xb-page[data-xb-slide]'));
+        if(pages.length!==indices.length||pages.some((page,i)=>page.getAttribute('data-xb-slide')!==String(indices[i])))throw new Error('Preview slide boundaries are invalid');
+        const saved=[],added=[],selectors={};
+        doc.querySelectorAll('[data-xb-source-path]').forEach(node=>{saved.push([node,'data-xb-source-path',node.getAttribute('data-xb-source-path')]);node.removeAttribute('data-xb-source-path');});
+        doc.querySelectorAll('[data-xb-slide]').forEach(node=>{if(!pages.includes(node)){saved.push([node,'data-xb-slide',node.getAttribute('data-xb-slide')]);node.removeAttribute('data-xb-slide');}});
+        pages.forEach(page=>{
+          const index=Number(page.getAttribute('data-xb-slide')),slide=source.slides[index];if(slide?.type!=='composer')return;
+          const list=Array.isArray(slide.components)?slide.components:slide.content?.components,base=Array.isArray(slide.components)?'/slides/'+index+'/components':'/slides/'+index+'/content/components';
+          if(!Array.isArray(list))return;const paths=[];
+          function visit(c,path,depth){if(!c||typeof c!=='object'||depth>7)return;const type=c.type||'text';paths.push({path,type});if(DECK_CONTAINERS.has(type)){const key=c.children?'children':'components',children=c[key];if(Array.isArray(children))children.forEach((child,i)=>visit(child,path+'/'+key+'/'+i,depth+1));}}
+          list.forEach((c,i)=>visit(c,base+'/'+i,0));const nodes=[...page.querySelectorAll('.v1-component')];
+          if(nodes.length!==paths.length||nodes.some((node,i)=>!node.classList.contains('v1-'+paths[i].type)))return;
+          nodes.forEach((node,i)=>{node.setAttribute('data-xb-source-path',paths[i].path);added.push(node);const steps=[];let child=node;
+            while(child&&child!==page){const parent=child.parentElement;if(!parent)break;steps.unshift('*:nth-child('+([...parent.children].indexOf(child)+1)+')');child=parent;}
+            if(child===page)selectors[paths[i].path]='body > section.xb-page[data-xb-slide="'+index+'"] > '+steps.join(' > ');
+          });
+        });
+        return {selectors,restore(){added.forEach(node=>node.removeAttribute('data-xb-source-path'));saved.forEach(([node,key,value])=>node.setAttribute(key,value));}};
+      }
+      async function measureChunk(compiled,subset,source){
+        const docRoot=getDocument(),frame=docRoot.createElement('iframe');frame.setAttribute('aria-hidden','true');
+        frame.style.cssText='position:fixed;left:-32000px;top:0;width:1920px;height:1080px;border:0;pointer-events:none';
+        try{
+          const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(new Error('Preview failed to load'));});
+          frame.srcdoc=agentPage({...compiled,slides:subset},true);docRoot.body.appendChild(frame);
+          if(await waitLimit(loaded,5000)==='timeout')return {status:'timeout',diagnostics:[],fontStatus:'timeout',assetStatus:'timeout'};
+          const doc=frame.contentDocument;if(!doc||!doc.body)throw new Error('Preview document unavailable');
+          if(doc.body.querySelectorAll('*').length>30000)return {status:'failed',diagnostics:[{code:'qa.resource-limit',severity:'error',path:'',message:'Preview batch exceeds 30,000 DOM nodes'}],fontStatus:'unavailable',assetStatus:'unavailable'};
+          const fontStatus=doc.fonts?await waitLimit(doc.fonts.ready.then(()=> 'ready'),3000):'unavailable';
+          const images=[...doc.images];const imageStatus=await waitLimit(Promise.all(images.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});}))).then(()=> 'ready'),3000);
+          const assetStatus=imageStatus==='timeout'?'timeout':images.some(img=>!img.naturalWidth)?'failed':'ready';
+          if(await waitLimit(new Promise(resolve=>getWindow().requestAnimationFrame(()=>getWindow().requestAnimationFrame(resolve))),3000)==='timeout')return {status:'timeout',diagnostics:[],fontStatus,assetStatus};
+          const mapping=instrumentPreview(doc,source,subset.map(slide=>slide.index));let diagnostics;
+          try{diagnostics=XBrainCompiler.measure(doc.body);}finally{mapping.restore();}
+          diagnostics.forEach(item=>{if(item.sourcePath&&mapping.selectors[item.sourcePath]){item.measurementLabel=item.selector;item.selector=mapping.selectors[item.sourcePath];}});
+          return {status:'completed',diagnostics,fontStatus,assetStatus};
+        }finally{frame.remove();}
+      }
+      function findingsFor(diagnostics,doc,runId){
+        return diagnostics.map((d,i)=>{
+          const match=/^\/slides\/(\d+)(?:\/|$)/.exec(d.path||''),index=match?Number(match[1]):null,slide=index==null?null:doc.slides[index];
+          const candidatePath=d.sourcePath||d.path;let exact=false;if(match&&typeof candidatePath==='string'&&candidatePath.startsWith('/slides/'+index+'/')&&/\/(?:components|children)\/\d+(?:\/|$)/.test(candidatePath)){try{at(doc,pointer(candidatePath));exact=true;}catch(_){}}
+          const sourcePath=exact?candidatePath:(index==null?'':'/slides/'+index),selector=exact&&d.sourcePath?d.selector:null;
+          return {...d,findingId:runId+':f'+(i+1),origin:d.measurement==='browser'||d.code==='layout.measured-overflow'?'browser-measure':'compiler',blocking:d.severity==='error'||blockingCodes.has(d.code),slideId:slide?.id??null,sourcePath,componentRef:exact?runId+':'+sourcePath:null,granularity:exact?'component':'slide',confidence:exact?'high':'low',measurementLabel:d.measurementLabel||d.selector||null,selector};
+        });
+      }
+      function runResult(run){
+        syncStudio();const fresh=run.revision===candidateRevision&&run.studioRevision===studioRevision;
+        const reasons=run.findings.filter(f=>f.blocking).map(f=>({code:f.code,path:f.sourcePath}));
+        if(run.measurement!=='browser-completed')reasons.push({code:'QA_NOT_MEASURED'});
+        if(run.checkedSlideIds.length!==run.totalSlideCount)reasons.push({code:'QA_PARTIAL'});
+        if(run.profile!=='agent-strict')reasons.push({code:'QA_PROFILE_MISMATCH'});
+        if(run.fontStatus!=='ready')reasons.push({code:'ASSET_NOT_READY'});
+        if(!fresh)reasons.push({code:'QA_STALE'});
+        return {runId:run.runId,status:fresh?run.status:'stale',fresh,qa:{passed:reasons.length===0,checkedSlides:run.checkedSlideIds.length,totalSlides:run.totalSlideCount,errors:run.findings.filter(f=>f.severity==='error').length,warnings:run.findings.filter(f=>f.severity==='warning').length,measurement:run.measurement,visualReview:run.review?'agent-reported':'not-assessed',review:run.review||null,gateReasons:reasons},findings:run.findings};
+      }
+      function runManifest(run){return {compilerVersion:XBrainCompiler.version,inputFingerprint:run.inputFingerprint,profile:run.profile,strict:true,trust:'trusted',renderMode:run.renderMode,fontProfile:'document-fonts-with-fallback',assetPolicy:'browser-managed',viewport:run.viewport,fontStatus:run.fontStatus,assetStatus:run.assetStatus,checkedSlideIds:run.checkedSlideIds,totalSlideCount:run.totalSlideCount,startedAt:run.startedAt,endedAt:run.endedAt,htmlHash:run.compiled.hash};}
+      function strictRun(revision,runId){
+        const run=runId?runs.get(runId):[...runs.values()].reverse().find(r=>r.revision===revision&&r.profile==='agent-strict');
+        if(!run)fail('QA_NOT_MEASURED','A full browser QA run is required');
+        if(run.revision!==revision||!runResult(run).fresh)fail('QA_STALE','QA does not match the current candidate and Studio');
+        if(run.profile!=='agent-strict')fail('QA_STALE','QA profile does not match strict export');
+        const quality=runResult(run).qa;
+        if(quality.measurement!=='browser-completed'||quality.checkedSlides!==quality.totalSlides)fail('QA_NOT_MEASURED','Full-deck browser measurement is required',{gateReasons:quality.gateReasons});
+        if(!quality.passed)fail('QA_GATE_FAILED','QA findings block this operation',{gateReasons:quality.gateReasons.slice(0,100)});
+        return run;
+      }
+      // Conservative audit: an automatic repair is accepted only when the
+      // original business atoms can still be found in order and without edits.
+      function preservation(from,to,changes=[]){
+        const componentGeometry=new Set(['type','variant','layout','position','height','minHeight','width','span','gap','x','y','style']);
+        const split=changes.some(c=>c.action==='split-slide');let tableAudit={status:'not-required',sourceTables:0,fragmentTables:0};
+        if(split){
+          const original=XBrainCompiler.tableSnapshots(from,{trust:'trusted'}),repaired=XBrainCompiler.tableSnapshots(to,{trust:'trusted'});let index=0,ok=original.ok&&repaired.ok;
+          if(ok)for(const source of original.tables){let offset=0,consumed=false;
+            do{const fragment=repaired.tables[index++];if(!fragment||canonical(fragment.columns)!==canonical(source.columns)){ok=false;break;}
+              consumed=true;for(const row of fragment.rows){if(offset>=source.rows.length||canonical(row)!==canonical(source.rows[offset++])){ok=false;break;}}
+              if(!ok||(!fragment.rows.length&&offset<source.rows.length)){ok=false;break;}
+            }while(offset<source.rows.length);
+            if(!ok||!consumed||offset!==source.rows.length){ok=false;break;}
+          }
+          if(index!==repaired.tables.length)ok=false;
+          tableAudit={status:ok?'preserved':'unverified',sourceTables:original.tables.length,fragmentTables:repaired.tables.length,errors:[...original.errors,...repaired.errors].slice(0,20)};
+        }
+        function atoms(doc){const out=[];function visit(value,path,key){
+          if(Array.isArray(value)){value.forEach((v,i)=>visit(v,path+'/'+i,key));return;}
+          if(value&&typeof value==='object'){const slideNode=/^\/slides\/\d+$/.test(path),componentNode=/^\/slides\/\d+\/(?:content\/)?components\/\d+(?:(?:\/children|\/components)\/\d+)*$/.test(path);
+            for(const [k,v] of Object.entries(value)){const p=path+'/'+k.replace(/~/g,'~0').replace(/\//g,'~1');if((slideNode&&['id','type','layout','layoutName','group'].includes(k))||(componentNode&&componentGeometry.has(k))||(split&&componentNode&&value.type==='table'&&['data','dataRef','dataset','transform','columns'].includes(k)))continue;visit(v,p,k);}return;}
+          out.push({key,value,path});
+        }visit(doc,'','');return out;}
+        const before=atoms(from),after=atoms(to);let cursor=0;const missing=[];
+        for(const item of before){let found=-1,end=-1;
+          for(let j=cursor;j<after.length;j++){
+            if(after[j].key!==item.key)continue;
+            if(after[j].value===item.value||(/^\/slides\/\d+\/(?:content\/)?title$/.test(item.path)&&typeof item.value==='string'&&typeof after[j].value==='string'&&after[j].value.startsWith(item.value)&&/^ \(\d+\/\d+\)$/.test(after[j].value.slice(item.value.length)))){found=j;end=j+1;break;}
+            if(typeof item.value==='string'&&/^\/slides\/\d+\/(?:content\/)?components\/\d+(?:(?:\/children|\/components)\/\d+)*\/(?:text|content)$/.test(item.path)&&typeof after[j].value==='string'){
+              let joined='';for(let k=j;k<after.length&&k<j+128&&after[k].key===item.key&&typeof after[k].value==='string';k++){joined+=after[k].value;if(joined===item.value){found=j;end=k+1;break;}if(!item.value.startsWith(joined))break;}if(found>=0)break;
+            }
+          }
+          if(found<0){missing.push(item.path);break;}cursor=end;
+        }
+        return {status:missing.length||tableAudit.status==='unverified'?'unverified':'preserved',missingPaths:missing.slice(0,20),tableAudit,method:'ordered-business-atoms-and-transformed-tables'};
+      }
+      function changedPaths(a,b,path='',out=[]){
+        if(canonical(a)===canonical(b))return out;
+        if(out.length>=1000)return out;
+        if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b)||(Array.isArray(a)&&a.length!==b.length)){out.push(path);return out;}
+        const keys=new Set([...Object.keys(a),...Object.keys(b)]);
+        for(const key of keys){const p=path+'/'+key.replace(/~/g,'~0').replace(/\//g,'~1');if(!own(a,key)||!own(b,key))out.push(p);else changedPaths(a[key],b[key],p,out);if(out.length>=1000)break;}return out;
+      }
+      async function renderSnapshot(args){
+        const snap=candidateSnapshot(args?.revision),startedAt=new Date().toISOString(),inputFingerprint=XBrainCompiler.hash(canonical(snap.document));jobStatus='compiling';
+        try{
+          if(args?.profile&&!['agent-strict','draft'].includes(args.profile))fail('INVALID_ARGUMENT','Unsupported profile');
+          const compiled=XBrainCompiler.compile(snap.document,{strict:true,trust:'trusted'});
+          const available=compiled.slides;if(available.some(s=>s.html.length>1048576)||available.reduce((sum,s)=>sum+s.html.length,0)>33554432)fail('INPUT_TOO_LARGE','Compiled HTML exceeds the preview budget');let selected=available;
+          if(args?.slides!==undefined){
+            if(!Array.isArray(args.slides)||!args.slides.length)fail('INVALID_ARGUMENT','slides must be a nonempty array');
+            const indices=new Set();for(const value of args.slides){const i=typeof value==='number'?value:available.findIndex(s=>s.id===value);if(!Number.isInteger(i)||i<0||i>=available.length||indices.has(i))fail('INVALID_ARGUMENT','Unknown or duplicate slide');indices.add(i);}selected=available.filter(s=>indices.has(s.index));
+          }
+          const runId='run-'+(++runSequence),diagnostics=compiled.diagnostics.concat(agentContentDiagnostics(snap.document)),fontStatuses=[],assetStatuses=[],checked=[];let measurement=selected.length?'browser-completed':'unavailable';activeJob={runId,cancelled:false};
+          const batches=[];let batch=[],batchSize=0;for(const slide of selected){if(batch.length&&(batch.length>=5||batchSize+slide.html.length>1048576)){batches.push(batch);batch=[];batchSize=0;}batch.push(slide);batchSize+=slide.html.length;}if(batch.length)batches.push(batch);
+          jobStatus='measuring';
+          for(const subset of batches){
+            if(activeJob.cancelled){measurement='partial';break;}
+            const measured=await measureChunk(compiled,subset,snap.document);fontStatuses.push(measured.fontStatus);assetStatuses.push(measured.assetStatus);diagnostics.push(...measured.diagnostics);
+            if(measured.status!=='completed'){measurement='failed';break;}checked.push(...subset.map(s=>s.id));
+          }
+          const findings=findingsFor(diagnostics,snap.document,runId);
+          const run={runId,revision:snap.revision,studioRevision:snap.studioRevision,inputFingerprint,compiled,sourceDocument:snap.document,checkedSlideIds:checked,totalSlideCount:snap.document.slides.length,measurement,findings,fontStatus:fontStatuses.includes('timeout')?'timeout':fontStatuses.includes('unavailable')?'unavailable':'ready',assetStatus:assetStatuses.includes('timeout')?'timeout':assetStatuses.includes('failed')?'failed':'ready',status:measurement==='partial'?'cancelled':findings.length?'completed-with-findings':'completed',profile:args?.profile||'agent-strict',startedAt,endedAt:new Date().toISOString(),renderMode:'native',viewport:{width:1920,height:1080}};
+          runs.set(runId,run);while(runs.size>3)runs.delete(runs.keys().next().value);
+          return {revision:snap.revision,data:{...runResult(run),manifest:runManifest(run),slides:selected.map(({index,id,type,hash})=>({index,id,type,hash}))}};
+        }finally{activeJob=null;jobStatus='idle';}
+      }
+      function response(operation,work){
+        const requestId='req-'+(++request),start=Date.now();
+        return bootPromise.then(async()=>{
+          let envelope;
+          try{const result=await work();envelope={apiVersion:'agent.1',ok:true,operation,requestId,sessionId,revision:result.revision??null,durationMs:Date.now()-start,data:JSON.parse(JSON.stringify(result.data))};}
+          catch(error){envelope={apiVersion:'agent.1',ok:false,operation,requestId,sessionId,revision:candidateRevision??studioRevision,durationMs:Date.now()-start,error:{code:error.code||'OPERATION_FAILED',message:String(error.message||error),retryable:['REVISION_CONFLICT','PATCH_TEST_FAILED'].includes(error.code),...(error.details?{details:JSON.parse(JSON.stringify(error.details))}:{})}};}
+          if(!['ready','getState','getDeck','getLogs','getPreview','getRun','inspect'].includes(operation)){
+            const entry={eventId:++eventSequence,operation,status:envelope.ok?'success':'error',revision:envelope.revision,code:envelope.error?.code||null,durationMs:envelope.durationMs,time:new Date().toISOString()};
+            events.push(entry);if(events.length>200)events.shift();for(const listener of listeners){try{listener({...entry});}catch(_){}}
+          }
+          return envelope;
+        });
+      }
+      const facade=Object.freeze({
+        ready:()=>response('ready',()=>({revision:syncStudio(),data:{ready:true,release:'1.0.0',schemaVersion:XB_VERSION,compilerVersion:XBrainCompiler.version}})),
+        capabilities:({detail='compact'}={})=>response('capabilities',()=>{
+          if(!['compact','full'].includes(detail)){const e=new Error('Unsupported capability detail');e.code='INVALID_ARGUMENT';throw e;}
+          const contract=XBrainCompiler.contract();
+          const data={release:contract.release,schemaVersion:contract.schemaVersion,compilerVersion:contract.compiler,agentApiVersion:'agent.1',documentLimit:{maxSlides:400,maxJsonBytes:10485760,maxNodes:200000,maxDepth:64,maxPatchOperations:256},scene:contract.scene.slide,
+            modes:{javascript:true,browserUi:true,offlineCore:true,backendRequired:false},
+            features:{candidate:true,jsonPatch:true,patchOperations:['add','remove','replace','test'],browserMeasure:true,repairProposal:true,studioCommit:true,secureStudioCommit:false,trustedAuthorContent:true,sandboxedPreview:false,cancelBetweenBatches:true,inPagePngScreenshot:false,visualVisionQa:'external-agent',renderedHtml:true,staticHtmlExport:true,editableHtmlExport:false},
+            qualityPolicy:{blockingCodes:[...blockingCodes],renderProfiles:['draft','agent-strict'],exportProfiles:['draft','agent-strict','agent-strict-reviewed']},agentDiagnostics:['data.unrendered-children','qa.resource-limit'],
+            apiErrors:['OPERATION_FAILED','INVALID_ARGUMENT','SOURCE_UNAVAILABLE','REVISION_CONFLICT','VERSION_UNSUPPORTED','INPUT_TOO_LARGE','PATCH_PATH_INVALID','PATCH_TEST_FAILED','PATCH_OUT_OF_SCOPE','PATCH_OP_UNSUPPORTED','RENDER_NOT_READY','REPAIR_LIMIT','REPAIR_SCOPE_ESCALATION','PRESERVATION_UNVERIFIED','REPAIR_STAGNATED','QA_NOT_MEASURED','QA_STALE','QA_GATE_FAILED','EXPORT_FORMAT_UNAVAILABLE','VISUAL_REVIEW_REQUIRED','DOWNLOAD_BLOCKED'],
+            counts:{layouts:contract.layouts.length,components:contract.components.length,chartVariants:contract.variants.chart.length},links:{schema:'getSchema',contract:'getContract'}};
+          if(detail==='full')data.contract=contract;
+          return {revision:syncStudio(),data};
+        }),
+        getSchema:()=>response('getSchema',()=>({revision:syncStudio(),data:XBrainCompiler.schema()})),
+        getContract:()=>response('getContract',()=>({revision:syncStudio(),data:XBrainCompiler.contract()})),
+        getState:()=>response('getState',()=>{syncStudio();const latest=[...runs.values()].at(-1);return {revision:candidateRevision??studioRevision,data:{ready:booted,mode:currentAppMode,studioRevision,candidateRevision,hasCandidate:!!candidate,candidateStudioRevision,diverged:!!candidate&&candidateStudioRevision!==studioRevision,jobStatus,activeRunId:activeJob?.runId||null,qaFreshness:latest?(runResult(latest).fresh?'fresh':'stale'):'unavailable'}};}),
+        getDeck:(args={})=>response('getDeck',()=>{
+          const source=args?.source||(candidate?'candidate':'studio');
+          if(source==='candidate'&&candidate)return {revision:candidateRevision,data:{source,document:jsonCopy(candidate)}};
+          if(source==='studio')return {revision:syncStudio(),data:{source,document:xbClone(deckDocument())}};
+          fail('SOURCE_UNAVAILABLE','Deck source is unavailable: '+source);
+        }),
+        setCandidate:args=>response('setCandidate',()=>{
+          guardBase(args);const doc=jsonCopy(args.document);syncStudio();return storeCandidate(doc);
+        }),
+        syncFromStudio:args=>response('syncFromStudio',()=>{
+          guardBase(args);if(!own(args,'expectedStudioRevision'))fail('INVALID_ARGUMENT','expectedStudioRevision is required');
+          if(typeof args.expectedStudioRevision!=='string')fail('INVALID_ARGUMENT','expectedStudioRevision must be a string');
+          syncStudio();if(args.expectedStudioRevision!==studioRevision)fail('REVISION_CONFLICT','Studio revision changed',{expected:args.expectedStudioRevision,current:studioRevision});
+          return storeCandidate(jsonCopy(deckDocument()));
+        }),
+        validate:(args={})=>response('validate',()=>{const snap=candidateSnapshot(args?.revision);if(args?.profile&&!['agent-strict','draft'].includes(args.profile))fail('INVALID_ARGUMENT','Unsupported profile');const result=XBrainCompiler.compile(snap.document,{strict:true,trust:'trusted'}),diagnostics=result.diagnostics.concat(agentContentDiagnostics(snap.document)),errors=diagnostics.filter(d=>d.severity==='error').length,warnings=diagnostics.filter(d=>d.severity==='warning').length;return {revision:snap.revision,data:{validation:{valid:errors===0,errors,warnings},diagnostics}};}),
+        render:(args={})=>response('render',()=>{const job=renderQueue.then(()=>renderSnapshot(args));renderQueue=job.catch(()=>{});return job;}),
+        cancel:(args={})=>response('cancel',()=>{if(!activeJob||(args.runId&&args.runId!==activeJob.runId))fail('RENDER_NOT_READY','No matching active render');activeJob.cancelled=true;return {revision:candidateRevision,data:{runId:activeJob.runId,accepted:true,scope:'between-measurement-batches'}};}),
+        inspect:(args={})=>response('inspect',()=>{const run=args.runId?runs.get(args.runId):[...runs.values()].at(-1);if(!run)fail('RENDER_NOT_READY','No such render run');const data=runResult(run);if(args.slideId!=null)data.findings=data.findings.filter(f=>f.slideId===args.slideId);return {revision:run.revision,data};}),
+        getRun:(args={})=>response('getRun',()=>{const run=runs.get(args.runId);if(!run)fail('RENDER_NOT_READY','No such render run');return {revision:run.revision,data:{...runResult(run),manifest:runManifest(run)}};}),
+        getPreview:(args={})=>response('getPreview',()=>{const run=runs.get(args.runId);if(!run)fail('RENDER_NOT_READY','No such render run');const slide=typeof args.slide==='number'?run.compiled.slides.find(s=>s.index===args.slide):run.compiled.slides.find(s=>s.id===args.slide);if(!slide||!run.checkedSlideIds.includes(slide.id))fail('INVALID_ARGUMENT','Slide was not measured in this run');return {revision:run.revision,data:{runId:run.runId,slideId:slide.id,index:slide.index,fresh:runResult(run).fresh,html:agentPage({...run.compiled,slides:[slide]},true),previewSelector:'[data-testid="xb-agent-preview"]'}};}),
+        getLogs:(args={})=>response('getLogs',()=>{const after=Number(args.after)||0,limit=Math.max(1,Math.min(200,Number(args.limit)||100));return {revision:candidateRevision,data:{events:events.filter(e=>e.eventId>after).slice(0,limit).map(e=>({...e}))}};}),
+        clearLogs:()=>response('clearLogs',()=>{events.length=0;return {revision:candidateRevision,data:{cleared:true}};}),
+        subscribe:handler=>{if(typeof handler!=='function')throw new TypeError('handler must be a function');listeners.add(handler);return ()=>listeners.delete(handler);},
+        proposeRepair:(args={})=>response('proposeRepair',()=>{
+          guardBase(args);if(!candidate)fail('SOURCE_UNAVAILABLE','No candidate');if(args.strategy&&args.strategy!=='deterministic')fail('INVALID_ARGUMENT','Unsupported repair strategy');
+          if(repairAttempts>=3)fail('REPAIR_LIMIT','Repair proposal limit reached; revise the candidate explicitly');repairAttempts++;
+          const before=jsonCopy(candidate),result=XBrainCompiler.repair(before,{strict:true,trust:'trusted'}),repaired=jsonCopy(result.document);checkDocument(repaired);
+          const paths=changedPaths(candidate,repaired),audit=preservation(candidate,repaired,result.changes),scope=args.scope||null;let escalation=null;
+          if(scope){const parts=pointer(scope.sourcePath);at(candidate,parts);if(scope.slideId!=null&&(parts[0]!=='slides'||candidate.slides[Number(parts[1])]?.id!==scope.slideId))fail('PATCH_OUT_OF_SCOPE','Scope slide does not match candidate');
+            if(paths.length>=1000||paths.some(path=>!parts.every((part,i)=>pointer(path)[i]===part)))escalation='deck';}
+          const proposalId='proposal-'+(++proposalSequence),proposal={proposalId,revision:candidateRevision,document:repaired,changes:result.changes,diagnostics:result.diagnostics,changedPaths:paths,preservation:audit,scopeEscalation:escalation};
+          proposals.set(proposalId,proposal);while(proposals.size>3)proposals.delete(proposals.keys().next().value);
+          return {revision:candidateRevision,data:{proposalId,changes:proposal.changes,changedPaths:paths,diagnostics:proposal.diagnostics,preservation:audit,scopeEscalation:escalation,document:jsonCopy(repaired),stagnated:paths.length===0}};
+        }),
+        acceptRepair:args=>response('acceptRepair',()=>{
+          guardBase(args);const proposal=proposals.get(args.proposalId);if(!proposal||proposal.revision!==candidateRevision)fail('REVISION_CONFLICT','Repair proposal is unavailable or stale');
+          if(proposal.scopeEscalation&&args.acceptScope!=='deck')fail('REPAIR_SCOPE_ESCALATION','Repair changes data outside the requested scope');
+          if(proposal.preservation.status!=='preserved')fail('PRESERVATION_UNVERIFIED','Repair preservation could not be verified',proposal.preservation);
+          if(!proposal.changedPaths.length)fail('REPAIR_STAGNATED','Repair made no changes');
+          const previousRevision=candidateRevision;candidate=jsonCopy(proposal.document);candidateRevision=nextRevision();rememberCandidate();proposals.delete(args.proposalId);
+          return {revision:candidateRevision,data:{previousRevision,changedPaths:proposal.changedPaths,preservation:proposal.preservation,validationFresh:false,qaFresh:false}};
+        }),
+        getPreservationReport:(args={})=>response('getPreservationReport',()=>{const from=snapshots.get(args.fromRevision),to=snapshots.get(args.toRevision);if(!from||!to)fail('SOURCE_UNAVAILABLE','Revision snapshot is unavailable');return {revision:args.toRevision,data:preservation(from,to)};}),
+        commitCandidate:args=>response('commitCandidate',()=>{
+          guardBase(args);if(!candidate)fail('SOURCE_UNAVAILABLE','No candidate');if(!own(args,'expectedStudioRevision'))fail('INVALID_ARGUMENT','expectedStudioRevision is required');
+          if(typeof args.expectedStudioRevision!=='string')fail('INVALID_ARGUMENT','expectedStudioRevision must be a string');
+          syncStudio();if(args.expectedStudioRevision!==studioRevision)fail('REVISION_CONFLICT','Studio revision changed',{expected:args.expectedStudioRevision,current:studioRevision});
+          const run=strictRun(candidateRevision,args.qaRunId),doc=jsonCopy(candidate);
+          DeckStore.change(()=>deckApplyDocument(doc,{recordHistory:false,strictCustom:true}));syncStudio();candidateStudioRevision=studioRevision;
+          return {revision:candidateRevision,data:{studioRevision,qaRunId:run.runId,undoRecorded:true}};
+        }),
+        markVisualReview:(args={})=>response('markVisualReview',()=>{
+          const run=runs.get(args.runId);if(!run)fail('RENDER_NOT_READY','No such render run');strictRun(run.revision,run.runId);
+          if(args.status!=='approved'||typeof args.evidence!=='string'||!args.evidence.trim()||args.evidence.length>500||typeof args.reviewer!=='string'||!args.reviewer.trim()||args.reviewer.length>120)fail('INVALID_ARGUMENT','Approved review requires reviewer and evidence reference');
+          run.review={status:'approved',reviewer:args.reviewer,evidence:args.evidence,origin:'external-agent'};return {revision:run.revision,data:{runId:run.runId,visualReview:'agent-reported',review:{...run.review}}};
+        }),
+        exportArtifact:(args={})=>response('exportArtifact',()=>{
+          const snap=candidateSnapshot(args.revision);if(!['json','static-html'].includes(args.format))fail('EXPORT_FORMAT_UNAVAILABLE','Only JSON and static HTML are available');
+          const profile=args.profile||'agent-strict';if(!['agent-strict','agent-strict-reviewed','draft'].includes(profile))fail('INVALID_ARGUMENT','Unsupported export profile');
+          if(profile==='draft'&&args.format!=='json')fail('QA_GATE_FAILED','Draft export is limited to JSON');
+          const run=profile!=='draft'?strictRun(snap.revision,args.qaRunId):null;
+          if(profile==='agent-strict-reviewed'&&!run.review)fail('VISUAL_REVIEW_REQUIRED','External agent review metadata is required');
+          const content=args.format==='json'?JSON.stringify(snap.document,null,2):agentPage(run.compiled);
+          const artifactId='art-'+(++artifactSequence),filename=args.format==='json'?'xbrain-deck.json':'xbrain-presentation.html',mimeType=args.format==='json'?'application/json;charset=utf-8':'text/html;charset=utf-8';
+          artifacts.set(artifactId,{artifactId,revision:snap.revision,studioRevision:snap.studioRevision,format:args.format,content,filename,mimeType,qaRunId:run?.runId||null});while(artifacts.size>3)artifacts.delete(artifacts.keys().next().value);
+          return {revision:snap.revision,data:{artifactId,format:args.format,filename,mimeType,bytes:encodeBytes(content).length,qaRunId:run?.runId||null,quality:{passed:!!run,profile,visualReview:run?.review?'agent-reported':'not-assessed'},delivery:{getArtifact:true,downloadButtonAvailable:true}}};
+        }),
+        getArtifact:(args={})=>response('getArtifact',()=>{const artifact=artifacts.get(args.artifactId);if(!artifact)fail('INVALID_ARGUMENT','Artifact is unavailable');if(args.as&&args.as!=='text')fail('INVALID_ARGUMENT','Only text delivery is available');syncStudio();return {revision:artifact.revision,data:{...artifact,fresh:artifact.revision===candidateRevision&&artifact.studioRevision===studioRevision}};}),
+        downloadArtifact:(args={})=>response('downloadArtifact',()=>{const artifact=artifacts.get(args.artifactId);if(!artifact)fail('INVALID_ARGUMENT','Artifact is unavailable');syncStudio();if(artifact.revision!==candidateRevision||artifact.studioRevision!==studioRevision)fail('QA_STALE','Artifact was created before the latest candidate or Studio change');const nav=getNavigator(),win=getWindow();if(nav.userActivation&&!nav.userActivation.isActive)fail('DOWNLOAD_BLOCKED','Use the download button with a user gesture');const url=win.URL.createObjectURL(new win.Blob([artifact.content],{type:artifact.mimeType}));try{const link=getDocument().createElement('a');link.href=url;link.download=artifact.filename;link.click();}finally{setTimeout(()=>win.URL.revokeObjectURL(url),1000);}return {revision:artifact.revision,data:{accepted:true,filename:artifact.filename}};}),
+        previewPatch:args=>response('previewPatch',()=>{const result=patch(args),validation=XBrainCompiler.validate(result.document,{strict:true,trust:'trusted'}),diagnostics=validation.diagnostics.concat(agentContentDiagnostics(result.document));return {revision:candidateRevision,data:{changedPaths:result.changedPaths,affectedSlideIds:result.affectedSlideIds,beforeFingerprint:result.beforeFingerprint,afterFingerprint:result.afterFingerprint,validationImpact:{valid:!diagnostics.some(d=>d.severity==='error'),diagnostics},needsValidation:true}};}),
+        applyPatch:args=>response('applyPatch',()=>{const result=patch(args),previousRevision=candidateRevision;candidate=result.document;candidateRevision=nextRevision();repairAttempts=0;rememberCandidate();return {revision:candidateRevision,data:{previousRevision,changedPaths:result.changedPaths,affectedSlideIds:result.affectedSlideIds,beforeFingerprint:result.beforeFingerprint,afterFingerprint:result.afterFingerprint,needsValidation:true,validationFresh:false,qaFresh:false}};}),
+        resetCandidate:args=>response('resetCandidate',()=>{guardBase(args);candidate=null;candidateRevision=nextRevision();candidateStudioRevision=null;repairAttempts=0;return {revision:candidateRevision,data:{candidateRevision,empty:true}};})
+      });
+      return {facade,observeStudio(snapshot){if(snapshot!==studioSnapshot){studioSnapshot=snapshot;studioRevision=nextRevision();}},boot(){if(booted)return;syncStudio();booted=true;resolveReady();const win=getWindow();win.dispatchEvent(new win.Event('xb-agent-ready'));}};
+    })({getDocument:()=>document,getWindow:()=>window,getNavigator:()=>navigator,encodeBytes:text=>new TextEncoder().encode(text)});
+    window.XB.agent=XBAgent.facade;
+
+    /* Agent Console: a DOM adapter for the public facade, never a second engine. */
+    const AgentConsole=(()=>{
+      const api=XBAgent.facade;let root,lastRunId=null,lastArtifactId=null,lastProposalId=null,selected=0,visibleSlides=80,previewBase=null,studioBase=null,bound=false,findings=[];
+      const node=name=>root.querySelector('[data-testid="'+name+'"]');
+      const text=(name,value)=>{node(name).textContent=value;};
+      function show(result){text('xb-agent-response-json',JSON.stringify(result,null,2));}
+      function clearPreview(){const box=node('xb-agent-preview');box.querySelector('iframe').removeAttribute('srcdoc');delete box.dataset.runId;delete box.dataset.slideId;box.dataset.state='empty';text('xb-agent-preview-status','No rendered preview.');highlight(null);}
+      function sizePreview(){const box=node('xb-agent-preview'),frame=box.querySelector('iframe');frame.style.transform='scale('+(box.clientWidth/1920)+')';}
+      async function refreshLogs(){const log=await api.getLogs({limit:200}),filter=node('xb-agent-log-filter').value;if(log.ok)text('xb-agent-execution-log',log.data.events.filter(e=>filter==='all'||e.status===filter).map(e=>`${e.eventId} · ${e.operation} · ${e.status}${e.code?' · '+e.code:''}`).join('\n'));}
+      function highlight(finding){const overlay=root.querySelector('.v1-agent-highlight'),b=finding?.bounds;if(!b||b.coordinateSpace!=='slide-1920x1080'){overlay.hidden=true;return;}overlay.hidden=false;overlay.style.left=(b.x/1920*100)+'%';overlay.style.top=(b.y/1080*100)+'%';overlay.style.width=(b.width/1920*100)+'%';overlay.style.height=(b.height/1080*100)+'%';}
+      async function showPreview(){
+        if(!lastRunId)return;const result=await api.getPreview({runId:lastRunId,slide:selected}),box=node('xb-agent-preview');
+        if(result.ok){const frame=box.querySelector('iframe');frame.srcdoc=result.data.html;box.dataset.runId=lastRunId;box.dataset.slideId=result.data.slideId;box.dataset.state=result.data.fresh?'ready':'stale';text('xb-agent-preview-status',result.data.fresh?'Visual review is performed externally.':'Preview is stale; render again.');sizePreview();}
+      }
+      async function refresh(){
+        const state=await api.getState();if(!state.ok)return;
+        text('xb-agent-revision',state.data.candidateRevision||'none');
+        const tree=node('xb-agent-deck-tree');tree.replaceChildren();
+        if(state.data.hasCandidate){const result=await api.getDeck({source:'candidate'});if(result.ok){const slides=result.data.document.slides||[];if(selected>=slides.length)selected=0;
+          visibleSlides=Math.max(visibleSlides,selected+1);slides.slice(0,visibleSlides).forEach((slide,index)=>{const id=String(slide?.id||'slide-'+(index+1)),li=document.createElement('li'),button=document.createElement('button');
+            li.setAttribute('role','none');button.type='button';button.setAttribute('role','treeitem');button.dataset.v1AgentAction='select';button.dataset.index=String(index);button.dataset.slideId=id;button.dataset.testid='xb-agent-slide-'+id;button.setAttribute('aria-selected',String(index===selected));button.textContent=String(index+1).padStart(2,'0')+' · '+String(slide?.title||slide?.content?.title||id);li.append(button);tree.append(li);});node('xb-agent-more-slides').hidden=slides.length<=visibleSlides;}}
+        else node('xb-agent-more-slides').hidden=true;
+        if(lastRunId){const run=await api.getRun({runId:lastRunId});if(run.ok){const q=run.data.qa;text('xb-agent-qa-summary',`QA: ${q.passed?'passed':run.data.fresh?'issues':'stale'} · ${q.checkedSlides}/${q.totalSlides} measured · ${q.errors} errors · ${q.warnings} warnings`);node('xb-agent-qa-summary').dataset.state=q.passed?'passed':run.data.fresh?'issues':'stale';if(!run.data.fresh){node('xb-agent-preview').dataset.state='stale';text('xb-agent-preview-status','Preview is stale; render again.');highlight(null);}}}
+        else{text('xb-agent-qa-summary','QA: not measured');node('xb-agent-qa-summary').dataset.state='unavailable';}
+      }
+      function showFindings(result){
+        if(!result.ok)return;const box=node('xb-agent-findings');box.replaceChildren();findings=result.data.findings;
+        if(!findings.length){box.textContent='No findings.';return;}
+        for(const finding of findings){const item=document.createElement('button');item.type='button';item.dataset.v1AgentAction='finding';item.dataset.findingId=finding.findingId;item.textContent=`${finding.blocking?'BLOCKING · ':''}${finding.severity} · ${finding.code} · ${finding.sourcePath||'/'} — ${finding.message}`;box.append(item);}
+      }
+      async function act(action,button){
+        if(action==='close'){root.hidden=true;document.getElementById('app-shell').inert=false;document.getElementById('v1-menu-ai-trigger').focus();return;}
+        if(action==='select'){selected=Number(button.dataset.index);highlight(null);await refresh();await showPreview();return;}
+        if(action==='finding'){const finding=findings.find(f=>f.findingId===button.dataset.findingId),match=/^\/slides\/(\d+)/.exec(finding?.sourcePath||'');if(match){selected=Number(match[1]);await refresh();await showPreview();highlight(finding);}return;}
+        if(action==='more'){visibleSlides+=80;await refresh();return;}
+        if(action==='copy-response'){try{await navigator.clipboard.writeText(node('xb-agent-response-json').textContent);}catch(_){const range=document.createRange();range.selectNodeContents(node('xb-agent-response-json'));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);}return;}
+        button.disabled=true;button.dataset.state='busy';button.setAttribute('aria-busy','true');let result;
+        try{
+          if(action==='download'){result=await api.downloadArtifact({artifactId:lastArtifactId});}
+          else{
+            const state=(await api.getState()).data,revision=state.candidateRevision;
+            if(action==='contract')result=await api.getContract();
+            else if(action==='state')result=await api.getState();
+            else if(action==='candidate')result=await api.getDeck({source:'candidate'});
+            else if(action==='load'){result=await api.setCandidate({document:JSON.parse(node('xb-agent-deck-input').value),baseRevision:revision});if(result.ok){studioBase=state.studioRevision;selected=0;visibleSlides=80;lastRunId=null;lastArtifactId=null;lastProposalId=null;previewBase=null;clearPreview();}}
+            else if(action==='sync'){result=await api.syncFromStudio({baseRevision:revision,expectedStudioRevision:state.studioRevision});if(result.ok){studioBase=state.studioRevision;selected=0;visibleSlides=80;lastRunId=null;lastArtifactId=null;lastProposalId=null;previewBase=null;clearPreview();}}
+            else if(action==='reset'){result=await api.resetCandidate({baseRevision:revision});if(result.ok){selected=0;lastRunId=null;lastArtifactId=null;lastProposalId=null;previewBase=null;clearPreview();}}
+            else if(action==='validate')result=await api.validate({revision});
+            else if(action==='render'){const subset=node('xb-agent-render-scope').value==='selected';result=await api.render({revision,...(subset?{slides:[selected]}:{})});if(result.ok){lastRunId=result.data.runId;if(!subset)selected=0;highlight(null);showFindings(result);await showPreview();}}
+            else if(action==='cancel')result=await api.cancel({runId:state.activeRunId});
+            else if(action==='inspect'){result=await api.inspect({runId:lastRunId});showFindings(result);}
+            else if(action==='preview-patch'){const scope=node('xb-agent-scope').value.trim();result=await api.previewPatch({baseRevision:revision,operations:JSON.parse(node('xb-agent-patch-input').value),...(scope?{scope:JSON.parse(scope)}:{})});if(result.ok)previewBase=revision;}
+            else if(action==='apply-patch'){const scope=node('xb-agent-scope').value.trim();result=await api.applyPatch({baseRevision:previewBase??revision,operations:JSON.parse(node('xb-agent-patch-input').value),...(scope?{scope:JSON.parse(scope)}:{})});if(result.ok){previewBase=null;lastArtifactId=null;lastProposalId=null;}}
+            else if(action==='propose'){const scope=node('xb-agent-scope').value.trim();result=await api.proposeRepair({baseRevision:revision,...(scope?{scope:JSON.parse(scope)}:{})});if(result.ok)lastProposalId=result.data.proposalId;}
+            else if(action==='accept'){result=await api.acceptRepair({baseRevision:revision,proposalId:lastProposalId,...(node('xb-agent-accept-deck').checked?{acceptScope:'deck'}:{})});if(result.ok){lastProposalId=null;lastArtifactId=null;}}
+            else if(action==='commit'){result=await api.commitCandidate({baseRevision:revision,expectedStudioRevision:studioBase,qaRunId:lastRunId});if(result.ok)lastArtifactId=null;}
+            else if(action==='export'){result=await api.exportArtifact({revision,format:'static-html',profile:'agent-strict',qaRunId:lastRunId});if(result.ok)lastArtifactId=result.data.artifactId;}
+            else if(action==='export-reviewed'){result=await api.exportArtifact({revision,format:'static-html',profile:'agent-strict-reviewed',qaRunId:lastRunId});if(result.ok)lastArtifactId=result.data.artifactId;}
+            else if(action==='export-json'){result=await api.exportArtifact({revision,format:'json',profile:'agent-strict',qaRunId:lastRunId});if(result.ok)lastArtifactId=result.data.artifactId;}
+            else if(action==='review')result=await api.markVisualReview({runId:lastRunId,status:'approved',reviewer:'external-agent',evidence:node('xb-agent-review-evidence').value});
+            else if(action==='clear-log')result=await api.clearLogs();
+            else if(action==='artifact')result=await api.getArtifact({artifactId:lastArtifactId});
+          }
+          if(result){show(result);button.dataset.state=result.ok?'success':'error';}
+          await refresh();
+        }catch(error){button.dataset.state='error';show({ok:false,operation:action,error:{code:'INVALID_ARGUMENT',message:String(error.message||error)}});}
+        finally{button.disabled=false;button.setAttribute('aria-busy','false');}
+      }
+      return {
+        bind(){if(bound)return;bound=true;root=document.getElementById('v1-agent-console');
+          root.addEventListener('click',event=>{const button=event.target.closest('[data-v1-agent-action]');if(button&&root.contains(button))act(button.dataset.v1AgentAction,button);});
+          root.addEventListener('change',event=>{if(event.target===node('xb-agent-log-filter'))refreshLogs();});
+          window.addEventListener('resize',()=>{if(!root.hidden)sizePreview();});api.subscribe(()=>refreshLogs());
+          api.ready().then(()=>{const ready=node('xb-agent-ready');ready.dataset.state='ready';ready.textContent='Ready';});
+        },
+        async open(){root.hidden=false;document.getElementById('app-shell').inert=true;const state=await api.getState();studioBase=state.data.candidateStudioRevision??state.data.studioRevision;await refresh();await refreshLogs();node('xb-agent-validate').focus();}
+      };
+    })();
 
     window.addEventListener('DOMContentLoaded', () => {
       // Built-in sample slides that were declared without id/group/layoutName get them here.
@@ -9517,6 +10067,8 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       trackDeckState();
       renderCurrentSlide();
       renderInlineIcons();
+      AgentConsole.bind();
+      XBAgent.boot();
     });
     })();
   </script>

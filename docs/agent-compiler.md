@@ -1,6 +1,6 @@
 # XBrain compiler và pipeline v1
 
-Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `untrusted`. Runtime từ `--html` phải đáng tin cậy; VM không phải sandbox của hệ điều hành.
+Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `trusted`; dùng `--untrusted` nếu cần chế độ giới hạn. Runtime từ `--html` phải đáng tin cậy; VM không phải sandbox của hệ điều hành.
 
 ## Header và thao tác Studio
 
@@ -127,11 +127,11 @@ Không có network I/O trong sandbox. URL chưa có `value`/`data` phát `determ
 
 ## CSS, sanitizer và editor
 
-CSS Composer được tiền tố `[data-slide-id="..."]` cho từng selector, kể cả trong `@media`, `@supports`, `@container`, `@layer`. Layout/slide CSS của template tự định nghĩa cũng được xuất cạnh slide để bản static và Studio cùng phạm vi. Global selector `html/body/:root/:host`, sibling selector từ root, `position:fixed`, at-rule ngoài danh sách (gồm `@page`, `@import`, `@keyframes`) và CSS nesting trong declaration bị bỏ kèm `css.blocked`. Dùng selector phẳng; root của Composer dùng `.v1-slide`.
+Trong chế độ CLI `--untrusted`, CSS Composer được tiền tố `[data-slide-id="..."]` cho từng selector, kể cả trong `@media`, `@supports`, `@container`, `@layer`. Layout/slide CSS của template tự định nghĩa cũng được xuất cạnh slide để bản static và Studio cùng phạm vi. Global selector `html/body/:root/:host`, sibling selector từ root, `position:fixed`, at-rule ngoài danh sách (gồm `@page`, `@import`, `@keyframes`) và CSS nesting trong declaration bị bỏ kèm `css.blocked`. Dùng selector phẳng; root của Composer dùng `.v1-slide`.
 
-Untrusted HTML/SVG dùng tokenizer theo trạng thái và danh sách tag cho phép. Script/style/iframe/object/foreignObject và các tag bị chặn khác nuốt thân đến tag đóng hoặc EOF. SVG `<title>` và MathML an toàn được giữ; handler và URL chủ động bị loại. Trusted template code vẫn là mã tác giả được phép chạy khi chọn `--trusted`.
+Untrusted HTML/SVG dùng tokenizer theo trạng thái và danh sách tag cho phép. Script/style/iframe/object/foreignObject và các tag bị chặn khác nuốt thân đến tag đóng hoặc EOF. SVG `<title>` và MathML an toàn được giữ; handler và URL chủ động bị loại. Mã template trusted được chạy mặc định; `--untrusted` bật chế độ giới hạn.
 
-HTML editable do CLI xuất giữ nguyên chính sách strict/trust khi mở lại, sanitize cả custom HTML/SVG và chặn compile helper/slide code từ các lần import tiếp theo trong untrusted app. CDN ECharts/Mermaid không được bật cho untrusted app; `--offline` bỏ cả link font và module import CDN. Studio gốc vẫn trusted theo thiết kế cũ. VM call dùng danh sách method cho phép và drain microtask trong timeout; không truyền host object. Những biện pháp này không thay thế cô lập OS/container cho dịch vụ nhận mã JavaScript hoặc runtime HTML không tin cậy. Kết quả `--trusted` có thể không tất định nếu tác giả dùng thời gian, random hay trạng thái toàn cục.
+HTML editable do CLI xuất giữ nguyên chính sách strict/trust khi mở lại, sanitize cả custom HTML/SVG và chặn compile helper/slide code từ các lần import tiếp theo trong untrusted app. CDN ECharts/Mermaid không được bật cho untrusted app; `--offline` bỏ cả link font và module import CDN. Studio gốc vẫn trusted theo thiết kế cũ. VM call dùng danh sách method cho phép và drain microtask trong timeout; không truyền host object. Những biện pháp này không thay thế cô lập OS/container cho dịch vụ nhận mã JavaScript hoặc runtime HTML không tin cậy. Kết quả trusted có thể không tất định nếu tác giả dùng thời gian, random hay trạng thái toàn cục.
 
 Composer resolve title/subtitle/components từ đúng vị trí ở slide hoặc slide.content, dùng chung renderer và editor. Content Editor kiểm tra toàn bộ số hữu hạn trước khi một giao dịch DeckStore ghi bất kỳ trường nào. Inline edit dùng event delegation và cùng root resolver; undo/redo vẫn hoạt động sau xuất/mở lại HTML. Theme Composer chọn cặp foreground/background phù hợp, logo âm bản trên nền tối, giữ chữ trên card sáng tối màu; chart title được hiển thị và tính vào diện tích plot.
 
@@ -146,8 +146,21 @@ XB_PLAYWRIGHT_MODULE=/path/to/playwright-core CHROME_PATH=/path/to/chrome \
   node tests/browser_header.mjs /tmp/xbrain-header-check
 XB_PLAYWRIGHT_MODULE=/path/to/playwright-core CHROME_PATH=/path/to/chrome \
   node tests/browser_agent_engine.mjs /tmp/xbrain-agent-check
+# Agent API, security, UI, preservation and scale checks:
+export XB_PLAYWRIGHT_MODULE=/path/to/playwright-core CHROME_PATH=/path/to/chrome
+for test in tests/browser_agent_*.mjs; do node "$test"; done
+node tests/browser_agent_ui.mjs https
+node tests/browser_agent_ui.mjs file
 ```
 
 Fixture tích hợp: `tests/fixtures/recursive-pipeline.json`. Kết quả và ảnh trước/sau: `docs/audits/2026-11-06-improvements/`. Fixture PARADOX gốc được giữ làm stress test các lỗi template legacy/nội dung đã ghi trong audit, không phải deck chuẩn đã sửa.
 
 Fixture bổ sung: `tests/fixtures/agent-native.json`. Audit compiler, ảnh trước/sau, matrix deck thực tế và giới hạn còn lại: [2026-11-08-agent-compiler](audits/2026-11-08-agent-compiler/README.md).
+
+## Agent API và AI Console
+
+`await XB.agent.ready()` chờ Studio khởi động xong; sự kiện `xb-agent-ready` được phát một lần. `capabilities()`, `getSchema()`, `getContract()`, `getState()` và `getDeck()` trả envelope `agent.1` có `ok`, `operation`, `requestId`, `revision` và `data` hoặc `error`. Deck trả về là bản sao; revision chỉ có hiệu lực trong phiên trang hiện tại và thay đổi theo lịch sử Studio. Dùng `capabilities({detail:'full'})` để lấy thêm contract trong một lần gọi.
+
+`setCandidate({document,baseRevision:null})` nạp document v1 vào bộ nhớ riêng, không ghi Studio. Các lần thay thế tiếp theo, `previewPatch`, `applyPatch` và `resetCandidate` cần `baseRevision` hiện tại từ `getState()`; sau reset dùng revision rỗng mới thay vì `null`. Patch hỗ trợ `add`, `remove`, `replace`, `test`, tối đa 256 thao tác; `move` và `copy` chưa hỗ trợ. `getState().data.diverged` báo Studio thay đổi từ lúc nạp candidate; dùng `syncFromStudio({baseRevision,expectedStudioRevision})` để chủ động thay candidate bằng bản Studio sau khi kiểm tra cả hai revision. Candidate giới hạn 400 slide, 10 MiB JSON, 200.000 node và độ sâu 64; kiểm tra dữ liệu an toàn và version trước khi đổi trạng thái.
+
+Agent render và đo browser với nội dung trusted; HTML, CSS, JavaScript và tài nguyên ngoài hoạt động theo browser. `inspect` trả QA theo revision và đường dẫn nguồn khi xác định được. Strict export và commit yêu cầu đo đủ slide, QA hiện hành và không có diagnostic chặn; commit còn kiểm tra revision Studio. Console dùng chính API này. Xem [API Agent](agent-console-api.md), [browser runbook](agent-console-browser-runbook.md) và [baseline, kết quả cùng giới hạn kiểm thử](audits/2026-11-08-agent-console/baseline.md).

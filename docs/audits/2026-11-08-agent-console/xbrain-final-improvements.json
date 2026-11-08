@@ -1,0 +1,48 @@
+{
+  "editor": {
+    "atomicValidation": true,
+    "undoRedo": true,
+    "inlineRoundTrip": true,
+    "invalidVersion": true,
+    "renderDoesNotRecordHistory": true,
+    "mixedRoot": true
+  },
+  "contractViewer": {
+    "schemaMatchesRuntimeAndFile": true,
+    "contractMatchesRuntime": true,
+    "accessibleText": true,
+    "clipboard": true,
+    "clipboardFallback": true,
+    "blockedClipboard": true,
+    "downloads": true,
+    "keyboardAndFocus": true,
+    "deckUnchanged": true
+  },
+  "reopenedContractViewer": {
+    "schemaMatchesRuntimeAndFile": true,
+    "contractMatchesRuntime": true,
+    "accessibleText": true,
+    "clipboard": true,
+    "clipboardFallback": true,
+    "blockedClipboard": true,
+    "downloads": true,
+    "keyboardAndFocus": true,
+    "deckUnchanged": true
+  },
+  "qa": {
+    "slides": 12,
+    "errors": 0,
+    "warnings": 0,
+    "info": 1,
+    "score": 100
+  },
+  "static": {
+    "pages": 12,
+    "diagnostics": []
+  },
+  "print": {
+    "pages": 12,
+    "enhancements": 0
+  },
+  "pageErrors": []
+}
