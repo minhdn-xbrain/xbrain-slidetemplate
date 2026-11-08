@@ -19,6 +19,8 @@ npm run build
 
 Mở `dist/index.html` trong trình duyệt. Để xuất một bản HTML có thể chỉnh sửa, thực hiện thao tác xuất từ bản build này; server phát triển không chứa ứng dụng trong một tệp HTML.
 
+Để dùng GitHub Pages, chọn **Settings → Pages → Build and deployment → Source → GitHub Actions** trong repository. Workflow `.github/workflows/static.yml` sẽ kiểm tra, build và triển khai `dist` khi push lên `main`; cũng có thể chạy thủ công trong tab Actions.
+
 Ảnh, SVG và CSS được lưu trong `public/assets`; cấu hình Vite đọc và nhúng chúng vào HTML khi build. Module `src/lib/xbrainAssets.ts` cung cấp các asset này cho ứng dụng và compiler.
 
 ## Kiểm tra và compiler
