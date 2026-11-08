@@ -92,14 +92,14 @@ class AgentEngineTest(unittest.TestCase):
             self.assertFalse(json.loads(report)["published"])
             self.assertTrue(out.with_suffix(".qa.json").exists())
 
-    def test_untrusted_editable_build_preserves_render_policy(self):
+    def test_editable_build_preserves_author_content(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "app.html"
-            code, report = cli("build", "-", "--app", "--offline", "--untrusted", "-o", out,
+            code, report = cli("build", "-", "--app", "--offline", "-o", out,
                                stdin=json.dumps(self.deck({"type": "html", "html": '<b>Safe</b><img src=x onerror="globalThis.PWNED=1">'})))
             self.assertEqual(code, 0, report)
             html = out.read_text()
-            self.assertTrue('const XB_RENDER_DEFAULTS=Object.freeze({"strict":true,"trust":"untrusted"});' in html)
+            self.assertTrue('const XB_RENDER_DEFAULTS=Object.freeze({"strict":true,"trust":"trusted"});' in html)
             self.assertFalse(re.search(r'<script[^>]+src="https?://', html))
 
     def test_paragraph_pagination_preserves_every_character(self):

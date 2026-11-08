@@ -3688,7 +3688,7 @@
       },
       "additionalProperties": false,
       "title": "46. Custom HTML",
-      "description": "Content for the custom-html template. Omitted fields use renderer defaults; unknown field names are rejected. Compiler untrusted mode sanitizes markup; trusted mode inserts author markup.",
+      "description": "Content for the custom-html template. Omitted fields use renderer defaults; unknown field names are rejected. Author markup is inserted as provided.",
       "x-v1-limits": {}
     },
     "content-custom-diagram": {
@@ -3715,7 +3715,7 @@
       },
       "additionalProperties": false,
       "title": "47. Custom SVG Diagram",
-      "description": "Content for the custom-diagram template. Omitted fields use renderer defaults; unknown field names are rejected. Compiler untrusted mode sanitizes markup; trusted mode inserts author markup.",
+      "description": "Content for the custom-diagram template. Omitted fields use renderer defaults; unknown field names are rejected. Author markup is inserted as provided.",
       "x-v1-limits": {}
     },
     "slide": {

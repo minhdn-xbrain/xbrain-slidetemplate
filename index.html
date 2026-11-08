@@ -18,7 +18,7 @@
   Agent-native compiler (XBrainCompiler, tools/xbrain.mjs, docs/agent-compiler.md):
     - validate → render → QA → repair → build, chạy được trong trình duyệt và Node VM.
     - Chart/diagram vẽ đúng theo dữ liệu (không dữ liệu/quan hệ giả), bố cục Composer theo ràng buộc,
-      schema dẫn xuất từ registry, chế độ untrusted làm sạch nội dung, output tái lập được.
+      schema dẫn xuất từ registry, nội dung tác giả được giữ nguyên, output tái lập được.
 -->
 <html lang="vi">
 <head>
@@ -4704,7 +4704,6 @@ body.presentation-fullscreen #floating-pres-controls {display:none!important;}
  the interactive editor keeps the legacy defaults (sample data allowed, trusted code). */
 const XB_RENDER_DEFAULTS=Object.freeze({strict:false,trust:'trusted'});
 let XB_RENDER_OPTS={...XB_RENDER_DEFAULTS};
-const xbNeedsCode=(slide,doc)=>slide&&(slide.render!==undefined||slide.template!==undefined||slide.frame!==undefined||slide.css!==undefined||(xbIsObj(doc?.layouts)&&Object.prototype.hasOwnProperty.call(doc.layouts,slide.type)));
 // Collects structured diagnostics while rendering; a no-op outside XBDiag.collect().
 const XBDiag=(()=>{
  let sink=null;const path=[];
@@ -5736,6 +5735,7 @@ function deckNum(n,d=0){let x=Number(n);return Number.isFinite(x)?x:d;}
 function deckClamp(n,a,b){return Math.max(a,Math.min(b,n));}
 // DataResolver keeps format parsing, transforms and cache behind one interface.
 function createDataResolver({getConfig, cache, fetchData, report=()=>{}, getOptions=()=>({strict:false})}) {
+const setField=(object,key,value)=>Object.defineProperty(object,key,{value,writable:true,enumerable:true,configurable:true});
 function deckCSV(text,delimiter=','){
  const out=[];let row=[],cell='',quoted=false;const t=String(text??'').replace(/^\uFEFF/,'');
  for(let i=0;i<t.length;i++){let c=t[i];if(c==='"'){if(quoted&&t[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}
@@ -5750,9 +5750,9 @@ function deckYAML(src){ // Deterministic subset: lists of flat mappings and key-
  const rows=[];let obj=null,root={};for(const raw of String(src).split(/\r?\n/)){
   const line=deckYamlComment(raw);if(!line.trim())continue;
   const m=line.match(/^\s*-\s*([\w-]+):\s*(.*)$/),n=line.match(/^\s+([\w-]+):\s*(.*)$/),p=line.match(/^\s*([\w-]+):\s*(.*)$/);
-  if(m){obj={};rows.push(obj);obj[m[1]]=deckCoerce(m[2]);}
-  else if(n&&obj)obj[n[1]]=deckCoerce(n[2]);
-  else if(p)root[p[1]]=deckCoerce(p[2]);
+  if(m){obj={};rows.push(obj);setField(obj,m[1],deckCoerce(m[2]));}
+  else if(n&&obj)setField(obj,n[1],deckCoerce(n[2]));
+  else if(p)setField(root,p[1],deckCoerce(p[2]));
  }return rows.length?rows:root;
 }
 function deckYamlComment(line){
@@ -5805,12 +5805,11 @@ function deckData(comp){let raw=comp.dataRef||comp.data?.$ref||comp.dataset||com
   if(Array.isArray(right))for(const row of right){const key=row?.[j.rightKey];if(key==null)continue;if(index.has(key)){report('data.inconsistent','error',`join: duplicate right key "${key}"`);return [];}index.set(key,row);}
   arr=arr.map(row=>{const found=index.get(row?.[j.leftKey]);if(!found)return row;const out={...row};
    for(const [key,value] of Object.entries(found)){if(key===j.rightKey)continue;if(j.select&&!j.select.includes(key))continue;const name=(j.prefix||'')+key;
-    if(Object.prototype.hasOwnProperty.call(out,name)){report('data.inconsistent','error',`join: column "${name}" already exists; use prefix or select`);continue;}if(!['__proto__','prototype','constructor'].includes(name))out[name]=value;
+    if(Object.prototype.hasOwnProperty.call(out,name)){report('data.inconsistent','error',`join: column "${name}" already exists; use prefix or select`);continue;}setField(out,name,value);
    }return out;});
  }
  if(tx.derive)arr=arr.map(row=>{const out={...row};for(const [key,expr] of Object.entries(tx.derive)){
-  if(['__proto__','prototype','constructor'].includes(key))continue;
-  const value=deckDerive(expr,out);if(Number.isFinite(value))out[key]=value;else{delete out[key];report('data.derive','error',`derive: "${key}" has missing/non-numeric operands or divides by zero`);}
+  const value=deckDerive(expr,out);if(Number.isFinite(value))setField(out,key,value);else{delete out[key];report('data.derive','error',`derive: "${key}" has missing/non-numeric operands or divides by zero`);}
  }return out;});
  if(tx.filter&&typeof tx.filter==='object'){const {field,eq,ne,gt,lt}=tx.filter;arr=arr.filter(row=>{let v=row?.[field];return(eq===undefined||v===eq)&&(ne===undefined||v!==ne)&&(gt===undefined||Number(v)>gt)&&(lt===undefined||Number(v)<lt);});}
  if(tx.sortBy){const f=tx.sortBy,dir=tx.order==='desc'?-1:1;arr=arr.map((row,i)=>({row,i})).sort((a,b)=>{let x=a.row?.[f],y=b.row?.[f];const c=typeof x==='number'&&typeof y==='number'?x-y:(x=String(x??''),y=String(y??''),x<y?-1:x>y?1:0);return c*dir||a.i-b.i;}).map(o=>o.row);}
@@ -5823,7 +5822,7 @@ function deckData(comp){let raw=comp.dataRef||comp.data?.$ref||comp.dataset||com
    for(const field of fields){const values=rows.map(r=>deckToNumber(r?.[field])).filter(Number.isFinite),op=tx.agg||'sum';
     if(!values.length&&op!=='count'){report('data.non-numeric','error',`groupBy: "${label}" has no numeric values for "${field}"`);continue;}
     const value=op==='count'?values.length:op==='avg'?values.reduce((a,b)=>a+b,0)/values.length:op==='min'?Math.min(...values):op==='max'?Math.max(...values):values.reduce((a,b)=>a+b,0);
-    out[tx.aggregateField?'value':field]=value;
+    setField(out,tx.aggregateField?'value':field,value);
    }return out;});
  }
  if(tx.select)arr=arr.map(row=>Object.fromEntries(tx.select.filter(key=>Object.prototype.hasOwnProperty.call(row||{},key)).map(key=>[key,row[key]])));
@@ -5883,108 +5882,12 @@ function deckWrapped(x,y,t,max=25,color='#425453',size=20,anchor='middle',lines=
 function deckLine(x1,y1,x2,y2,color='#CBD9D2',width=3,dash=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" ${dash?'stroke-dasharray="'+dash+'"':''}/>`;}
 function deckMarkdown(src){const raw=deckSafe(src||'');const lines=raw.split(/\r?\n/);let out='',inList=false;for(let line of lines){if(/^\s*[-*]\s+/.test(line)){if(!inList){out+='<ul>';inList=true;}out+='<li>'+line.replace(/^\s*[-*]\s+/,'')+'</li>';continue;}if(inList){out+='</ul>';inList=false;}if(/^###?\s+/.test(line)){const level=line.startsWith('###')?'h3':'h2';out+=`<${level}>${line.replace(/^#+\s*/, '')}</${level}>`;}else if(line)out+='<p>'+line+'</p>';}
  if(inList)out+='</ul>';return out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>');}
-function deckStyle(obj={}){return Object.entries(obj||{}).filter(([k,v])=>v!=null).map(([k,v])=>{let css=k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase());let value=typeof v==='number'&&/^(fontSize|width|height|margin|marginTop|padding|borderRadius|gap|minHeight|maxHeight|top|left)$/.test(k)?v+'px':String(v);return `${css}:${value.replace(/["<>]/g,'')}`;}).join(';');}
-// Untrusted documents: HTML/SVG/CSS/URLs pass an allowlist; scripts, handlers and active URLs are removed.
-const XBSanitize=(()=>{
- const DROP=new Set('script style iframe object embed frameset frame applet noscript template foreignobject xmp plaintext textarea select noembed noframes'.split(' '));
- const ALLOWED=new Set(('a abbr b br blockquote caption code col colgroup dd del details div dl dt em figcaption figure h1 h2 h3 h4 h5 h6 hr i img li mark ol p pre s small span strong sub summary sup table tbody td th thead tr tfoot u ul video source wbr '+
-  'svg g defs symbol use image path rect circle ellipse line polyline polygon text tspan title desc clippath mask pattern lineargradient radialgradient stop marker filter feblend fecolormatrix fecomponenttransfer fecomposite feconvolvematrix fediffuselighting fedisplacementmap fedistantlight fedropshadow feflood fefunca fefuncb fefuncg fefuncr fegaussianblur femerge femergenode femorphology feoffset fepointlight fespecularlighting fespotlight fetile feturbulence '+
-  'math mi mn mo msup msub msubsup mfrac mrow msqrt mroot mtext mspace mtable mtr mtd mover munder munderover mfenced semantics').split(' '));
- const VOID=new Set('br col hr img source wbr'.split(' '));
- const URL_ATTR=/^(href|src|xlink:href|poster|data|action|codebase|cite|longdesc|usemap|srcset|formaction|background)$/i;
- const decode=s=>String(s).replace(/&#x([0-9a-f]+);?/gi,(_,h)=>String.fromCodePoint(parseInt(h,16)||32)).replace(/&#(\d+);?/g,(_,d)=>String.fromCodePoint(+d||32)).replace(/&(colon|tab|newline|lpar|rpar|sol);/gi,(_,n)=>({colon:':',tab:'\t',newline:'\n',lpar:'(',rpar:')',sol:'/'})[n.toLowerCase()]).replace(/&amp;/gi,'&');
- const escAttr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
- function url(u){const v=decode(u).replace(/[\u0000- \u007f-\u009f]/g,'');return /^(https?:\/\/|mailto:|#|\/(?!\/)|\.{0,2}\/|data:image\/(png|jpe?g|gif|webp);base64,)/i.test(v)||/^[\w.-]+(\/|$)/.test(v)&&!/^[\w+.-]+:/.test(v)?v:'';}
- function css(src){return String(src??'').replace(/\\/g,'').replace(/<\/?\s*style/gi,'').replace(/@import[^;]*;?/gi,'').replace(/expression\s*\(/gi,'(').replace(/(behavior|-moz-binding)\s*:/gi,'x-blocked:').replace(/url\(\s*(['"]?)([^)]*?)\1\s*\)/gi,(m,q,u)=>/^(data:image\/(png|jpe?g|gif|webp);base64,|#)/i.test(u.trim())?m:'none');}
- function attrs(list){let out='';list.replace(/([^\s"'>\/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g,(m,name,dq,sq,uq)=>{const n=name.toLowerCase(),v=dq??sq??uq??'';
-   if(/^on/i.test(n)||n==='srcdoc'||n==='ping'||n==='is')return'';
-   if(URL_ATTR.test(n)){const u=url(v);if(u)out+=` ${name}="${escAttr(u)}"`;return'';}
-   out+=` ${name}="${escAttr(n==='style'?css(decode(v)):decode(v))}"`;return'';});return out;}
- function html(src){
-  const s=String(src??'');let out='',i=0,stack=[];
-  // Stateful scan respects quotes and consumes blocked bodies through their close tag or EOF.
-  while(i<s.length){
-   if(s[i]!=='<'){const end=s.indexOf('<',i);out+=s.slice(i,end<0?s.length:end);i=end<0?s.length:end;continue;}
-   if(s.startsWith('<!--',i)){const end=s.indexOf('-->',i+4);i=end<0?s.length:end+3;continue;}
-   let end=i+1,quote='';
-   for(;end<s.length;end++){const ch=s[end];if(quote){if(ch===quote)quote='';}else if(ch==='"'||ch==="'")quote=ch;else if(ch==='>')break;}
-   if(end>=s.length)break;
-   const token=s.slice(i,end+1),m=/^<(\/?)\s*([a-z][\w:-]*)([\s\S]*?)\/?\s*>$/i.exec(token);i=end+1;
-   if(!m){out+=token.startsWith('<!')||token.startsWith('<?')?'':token.replace(/</g,'&lt;');continue;}
-   const close=!!m[1],tag=m[2],name=tag.toLowerCase(),list=m[3];
-   if(DROP.has(name)){
-    if(!close){const re=new RegExp('<\\/\\s*'+name+'\\s*>','ig');re.lastIndex=i;const found=re.exec(s);i=found?re.lastIndex:s.length;}
-    continue;
-   }
-   if(!ALLOWED.has(name)||name==='title'&&!stack.includes('svg'))continue;
-   if(close){const at=stack.lastIndexOf(name);if(at<0)continue;out+=`</${tag}>`;stack=stack.slice(0,at);}
-   else{const self=/\/\s*>$/.test(token);out+=`<${tag}${attrs(list)}${self?'/':''}>`;if(!self&&!VOID.has(name))stack.push(name);}
-  }
-  return out;
- }
- return {html,css,url};
-})();
-const xbUntrusted=()=>XB_RENDER_OPTS.trust==='untrusted';
-function xbTrustedHtml(src,what){const s=String(src??'');if(!xbUntrusted())return s;const clean=XBSanitize.html(s);if(clean!==s)XBDiag.report('security.sanitized','warning',`${what}: active content (scripts, event handlers, unsafe URLs or embeds) was removed`);return clean;}
-function xbTrustedCss(src,what){const s=String(src??'');if(!xbUntrusted())return s;const clean=XBSanitize.css(s);if(clean!==s)XBDiag.report('security.sanitized','warning',`${what}: unsafe CSS (@import, external url(), expressions) was removed`);return clean;}
-function xbTrustedUrl(u,what){const s=String(u??'');if(!s||!xbUntrusted())return s;const clean=XBSanitize.url(s);if(!clean)XBDiag.report('security.unsafe-url','warning',`${what}: URL "${s.slice(0,60)}" is not allowed in untrusted mode`);return clean||'#';}
-// Small CSS block tokenizer. Every selector is anchored inside its own slide root.
-function xbScopeCss(cssText,scope){
- const warn=message=>XBDiag.report('css.blocked','warning',message);
- const source=String(cssText??'').replace(/<\/?style/gi,'');
- function split(text,separator){
-  const parts=[];let start=0,quote='',level=0;
-  for(let i=0;i<text.length;i++){const ch=text[i];if(quote){if(ch==='\\'){i++;continue;}if(ch===quote)quote='';continue;}if(ch==='"'||ch==="'"){quote=ch;continue;}if(ch==='('||ch==='[')level++;if(ch===')'||ch===']')level--;if(ch===separator&&!level){parts.push(text.slice(start,i));start=i+1;}}
-  parts.push(text.slice(start));return parts;
- }
- function declarations(text){
-  let out='',quote='',nested=false;
-  for(let i=0;i<text.length;i++){
-   const ch=text[i];
-   if(quote){out+=ch;if(ch==='\\'&&i+1<text.length)out+=text[++i];else if(ch===quote)quote='';continue;}
-   if(ch==='"'||ch==="'"){quote=ch;out+=ch;continue;}
-   if(text.startsWith('/*',i)){const end=text.indexOf('*/',i+2);if(end<0)break;i=end+1;out+=' ';continue;}
-   if(ch==='{')nested=true;out+=ch;
-  }
-  return {text:out,nested};
- }
- function parse(text){
-  let out='',head='',i=0;
-  while(i<text.length){
-   const ch=text[i];
-   if(text.startsWith('/*',i)){const end=text.indexOf('*/',i+2);if(end<0)break;head+=' ';i=end+2;continue;}
-   if(ch==='"'||ch==="'"){const q=ch;head+=ch;i++;while(i<text.length){const v=text[i++];head+=v;if(v==='\\'&&i<text.length){head+=text[i++];continue;}if(v===q)break;}continue;}
-   if(ch===';'){if(head.trim())warn('CSS statement removed: '+head.trim().slice(0,80));head='';i++;continue;}
-   if(ch!=='{'){head+=ch;i++;continue;}
-   const selector=head.trim();head='';let begin=++i,depth=1,quote='';
-   while(i<text.length&&depth){const v=text[i];if(quote){if(v==='\\'){i+=2;continue;}if(v===quote)quote='';}
-    else if(text.startsWith('/*',i)){const end=text.indexOf('*/',i+2);i=end<0?text.length:end+2;continue;}
-    else if(v==='"'||v==="'")quote=v;else if(v==='{')depth++;else if(v==='}')depth--;if(depth)i++;
-   }
-   if(depth){warn('Unclosed CSS block removed');break;}
-   const body=text.slice(begin,i++);
-   if(/^@(media|supports|container|layer)\b/i.test(selector)){out+=selector+'{'+parse(body)+'}';continue;}
-   if(selector.startsWith('@')){warn('CSS at-rule removed: '+selector);continue;}
-   // CSS nesting is refused here; a nested rule must never leave an unscoped block behind.
-   const declaration=declarations(body);
-   if(declaration.nested){warn('Nested CSS declarations removed; use @media or flat selectors');continue;}
-   const safe=split(selector,',').map(sel=>sel.trim()).filter(sel=>{
-    if(!sel||/^\.v1-slide\b/.test(sel)&&/[+~]/.test(sel)||/\\|(?:^|[^\w-])(?:html|body|:root|:host)\b/i.test(sel)){warn('Global CSS selector removed: '+sel);return false;}return true;
-   }).map(sel=>{
-    // Match the slide itself as well as descendants, without two nested wrappers sharing an id.
-    return /^(\.v1-slide)(?=[\s.#[:>+~]|$)/.test(sel)?scope+sel:scope+' '+sel;
-   });
-   const safeDeclarations=split(declaration.text,';').filter(decl=>{
-    const [property,...parts]=split(decl,':'),value=parts.join(':').trim();
-    if(property.trim().toLowerCase()==='position'&&!/^(static|relative|absolute|sticky|initial|inherit|unset)(\s*!important)?$/i.test(value)||/\\|@/.test(decl)){warn('Unsafe CSS declaration removed: '+decl.trim());return false;}return true;
-   }).join(';');
-   if(safe.length)out+=safe.join(',')+'{'+safeDeclarations+'}';
-  }
-  return out;
- }
- return parse(source);
-}
-function xbSlideCss(slide,index,css){return xbUntrusted()?xbScopeCss(xbTrustedCss(css,'customCss'),`[data-slide-id="${deckSafe(slide.id||'slide-'+(index+1))}"]`):String(css??'');}
+function deckStyle(obj={}){return Object.entries(obj||{}).filter(([k,v])=>v!=null).map(([k,v])=>{let css=k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase());let value=typeof v==='number'&&/^(fontSize|width|height|margin|marginTop|padding|borderRadius|gap|minHeight|maxHeight|top|left)$/.test(k)?v+'px':String(v);return `${css}:${value}`;}).join(';');}
+// Author markup, URLs and CSS are preserved; ordinary text and HTML attributes are encoded where rendered.
+const xbTrustedHtml=src=>String(src??'');
+const xbTrustedCss=src=>String(src??'');
+const xbTrustedUrl=src=>String(src??'');
+const xbSlideCss=(slide,index,css)=>String(css??'');
 // Equal-width table columns are shared by CSS, the solver and pagination. Measurements are
 // conservative estimates; browser QA still verifies real font and author-style differences.
 function deckTablePlan(c,width,rows){
@@ -6046,7 +5949,7 @@ const COMPONENT_RENDERERS = Object.fromEntries([
   [['rating'], ({c,title})=>`<div class="v1-rating"><strong>${deckSafe(title)}</strong><span>${'★'.repeat(deckClamp(Math.round(deckNum(c.value)),0,5))}${'☆'.repeat(5-deckClamp(Math.round(deckNum(c.value)),0,5))}</span></div>`],
   [['button'], ({c,title})=>`<a class="v1-action" href="${deckSafe(xbTrustedUrl(c.href||'#','button href'))}">${deckSafe(c.text||title||'View more')} ↗</a>`],
   [['video'], ({c})=>`<video controls poster="${deckSafe(xbTrustedUrl(c.poster||'','video poster'))}" src="${deckSafe(xbTrustedUrl(c.src||'','video src'))}" style="height:100%;width:100%;object-fit:contain"></video>`],
-  [['iframe'], ({c,title})=>{if(xbUntrusted()){XBDiag.report('security.blocked','warning','iframe components are not rendered for untrusted documents');return `<div class="v1-callout"><strong>${deckSafe(title||'Embedded content')}</strong><p>Embedded page not shown in this document.</p></div>`;}if(XB_RENDER_OPTS.strict)XBDiag.report('determinism.external','info','iframe content is loaded at view time and is not part of the compiled output');return `<iframe title="${deckSafe(title||'Embedded content')}" src="${deckSafe(xbTrustedUrl(c.src||'','iframe src'))}" style="width:100%;height:100%;border:0" loading="lazy"></iframe>`;}],
+  [['iframe'], ({c,title})=>{if(XB_RENDER_OPTS.strict)XBDiag.report('determinism.external','info','iframe content is loaded at view time and is not part of the compiled output');return `<iframe title="${deckSafe(title||'Embedded content')}" src="${deckSafe(xbTrustedUrl(c.src||'','iframe src'))}" style="width:100%;height:100%;border:0" loading="lazy"></iframe>`;}],
   [['shape'], ({c})=>`<div style="width:100%;height:100%;background:${deckSafe(/^#[0-9a-f]{3,8}$/i.test(c.color||'')?c.color:'#F97C00')};border-radius:${deckSafe(typeof c.radius==='number'?c.radius+'px':/^[\d.]+(px|%|em|rem)?$/.test(String(c.radius||''))?c.radius:'18px')}"></div>`],
   [['spacer'], ()=>''],
   [['chart-card'], ({c,box})=>deckChartFrame(c,box,true)],
@@ -6082,7 +5985,7 @@ function deckComponent(c,depth=0,box=null){
  const style=deckStyle(c.style),pos=c.position||{},isAbs=pos.x!=null||pos.y!=null;let placement='';
  if(isAbs)placement=`position:absolute;left:${deckNum(pos.x)}px;top:${deckNum(pos.y)}px;width:${deckNum(pos.width,520)}px;height:${deckNum(pos.height,340)}px;`;
  else{const h=Math.max(1,box&&!box.absolute?box.height:deckNum(c.height??c.minHeight,180));placement=`grid-column:span ${box?.nested?1:deckClamp(Number(c.span)||(DECK_VISUAL_TYPES.has(type)&&type!=='chart-card'?12:6),1,12)};height:${r1(h)}px;max-height:${r1(h)}px;min-height:0;`;}
- return `<div class="v1-component v1-${deckSafe(type)}" data-component-id="${deckSafe(c.id||'')}" style="${placement}${xbTrustedCss(style,'component style')}">${content}</div>`;
+ return `<div class="v1-component v1-${deckSafe(type)}" data-component-id="${deckSafe(c.id||'')}" style="${placement}${deckSafe(xbTrustedCss(style,'component style'))}">${content}</div>`;
 }
 /* ---------------- Constraint layout for the 12-column composer scene (1728 × 642 px) ----------------
  Rows follow CSS grid auto-placement. Each item has a desired height (declared, grown to fit its text)
@@ -7724,7 +7627,7 @@ function deckRefreshCounts(){
       XB_ERRORS.length = 0; XB_LAYOUT_FNS.clear(); XB_SLIDE_FNS.clear();
       for (const k of Object.keys(XB_CTX)) delete XB_CTX[k];
       Object.defineProperties(XB_CTX, Object.getOwnPropertyDescriptors(xbBaseContext()));
-      const customConfig=xbUntrusted()?{}:config;
+      const customConfig=config;
       for (const [name, src] of Object.entries(customConfig?.helpers || {})) {
         try { xbSetCtx(name, xbCompileHelper(name, src)); } catch (e) { XB_ERRORS.push(`helper ${name}: ${e.message}`); }
       }
@@ -7864,7 +7767,6 @@ function deckRefreshCounts(){
       const previousCtx = XB_RENDER_CTX;
       XB_RENDER_CTX = { slide, ce: xbEditAttr(isThumbnail) };
       try {
-        if(xbUntrusted()&&xbNeedsCode(slide,DECK_CONFIG)){XBDiag.report('security.code-blocked','error','Untrusted template code is not executed');return xbErrorSlide('Code blocked','Compile trusted documents explicitly to execute template code.');}
         const custom = xbCustomRender(slide);
         if (custom) return xbRenderCustom(custom, slide, index, isThumbnail);
         if (slide.type === 'composer') return deckComposer(slide,index,isThumbnail);
@@ -7977,8 +7879,8 @@ function deckRefreshCounts(){
           if(el.dataset.chrome){const value=el.textContent.trim();if(value!==el.dataset.v1Before&&XB_CHROME_FIELDS[el.dataset.chrome])xbOpenChromeDialog(el.dataset.chrome,value);return;}
           const field=el.getAttribute('data-field');if(!field)return;
           let parent=slide.type==='composer'?xbResolveComposerRoot(slide):slide.content;
-          const keys=field.split('.');if(keys.some(k=>['__proto__','constructor','prototype'].includes(k)))return;
-          for(const key of keys.slice(0,-1))parent=parent?.[key];
+          const keys=field.split('.');
+          for(const key of keys.slice(0,-1))parent=parent&&Object.prototype.hasOwnProperty.call(parent,key)?parent[key]:undefined;
           const key=keys.at(-1);if(!parent||!Object.prototype.hasOwnProperty.call(parent,key))return;
           const old=parent[key],keepHtml=(slide.type==='custom-html'&&field==='html')||(XB_LAYOUT_FNS.has(slide.type)&&/<[a-z!\/]/i.test(String(old??'')));
           let value=keepHtml?el.innerHTML.trim():el.innerText.trim();
@@ -8373,8 +8275,8 @@ function deckRefreshCounts(){
       const d=current.type==='composer'?xbResolveComposerRoot(current):current.content,updates=[];
       for(const el of document.querySelectorAll('#content-editor-fields [data-path]')){
         const path=JSON.parse(el.dataset.path);let target=d;
-        for(const key of path.slice(0,-1))target=target?.[key];
-        const key=path.at(-1);if(!target||['__proto__','prototype','constructor'].some(k=>path.includes(k)))return;
+        for(const key of path.slice(0,-1))target=target&&Object.prototype.hasOwnProperty.call(target,key)?target[key]:undefined;
+        const key=path.at(-1);if(!target||!Object.prototype.hasOwnProperty.call(target,key))return;
         let value=el.value;
         if(typeof target[key]==='number'){
           if(!value.trim()||!Number.isFinite(Number(value))){el.setAttribute('aria-invalid','true');el.focus();alert('Giá trị số không hợp lệ: '+path.join(' › '));return;}
@@ -9104,7 +9006,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       d.chartVariant.enum=Object.keys(CHART_VARIANTS);
       d.chartVariant['x-v1-constraints']=Object.fromEntries(Object.entries(CHART_VARIANTS).map(([id,v])=>[id,xbClone(v.constraints)]));
       for(const layout of LAYOUT_CATALOG.filter(l=>!l.custom))if(d['content-'+layout.type])d['content-'+layout.type]['x-v1-limits']=xbClone(layout.limits||{});
-      for(const type of ['custom-html','custom-diagram'])d['content-'+type].description=d['content-'+type].description.replace(/ content\.(html|svg) is trusted author markup inserted without sanitizing\./,' Compiler untrusted mode sanitizes markup; trusted mode inserts author markup.');
+      for(const type of ['custom-html','custom-diagram'])d['content-'+type].description=d['content-'+type].description.replace(/ content\.(html|svg) is trusted author markup inserted without sanitizing\./,' Author markup is inserted as provided.');
       d.diagramVariant.enum=[...Object.keys(CHART_VARIANTS),...Object.keys(DIAGRAM_VARIANT_LOOKUP)];
       d.componentType.enum=Object.keys(COMPONENT_RENDERERS);
       d.slide.properties.type.enum=builtins.slice();
@@ -9210,7 +9112,6 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       'layout.overflow':'Composer components cannot fit the 1728×642 scene even at minimum heights.',
       'layout.out-of-bounds':'A freeform component lies outside the scene.',
       'layout.overlap':'Two freeform components overlap.',
-      'css.blocked':'Global selectors, unsafe declarations or unsupported CSS at-rules were removed.',
       'layout.text-collision':'Two SVG labels overlap by more than 15% of the smaller box.',
       'layout.legibility':'A chart/diagram is drawn so small that labels become illegible.',
       'layout.depth':'Components nested deeper than 7 levels are not rendered.',
@@ -9219,10 +9120,6 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       'component.unknown':'Unknown component type.',
       'variant.unknown':'Unknown chart/diagram variant.',
       'semantic.mismatch':'Self-check: mark geometry is not proportional to its data value.',
-      'security.code-blocked':'Untrusted document: layout/helper/slide code is not executed.',
-      'security.sanitized':'Untrusted document: active HTML/SVG/CSS content was removed.',
-      'security.unsafe-url':'A URL scheme is not allowed.',
-      'security.blocked':'An embed type is not rendered for untrusted documents.',
       'code.compile':'Template-as-code failed to compile.',
       'render.exception':'A renderer threw; the slide shows an error page.',
       'render.enhanced-only':'Content needs an optional CDN library; offline output shows a fallback.',
@@ -9231,7 +9128,6 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       'slide.duplicate-id':'Duplicate slide id; it is made unique on normalization.'
     });
     const XB_SEVERITY_WEIGHT={error:25,warning:4,info:0};
-    const xbIsCodeSlide=xbNeedsCode;
 
     // Render with the given document and options, then restore the editor state exactly.
     function xbWithDeck(input,opts,fn){
@@ -9240,7 +9136,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       try{
         const defaults=XB_RENDER_OPTS.strict?{...DECK_DEFAULT_CONFIG,datasets:{},metadata:{}}:DECK_DEFAULT_CONFIG;
         const doc=Array.isArray(input)?{version:'1.0',slides:input}:input;
-        const custom=XB_RENDER_OPTS.trust==='trusted'?{layouts:doc.layouts,helpers:doc.helpers}:{};
+        const custom={layouts:doc.layouts,helpers:doc.helpers};
         const next=DeckModel.normalize(doc,xbCatalogFor(doc,doc.layouts),defaults);
         DECK_CONFIG=next.config;slides=next.slides;DECK_DATA_CACHE.clear();xbSyncCustom(custom);
         return fn(next,doc);
@@ -9289,8 +9185,6 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         if(e.keyword==='enum'&&typeof e.actual==='string'){const s=xbNearest(e.actual,e.allowed.filter(a=>typeof a==='string'));if(s)d.suggestion=s;if(e.allowed.length>30)delete d.allowed;}
         return d;});
       diagnostics.push(...xbContentChecks(wrapped));
-      const untrusted=opts.trust==='untrusted';
-      if(untrusted&&(xbIsObj(wrapped.layouts)||xbIsObj(wrapped.helpers)))diagnostics.push({code:'security.code-blocked',severity:'error',path:wrapped.layouts?'/layouts':'/helpers',message:'layouts/helpers contain code and are not executed for untrusted documents (use trust:"trusted" only for documents you control)'});
       return {ok:!diagnostics.some(d=>d.severity==='error'),diagnostics};
     }
     function xbSvgTextCollisions(svg){
@@ -9327,17 +9221,16 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       return out;
     }
     function xbSummary(diags,count){const n=s=>diags.filter(d=>d.severity===s).length,e=n('error'),w=n('warning'),i=n('info');return {slides:count,errors:e,warnings:w,info:i,score:Math.max(0,100-diags.reduce((s,d)=>s+(XB_SEVERITY_WEIGHT[d.severity]||0),0)/Math.max(1,count))};}
-    function xbOptions(opts){const textSafety=Number.isFinite(opts.textSafety)?deckClamp(opts.textSafety,1,2):1;return {strict:opts.strict!==false,trust:opts.trust==='untrusted'?'untrusted':'trusted',...(textSafety>1?{textSafety}:{})};}
+    function xbOptions(opts){const textSafety=Number.isFinite(opts.textSafety)?deckClamp(opts.textSafety,1,2):1;return {strict:opts.strict!==false,trust:'trusted',...(textSafety>1?{textSafety}:{})};}
     function compile(doc,opts={}){
       const o=xbOptions(opts);
       const checked=validate(doc,o),gate=xbVersionGate(doc);
       if(gate)return {ok:false,compiler:XB_COMPILER_VERSION,options:o,slides:[],diagnostics:checked.diagnostics,summary:xbSummary(checked.diagnostics,0)};
       let result;
       try{result=xbWithDeck(doc,o,(next,raw)=>{
-        const untrusted=o.trust==='untrusted',compileErrors=XB_ERRORS.map(m=>({code:'code.compile',severity:'error',path:'/layouts',message:m}));
+        const compileErrors=XB_ERRORS.map(m=>({code:'code.compile',severity:'error',path:'/layouts',message:m}));
         const out=next.slides.map((slide,i)=>{
           const r=XBDiag.collect(()=>XBDiag.at(['slides',i],()=>{
-            if(untrusted&&xbIsCodeSlide((raw.slides||[])[i]??slide,raw)){XBDiag.report('security.code-blocked','error',`slide type "${slide.type}" needs template code, which is not executed for untrusted documents`);return xbErrorSlide(`Slide ${String(i+1).padStart(2,'0')} · code blocked`,'This slide is rendered by template-as-code. Compile with trust:"trusted" only for documents from a trusted source.');}
             if(slide.type==='custom-html'||slide.type==='custom-diagram'){const key=slide.type==='custom-html'?'html':'svg',raw0=String(slide.content?.[key]??'');const clean=xbTrustedHtml(raw0,`${slide.type} content.${key}`);if(clean!==raw0)slide={...slide,content:{...slide.content,[key]:clean}};}
             return renderSlideHTML(slide,i,true);}));
           const diagnostics=[...r.diagnostics,...xbSemanticCheck(r.value).map(d=>({...d,path:`/slides/${i}`}))];
@@ -9502,7 +9395,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           mermaid:Object.entries(DECK_DESCRIPTORS.mermaid).map(([id,label])=>({id,label,data:'mermaid component: source string (enhanced renderer only)'}))},
         fieldAliases:DECK_FIELD_ALIASES,diagnostics:XB_DIAGNOSTIC_CODES,
         repairPolicy:{preserves:['business values','item order','text','transformed table rows'],automatic:['unambiguous names','numeric strings without rounding','layout bounds','pagination'],requiresAuthor:['missing version','missing values','invalid ranges','ambiguous relations','unsupported code']},
-        options:{strict:'default true: no sample data, missing data is an error',trust:'default "trusted": runs author layouts/helpers; "untrusted" sanitizes HTML/SVG/CSS',textSafety:'default 1, bounded [1,2]: deterministic body/table text width reserve; pipeline may calibrate it from browser overflow'}};
+        options:{strict:'default true: no sample data, missing data is an error',trust:'author layouts, helpers, HTML, SVG and CSS are preserved and executed as provided',textSafety:'default 1, bounded [1,2]: deterministic body/table text width reserve; pipeline may calibrate it from browser overflow'}};
     }
     // Static, script-free page with every compiled slide (deterministic; CSS and sprite are passed in).
     function staticPage(compiled,{css='',sprite='',title,fonts=''}={}){
@@ -9512,7 +9405,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     // Resolve the same post-transform table rows and headers used by rendering.
     // The agent repair gate compares these snapshots, never raw dataset guesses.
     function tableSnapshots(doc,opts={}){
-      try{return xbWithDeck(doc,{strict:true,trust:opts.trust||'trusted'},(_,raw)=>{
+      try{return xbWithDeck(doc,{strict:true,trust:'trusted'},(_,raw)=>{
         const tables=[],errors=[];
         function visit(c,path,depth){
           if(!c||typeof c!=='object')return;if(depth>7){errors.push({path,code:'layout.depth'});return;}
@@ -9584,7 +9477,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
       exportHTML: () => buildEditedHTML(),
       exportJSON: () => JSON.stringify(deckDocument(), null, 2),
       ctx: XB_CTX,
-      // Agent-native compiler (strict + trusted by default; pass {trust:'untrusted'} for restricted rendering).
+      // Agent-native compiler (strict by default, with author code enabled).
       compiler: XBrainCompiler,
       qa: (opts = {}) => XBrainCompiler.qa(deckDocument(), { measure: true, ...opts }),
       repair: (opts = {}) => XBrainCompiler.repair(deckDocument(), opts),

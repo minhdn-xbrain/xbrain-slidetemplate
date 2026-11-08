@@ -73,6 +73,45 @@ class ImprovementTest(unittest.TestCase):
         duplicated = self.table(sets | {"right": [{"id": "a"}, {"id": "a"}]}, {"join": {"leftKey": "key", "rightDataset": "right", "rightKey": "id"}})
         self.assertIn("data.inconsistent", codes(duplicated["diagnostics"], "error"))
 
+    def test_json_field_names_survive_join_derive_group_and_yaml(self):
+        keys = ["__proto__", "constructor", "prototype"]
+        right = [{"id": 1, "__proto__": 3, "constructor": 4, "prototype": 5}]
+        joined = self.table({"left": [{"id": 1}], "right": right},
+                            {"join": {"leftKey": "id", "rightKey": "id", "rightDataset": "right"},
+                             "select": keys})
+        self.assertTrue(joined["ok"], joined["diagnostics"])
+        for value in (3, 4, 5):
+            self.assertIn(f">{value}</td>", joined["slides"][0]["html"])
+        derived = self.table({"left": [{"id": 1}]},
+                             {"derive": {key: {"op": "add", "args": [1, n]} for n, key in enumerate(keys)},
+                              "select": keys})
+        self.assertTrue(derived["ok"], derived["diagnostics"])
+        for value in (1, 2, 3):
+            self.assertIn(f">{value}</td>", derived["slides"][0]["html"])
+        grouped = self.table({"left": [{"label": "A", "__proto__": 3}, {"label": "A", "__proto__": 4}]},
+                             {"groupBy": "label", "select": ["label", "__proto__"]})
+        self.assertTrue(grouped["ok"], grouped["diagnostics"])
+        self.assertIn(">7</td>", grouped["slides"][0]["html"])
+        yaml = "- label: A\n  __proto__: 2\n  constructor: 3\n  prototype: 4\n"
+        parsed = self.table({"left": {"type": "yaml", "value": yaml}}, {"select": keys})
+        self.assertTrue(parsed["ok"], parsed["diagnostics"])
+        for value in (2, 3, 4):
+            self.assertIn(f">{value}</td>", parsed["slides"][0]["html"])
+
+    def test_prefetch_accepts_data_urls_and_custom_fetch_schemes(self):
+        result = runtime("""
+            const {prefetchDeck}=await import('./tools/xbrain.mjs');
+            const data=await prefetchDeck(input);
+            let requested='';
+            const custom=await prefetchDeck({...input,datasets:{remote:{url:'custom://source'}}},
+              {fetchData:async url=>{requested=url;return {ok:true,text:async()=> '[{"value":8}]'};}});
+            process.stdout.write(JSON.stringify({data,custom,requested}));
+        """, self.deck({"type": "table", "dataRef": "remote"},
+                       datasets={"remote": {"url": "data:application/json,%5B%7B%22value%22%3A7%7D%5D"}}), trusted=True)
+        self.assertEqual(json.loads(result["data"]["datasets"]["remote"]["value"]), [{"value": 7}])
+        self.assertEqual(result["requested"], "custom://source")
+        self.assertEqual(json.loads(result["custom"]["datasets"]["remote"]["value"]), [{"value": 8}])
+
     def test_yaml_quotes_comments_hex_and_scalar_types(self):
         yaml = '- label: "A # safe" # comment\n  color: #F97C00\n  value: 2\n- label: B#hash\n  color: "#25AC9D"\n  value: "003"\n'
         r = self.table({"left": {"type": "yaml", "value": yaml}}, {})
@@ -116,29 +155,29 @@ class ImprovementTest(unittest.TestCase):
             {"label": "One", "x": 1, "y": 2}, {"label": "Two", "x": 1, "y": 2}, {"label": "Three", "x": 1, "y": 2}]}))
         self.assertNotIn("layout.text-collision", codes(r["diagnostics"]))
 
-    def test_sanitizer_consumes_unclosed_bodies_and_preserves_svg_title_math(self):
+    def test_author_markup_is_preserved_including_unclosed_tags(self):
         for tag in ["script", "style", "iframe", "object", "foreignObject"]:
             for ending in [">", "/> bleh"]:
                 with self.subTest(tag=tag, ending=ending):
                     html = self.compile(self.deck({"type": "html", "html": f'<b>Safe</b><{tag}{ending}evilPayload();'}))["slides"][0]["html"]
                     self.assertIn("Safe", html)
-                    self.assertNotIn("evilPayload", html)
+                    self.assertIn("evilPayload", html)
         raw = '<svg><title>Accessible &amp; safe</title><text x="10" y="20">Label</text></svg><math><mfrac><mi>x</mi><mn>2</mn></mfrac></math>'
         html = self.compile(self.deck({"type": "html", "html": raw}))["slides"][0]["html"]
         self.assertIn('<title>Accessible &amp; safe</title>', html)
         self.assertIn('<math><mfrac><mi>x</mi><mn>2</mn></mfrac></math>', html)
 
-    def test_css_is_scoped_in_nested_rules_and_blocks_outer_frame(self):
+    def test_author_css_is_preserved_without_scope_or_filter(self):
         deck = self.deck({"type": "text", "text": "Example"})
         deck["slides"][0].update(id="first", customCss='.v1-text,:is(.a,.b){color:red} @media print {.v1-slide{background:black}.v1-text{color:blue}} body{color:pink} @page{margin:0} .v1-slide + div{color:lime}.a{position:fixed;top:0}')
         r = self.compile(deck)
         html = r["slides"][0]["html"]
         css = re.search(r'<style>(.*?)</style>', html, re.S).group(1)
-        self.assertIn('[data-slide-id="first"] .v1-text,[data-slide-id="first"] :is(.a,.b)', css)
-        self.assertIn('@media print{[data-slide-id="first"].v1-slide', css)
+        self.assertIn('.v1-text,:is(.a,.b){color:red}', css)
+        self.assertIn('@media print', css)
         for marker in ["body{", "@page", "position:fixed", "color:lime"]:
-            self.assertNotIn(marker, css)
-        self.assertIn("css.blocked", codes(r["diagnostics"]))
+            self.assertIn(marker, css)
+        self.assertNotIn("css.blocked", codes(r["diagnostics"]))
 
     def test_external_data_requires_snapshot_and_prefetch_is_replayable(self):
         deck = self.deck({"type": "table", "dataRef": "remote"}, datasets={"remote": {"type": "json", "url": "http://127.0.0.1:1/unused"}})
@@ -166,8 +205,8 @@ class ImprovementTest(unittest.TestCase):
         result = self.compile(deck)
         html = result['slides'][0]['html']
         self.assertIn('content:"{a,b} /* literal */"', html)
-        self.assertNotIn('position:var', html)
-        self.assertIn('css.blocked', codes(result['diagnostics']))
+        self.assertIn('position:var(--fixed)', html)
+        self.assertNotIn('css.blocked', codes(result['diagnostics']))
 
     def test_component_depth_limit_is_reported_without_render_exception(self):
         component = {'type': 'text', 'text': 'Deep'}

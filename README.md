@@ -49,7 +49,7 @@ node tools/xbrain.mjs pipeline deck.json --require-browser --offline \
 
 Xem [audit và kết quả kiểm thử compiler](docs/audits/2026-11-08-agent-compiler/README.md) cho các cải tiến, deck mẫu và giới hạn đã biết.
 
-Compiler, CLI, Agent API và Studio mặc định dùng chế độ `trusted`, cho phép layout/helper JavaScript. CLI vẫn hỗ trợ `--untrusted` khi cần chế độ giới hạn.
+Compiler, CLI, Agent API và Studio mặc định dùng chế độ `trusted`, cho phép layout/helper JavaScript. Bộ lọc chống injection và chế độ `--untrusted` cũ đã được gỡ.
 
 Xem [hướng dẫn compiler và API](docs/agent-compiler.md) để tra lệnh, chẩn đoán và hợp đồng chart/diagram.
 

@@ -1,6 +1,6 @@
 # XBrain compiler và pipeline v1
 
-Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `trusted`; dùng `--untrusted` nếu cần chế độ giới hạn. Runtime từ `--html` phải đáng tin cậy; VM không phải sandbox của hệ điều hành.
+Runtime, renderer, CSS và dữ liệu mặc định nằm trong `index.html`. CLI yêu cầu Node ≥ 18, dùng chính runtime đó trong `node:vm`; chỉ chuỗi JSON đi qua ranh giới VM. Release vẫn **1.0.0**, document version vẫn **1.0**. Mặc định `strict`, `trusted`; nội dung tác giả không qua bộ lọc injection. Runtime từ `--html` phải đáng tin cậy; VM không phải sandbox của hệ điều hành.
 
 ## Header và thao tác Studio
 
@@ -121,17 +121,13 @@ node tools/xbrain.mjs pipeline remote.json --prefetch -o cached.html
 node tools/xbrain.mjs build cached.repaired.json --offline -o replay.html
 ```
 
-`--prefetch` là lựa chọn tường minh: tải HTTP(S) ngoài VM, timeout 15 giây, mỗi URL một lần trong lượt chạy. Nội dung nguyên bản được nhúng vào `dataset.value`, format được lưu và `dataset.snapshot.sha256` ghi SHA-256 của nội dung tải về. Không có timestamp trong output. File `.repaired.json` là bản cache có thể lưu và biên dịch lại offline.
+`--prefetch` là lựa chọn tường minh: tải URL được `fetch` hỗ trợ ngoài VM, timeout 15 giây, mỗi URL một lần trong lượt chạy. Nội dung nguyên bản được nhúng vào `dataset.value`, format được lưu và `dataset.snapshot.sha256` ghi SHA-256 của nội dung tải về. Không có timestamp trong output. File `.repaired.json` là bản cache có thể lưu và biên dịch lại offline.
 
 Không có network I/O trong sandbox. URL chưa có `value`/`data` phát `determinism.external-missing` ở mức error, kể cả dataset chưa dùng. `--offline` và `--prefetch` không dùng đồng thời. Hash ghi nguồn snapshot, không làm dữ liệu từ URL trở thành nguồn đáng tin cậy.
 
-## CSS, sanitizer và editor
+## CSS, nội dung tác giả và editor
 
-Trong chế độ CLI `--untrusted`, CSS Composer được tiền tố `[data-slide-id="..."]` cho từng selector, kể cả trong `@media`, `@supports`, `@container`, `@layer`. Layout/slide CSS của template tự định nghĩa cũng được xuất cạnh slide để bản static và Studio cùng phạm vi. Global selector `html/body/:root/:host`, sibling selector từ root, `position:fixed`, at-rule ngoài danh sách (gồm `@page`, `@import`, `@keyframes`) và CSS nesting trong declaration bị bỏ kèm `css.blocked`. Dùng selector phẳng; root của Composer dùng `.v1-slide`.
-
-Untrusted HTML/SVG dùng tokenizer theo trạng thái và danh sách tag cho phép. Script/style/iframe/object/foreignObject và các tag bị chặn khác nuốt thân đến tag đóng hoặc EOF. SVG `<title>` và MathML an toàn được giữ; handler và URL chủ động bị loại. Mã template trusted được chạy mặc định; `--untrusted` bật chế độ giới hạn.
-
-HTML editable do CLI xuất giữ nguyên chính sách strict/trust khi mở lại, sanitize cả custom HTML/SVG và chặn compile helper/slide code từ các lần import tiếp theo trong untrusted app. CDN ECharts/Mermaid không được bật cho untrusted app; `--offline` bỏ cả link font và module import CDN. Studio gốc vẫn trusted theo thiết kế cũ. VM call dùng danh sách method cho phép và drain microtask trong timeout; không truyền host object. Những biện pháp này không thay thế cô lập OS/container cho dịch vụ nhận mã JavaScript hoặc runtime HTML không tin cậy. Kết quả trusted có thể không tất định nếu tác giả dùng thời gian, random hay trạng thái toàn cục.
+HTML, SVG, CSS và mã template được giữ nguyên. CSS tùy biến có thể dùng selector toàn cục, `@import`, `@keyframes` và `position:fixed`. Compiler không có bộ lọc injection; tùy chọn `--untrusted` cũ không còn tác dụng và CLI thông báo khi gặp cờ này; compiler xử lý cả `{trust: "untrusted"}` như `trusted`. HTML editable giữ nội dung khi mở lại; `--offline` bỏ link font và module import CDN.
 
 Composer resolve title/subtitle/components từ đúng vị trí ở slide hoặc slide.content, dùng chung renderer và editor. Content Editor kiểm tra toàn bộ số hữu hạn trước khi một giao dịch DeckStore ghi bất kỳ trường nào. Inline edit dùng event delegation và cùng root resolver; undo/redo vẫn hoạt động sau xuất/mở lại HTML. Theme Composer chọn cặp foreground/background phù hợp, logo âm bản trên nền tối, giữ chữ trên card sáng tối màu; chart title được hiển thị và tính vào diện tích plot.
 

@@ -59,22 +59,21 @@ try{
     {type:'custom-html',content:{title:'Safe HTML',html:'<b>Custom safe</b><img src=x onerror="globalThis.PWNED=2">'}},
     {type:'custom-diagram',content:{title:'Safe SVG',svg:'<svg onload="globalThis.PWNED=3"><text x="10" y="40">SVG safe</text></svg>'}}
   ]}));
-  execFileSync(process.execPath,[path.join(root,'tools/xbrain.mjs'),'build',input,'--app','--offline','--untrusted','-o',app]);
+  execFileSync(process.execPath,[path.join(root,'tools/xbrain.mjs'),'build',input,'--app','--offline','-o',app]);
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await page.goto(pathToFileURL(app).href);await page.waitForFunction(()=>window.XB&&XB.getDeck().slides.length===3);
   assert.ok((await page.locator('#active-slide-viewport').innerText()).includes('Safe content'));
   for(let i=0;i<3;i++){
     await page.evaluate(index=>XB.select(index),i);
-    assert.equal(await page.locator('#active-slide-viewport [onerror],#active-slide-viewport [onload]').count(),0);
-    assert.equal(await page.evaluate(()=>typeof globalThis.PWNED),'undefined');
+    assert.ok(await page.locator('#active-slide-viewport [onerror],#active-slide-viewport [onload]').count()>0);
   }
-  // Future imports into the exported app keep the same untrusted policy.
+  // Future imports into the exported app also execute authored helper and slide code.
   await page.evaluate(()=>XB.setDeck({version:'1.0',helpers:{attack:'(()=>{globalThis.PWNED=4;return ()=>1})()'},slides:[{type:'composer',components:[{type:'text',text:'Import is inert'}]}]}));
-  assert.equal(await page.evaluate(()=>typeof globalThis.PWNED),'undefined');
+  assert.equal(await page.evaluate(()=>globalThis.PWNED),4);
   await page.evaluate(()=>XB.setDeck({version:'1.0',slides:[{type:'one-off',render:'globalThis.PWNED=5;return "ran";'}]}));
-  assert.equal(await page.evaluate(()=>typeof globalThis.PWNED),'undefined');
-  assert.ok((await page.locator('#active-slide-viewport').innerText()).includes('Code blocked'));
-  results.editable={reopenedViaFile:true,htmlAndSvgSanitized:true,helperAndSlideCodeBlocked:true,cdnRequests:requests.length};
+  assert.equal(await page.evaluate(()=>globalThis.PWNED),5);
+  assert.ok((await page.locator('#active-slide-viewport').innerText()).includes('ran'));
+  results.editable={reopenedViaFile:true,htmlAndSvgPreserved:true,helperAndSlideCodeExecuted:true,cdnRequests:requests.length};
   assert.equal(requests.length,0);assert.deepEqual(errors,[]);results.pageErrors=errors;
   fs.writeFileSync(path.join(dir,'browser-results.json'),JSON.stringify(results,null,2)+'\n');
   console.log(JSON.stringify(results,null,2));

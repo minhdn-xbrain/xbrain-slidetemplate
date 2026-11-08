@@ -46,7 +46,7 @@ Mutation calls require an explicit `baseRevision`; initially it is `null`. On `R
 
 ## Quality and author content
 
-Agent preview, browser measurement, export and Studio commit use trusted author content. HTML, SVG, CSS, JavaScript, URLs and external media are available according to the browser; authored scripts run with the page's privileges. CSS in trusted documents is preserved without slide scoping. The compiler and CLI also default to trusted; the CLI supports `--untrusted` as an optional restricted mode.
+Agent preview, browser measurement, export and Studio commit use trusted author content. HTML, SVG, CSS, JavaScript, URLs and external media are available according to the browser; authored scripts run with the page's privileges. CSS in trusted documents is preserved without slide scoping. The compiler and CLI also preserve author content without injection filtering. The former `--untrusted` option and compiler `{trust:"untrusted"}` setting no longer restrict content; the compiler reports `trusted`.
 
 Strict export and commit require a matching fresh full-deck browser run, completed measurement, ready fonts, no error diagnostics and no blocking geometry or content findings. External image failures are reported in the asset status but do not alone block export. Enhanced-only output such as Mermaid source cannot pass strict QA. `QA_NOT_MEASURED`, `QA_STALE` and `QA_GATE_FAILED` are separate failures. HTML output includes the application CSS and sprite; external references remain references and optional fonts fall back offline.
 

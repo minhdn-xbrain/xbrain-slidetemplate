@@ -113,8 +113,13 @@ class JsonContractTest(unittest.TestCase):
 
     def test_authored_markup_style_and_url_match_v1_contract(self):
         self.assertValid(self.deck({"type": "html", "html": "<b>Author</b><script>void 0</script>",
-                                    "style": {"color": "red"}}))
+                                    "style": {"color": "red", "fontFamily": '"Times New Roman", serif'}}))
         self.assertValid(self.deck({"type": "link", "text": "Action", "href": "javascript:void(0)"}))
+
+    def test_arbitrary_json_field_names_in_transforms(self):
+        self.assertValid(self.deck({"type": "table", "data": [{"__proto__": 1}],
+                                    "transform": {"derive": {"__proto__": {"op": "add", "args": [1, 2]},
+                                                             "constructor": {"field": "__proto__"}}}}))
 
     def test_all_builtin_slides(self):
         self.assertValid(self.source["document"])

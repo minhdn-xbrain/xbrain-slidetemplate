@@ -15,7 +15,7 @@ try{
   const before=Object.fromEntries((await cdp.send('Performance.getMetrics')).metrics.map(m=>[m.name,m.value]));
   const result=await page.evaluate(async({fixture,count})=>{
    const doc={...fixture,slides:Array.from({length:count},(_,i)=>({...fixture.slides[i%fixture.slides.length],id:'bench-'+i}))};const start=performance.now();
-   if(!XB.agent){const c=XB.compiler.compile(doc,{strict:true,trust:'untrusted'});return {mode:'compiler-only',durationMs:Math.round(performance.now()-start),slides:c.slides.length,errors:c.summary.errors};}
+   if(!XB.agent){const c=XB.compiler.compile(doc,{strict:true,trust:'trusted'});return {mode:'compiler-only',durationMs:Math.round(performance.now()-start),slides:c.slides.length,errors:c.summary.errors};}
    await XB.agent.ready();const loaded=await XB.agent.setCandidate({baseRevision:null,document:doc});if(!loaded.ok)return {count,error:loaded.error};
    const run=await XB.agent.render({revision:loaded.revision});return {mode:'agent-full-browser',durationMs:Math.round(performance.now()-start),slides:run.data?.qa?.checkedSlides,error:run.error||null,qaPassed:run.data?.qa?.passed};
   },{fixture,count});

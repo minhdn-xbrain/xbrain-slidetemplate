@@ -106,6 +106,17 @@ try{
  await page.evaluate(()=>XB.redo());
  const invalidVersion=await page.evaluate(()=>{const before=JSON.stringify(XB.getDeck());try{XB.setDeck({version:'2.0',slides:[]});return false;}catch{return before===JSON.stringify(XB.getDeck());}});assert.equal(invalidVersion,true);
  results.editor={atomicValidation:true,undoRedo:true,inlineRoundTrip:true,invalidVersion:true,renderDoesNotRecordHistory:true};
+ // Author JSON fields with arbitrary names remain editable via modal and inline paths.
+ await page.evaluate(()=>{const content=JSON.parse('{"__proto__":{"label":"Before"},"constructor":"One","prototype":"Two"}');XB.setDeck({version:'1.0',layouts:{custom:{name:'Custom',group:'A',template:'<div contenteditable="true" data-field="__proto__.label">${c.__proto__.label}</div>'}},slides:[{type:'custom',content}]});});
+ const beforeSpecial=await page.evaluate(()=>JSON.stringify(XB.getDeck()));
+ await open();await field(['__proto__','label']).fill('Modal');await field(['constructor']).fill('Edited one');await field(['prototype']).fill('Edited two');await save();
+ const afterSpecial=JSON.parse(await page.evaluate(()=>JSON.stringify(XB.getDeck())));
+ assert.equal(afterSpecial.slides[0].content.__proto__.label,'Modal');assert.equal(afterSpecial.slides[0].content.constructor,'Edited one');assert.equal(afterSpecial.slides[0].content.prototype,'Edited two');
+ await page.evaluate(()=>XB.undo());assert.equal(await page.evaluate(()=>JSON.stringify(XB.getDeck())),beforeSpecial);await page.evaluate(()=>XB.redo());
+ const specialInline=page.locator('#active-slide-viewport [data-field="__proto__.label"]');await specialInline.fill('Inline');await specialInline.blur();
+ assert.equal(JSON.parse(await page.evaluate(()=>JSON.stringify(XB.getDeck()))).slides[0].content.__proto__.label,'Inline');
+ await page.evaluate(()=>XB.undo());assert.equal(JSON.parse(await page.evaluate(()=>JSON.stringify(XB.getDeck()))).slides[0].content.__proto__.label,'Modal');await page.evaluate(()=>XB.redo());
+ results.editor.arbitraryJsonFieldNames=true;
  // Mixed root storage: title at slide level, components inside content.
  await page.evaluate(()=>XB.setDeck({version:'1.0',slides:[{type:'composer',title:'Top title',content:{components:[{type:'metric',value:0}]}}]}));
  await open();assert.equal(await field(['title']).inputValue(),'Top title');assert.equal(await field(['components',0,'value']).inputValue(),'0');

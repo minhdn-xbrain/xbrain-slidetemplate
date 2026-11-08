@@ -61,7 +61,6 @@ class CompilerTest(unittest.TestCase):
         cls.validator = Draft202012Validator(json.loads(SCHEMA.read_text(encoding="utf-8")))
 
     def compile(self, deck, **opts):
-        opts.setdefault("trust", "untrusted")
         return runtime("process.stdout.write(JSON.stringify(rt.call('compile',input.deck,input.opts)));",
                        {"deck": deck, "opts": opts}, trusted=opts.get("trust") == "trusted")
 
@@ -111,10 +110,10 @@ class CompilerTest(unittest.TestCase):
         self.assertEqual(code, 0, out[:2000])
         self.assertEqual(json.loads(out)["options"]["trust"], "trusted")
         code, out = cli("qa", FIX / "deck-template-as-code.json", "--untrusted", "--json")
-        self.assertEqual(code, 1)
-        self.assertIn("security.code-blocked", codes(json.loads(out)["diagnostics"], "error"))
+        self.assertEqual(code, 0, out[:2000])
+        self.assertEqual(json.loads(out)["options"]["trust"], "trusted")
 
-    def test_realistic_deck_compiles_clean_in_strict_untrusted_mode(self):
+    def test_realistic_deck_compiles_clean_in_strict_mode(self):
         code, out = cli("qa", FIX / "qbr-deck.json", "--json")
         report = json.loads(out)
         self.assertEqual(code, 0, out[:2000])
@@ -216,14 +215,13 @@ class CompilerTest(unittest.TestCase):
         self.assertEqual(json.loads(out)["document"]["version"], "1.0")
 
     # --- safety & determinism -------------------------------------------------------------
-    def test_untrusted_documents_run_no_code_and_lose_active_content(self):
-        r = self.compile(load("untrusted.json"))
+    def test_legacy_trust_option_does_not_filter_author_content(self):
+        r = self.compile(load("untrusted.json"), trust="untrusted")
         html = "".join(s["html"] for s in r["slides"])
-        for marker in ["LAYOUT-RAN", "HELPER-RAN", "SLIDE-RAN", "<script", "onerror", "onclick", "onload", "javascript:",
-                       "<iframe", "@import", "evil.example", "foreignObject", "<animate", "data:image/svg"]:
-            self.assertNotIn(marker.lower(), html.lower(), marker)
-        self.assertIn("safe bold", html)
-        self.assertIn("security.code-blocked", codes(r["diagnostics"], "error"))
+        for marker in ["LAYOUT-RAN", "HELPER-RAN", "SLIDE-RAN", "<script", "onerror", "javascript:", "<iframe"]:
+            self.assertIn(marker.lower(), html.lower(), marker)
+        self.assertEqual(r["options"]["trust"], "trusted")
+        self.assertFalse(any(d["code"].startswith("security.") for d in r["diagnostics"]))
 
     def test_trusted_code_runs_inside_the_vm_without_host_access(self):
         r = self.compile(load("untrusted.json"), trust="trusted")
