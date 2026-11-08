@@ -3779,14 +3779,7 @@
           ]
         },
         "group": {
-          "type": "string",
-          "enum": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ]
+          "type": "string"
         },
         "layoutName": {
           "type": "string"
@@ -5048,14 +5041,7 @@
           "type": "string"
         },
         "group": {
-          "type": "string",
-          "enum": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ]
+          "type": "string"
         },
         "desc": {
           "type": "string"
@@ -5161,14 +5147,7 @@
           }
         },
         "group": {
-          "type": "string",
-          "enum": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ]
+          "type": "string"
         },
         "layoutName": {
           "type": "string"
@@ -5278,14 +5257,7 @@
           }
         },
         "group": {
-          "type": "string",
-          "enum": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ]
+          "type": "string"
         },
         "layoutName": {
           "type": "string"

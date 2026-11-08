@@ -1,73 +1,33 @@
 # XBrain Presentation System
 
-Bộ công cụ tạo, chỉnh sửa và trình chiếu slide theo thương hiệu XBrain, gói trong **một file HTML**. Theo mô hình **Presentation as Code**, template định nghĩa bố cục; JSON cung cấp nội dung, cấu hình và dữ liệu.
+Presentation as Code với React, TypeScript và Vite. Nội dung deck dùng JSON schema `1.0`; bản phát hành ứng dụng là `1.0.0`.
 
-Release **1.0.0** · JSON schema **1.0**.
+## Phát triển
 
-## Bắt đầu nhanh
+Cần Node.js 22.15 trở lên và npm.
 
-1. Mở [index.html](index.html) bằng Chrome hoặc Edge, không cần cài đặt hay server.
-2. Bấm vào chữ để sửa, kéo-thả slide để sắp xếp; dùng **Tổng quan** để xem toàn bộ slide và **Thêm slide → Slide từ mẫu** để chọn mẫu.
-3. Chọn **Trình chiếu** để trình bày hoặc **In PDF** để xuất bản in.
-4. Chọn **Xuất → HTML có thể chỉnh sửa** hoặc **Xuất → Dữ liệu JSON** để lưu ra tệp. Mở lại JSON bằng **Tệp → Mở bài trình chiếu JSON**.
-
-File mở trực tiếp bằng `file://`. Font, ECharts và Mermaid dùng CDN khi có mạng; khi offline, ứng dụng dùng font và nội dung dự phòng.
-
-## Tạo slide bằng JSON
-
-Mỗi deck cần `"version": "1.0"` và mảng `slides`. Mỗi slide chọn `type` và cung cấp dữ liệu theo hợp đồng của layout.
-
-Trong Studio, mở **AI / JSON → Schema / Contract** để đọc **Schema JSON** hoặc **Agent Contract**, sao chép và tải JSON. Nội dung hiển thị trực tiếp để extension AI có thể đọc qua giao diện; tính năng dùng được offline và lấy dữ liệu từ compiler hiện tại.
-
-Mở **AI / JSON → AI Console** để nạp candidate JSON, kiểm tra, render, xem diagnostic, áp dụng JSON Patch và xuất HTML tĩnh sau QA. Browser agent có thể dùng giao diện này hoặc `window.XB.agent`; candidate chỉ vào Studio sau thao tác commit được kiểm tra. Xem [API Agent](docs/agent-console-api.md) và [browser runbook](docs/agent-console-browser-runbook.md). Agent ưu tiên linh hoạt: nội dung tác giả có thể chạy HTML, CSS, JavaScript và tải tài nguyên ngoài với quyền của trang. XBrain đo hình học trong browser; việc xem ảnh và đánh giá thị giác do agent bên ngoài thực hiện.
-
-Bắt đầu với deck tối thiểu sau trong `deck.json`, hoặc tham khảo [deck QBR](tests/fixtures/qbr-deck.json) và [JSON Schema](contracts/xbrain-deck-v1.schema.json):
-
-```json
-{
-  "version": "1.0",
-  "slides": [{ "type": "cover", "content": { "titleLine1": "Bài trình bày" } }]
-}
+```sh
+npm ci
+npm run dev
 ```
 
-Chạy với **Node.js ≥ 18**:
+Vite phục vụ mã nguồn trong lúc phát triển. Để tạo bản HTML độc lập có thể mở bằng `file://` và hoạt động offline:
 
-```bash
-node tools/xbrain.mjs repair deck.json -o deck.repaired.json
-node tools/xbrain.mjs qa deck.repaired.json --json
-node tools/xbrain.mjs build deck.repaired.json -o deck.html
+```sh
+npm run build
 ```
 
-Sửa các lỗi QA trước khi build. Có thể gộp quy trình bằng `node tools/xbrain.mjs pipeline deck.json -o deck.html`. Pipeline chỉ ghi HTML khi đạt QA; bản sửa, diagnostic và manifest SHA-256 nằm trong `.repaired.json`, `.qa.json`.
+Mở `dist/index.html` trong trình duyệt. Để xuất một bản HTML có thể chỉnh sửa, thực hiện thao tác xuất từ bản build này; server phát triển không chứa ứng dụng trong một tệp HTML.
 
-Để agent đo hình học thực tế và tự reflow tối đa 3 lượt, cấu hình `CHROME_PATH` rồi chạy:
+Ảnh, SVG và CSS được lưu trong `public/assets`; cấu hình Vite đọc và nhúng chúng vào HTML khi build. Module `src/lib/xbrainAssets.ts` cung cấp các asset này cho ứng dụng và compiler.
 
-```bash
-node tools/xbrain.mjs pipeline deck.json --require-browser --offline \
-  --fail-on text.truncated,layout.legibility,layout.text-collision -o deck.html
+## Kiểm tra và compiler
+
+```sh
+npm run lint
+npm test
+python3 -m unittest discover -s src/__tests__ -p 'test_*.py'
+npm run schema
 ```
 
-Xem [audit và kết quả kiểm thử compiler](docs/audits/2026-11-08-agent-compiler/README.md) cho các cải tiến, deck mẫu và giới hạn đã biết.
-
-Compiler, CLI, Agent API và Studio mặc định dùng chế độ `trusted`, cho phép layout/helper JavaScript. Bộ lọc chống injection và chế độ `--untrusted` cũ đã được gỡ.
-
-Xem [hướng dẫn compiler và API](docs/agent-compiler.md) để tra lệnh, chẩn đoán và hợp đồng chart/diagram.
-
-## Phát triển và kiểm thử
-
-Mã ứng dụng, CSS, SVG và dữ liệu mẫu nằm trong file HTML chính; CLI chạy cùng runtime đó. Quy ước sửa mã nằm trong [AGENTS.md](AGENTS.md).
-
-Cần Node.js ≥ 18 và Python có `jsonschema ≥ 4.10`:
-
-```bash
-pip install "jsonschema>=4.10"
-python -m unittest discover -s tests -p "test_*.py"
-```
-
-Schema được sinh từ registry trong HTML. Sau khi sửa registry, chạy `node tools/xbrain.mjs schema --write` rồi kiểm thử lại. Các deck và ca biên nằm trong [tests/fixtures](tests/fixtures/).
-
-## Thương hiệu và chia sẻ
-
-Tuân theo [XBrain Brand Guidelines](docs/XBrain_Brand%20Guidelines.pdf). Số liệu mẫu chỉ để minh họa; thay bằng dữ liệu đã kiểm chứng trước khi sử dụng.
-
-Repo chứa ảnh nội bộ, thông tin liên hệ và bộ nhận diện XBrain; chỉ chia sẻ trong công ty.
+Lệnh `npm run schema` tạo lại `contracts/xbrain-deck-v1.schema.json` từ các registry hiện tại. Compiler được dùng trực tiếp trong ứng dụng và Agent API. Các kiểm thử Python cần `jsonschema` và dùng Vite để nạp compiler TypeScript.

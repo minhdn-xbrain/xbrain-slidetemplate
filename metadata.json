@@ -1,0 +1,6 @@
+{
+  "name": "XBrain Presentation System",
+  "description": "XBrain v1.0.0 — Presentation as Code, Corporate Brand & Slide Design System with JSON Composer, Offline ECharts/Mermaid, Compiler CLI, and Agent Console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
