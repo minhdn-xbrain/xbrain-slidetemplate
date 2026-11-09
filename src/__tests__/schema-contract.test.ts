@@ -71,4 +71,28 @@ describe('deck schema and live registries', () => {
     expect([...values.keys()]).toEqual(['xbrain-v1-draft']);
     expect(draft.load().slides).toEqual(cover().slides);
   });
+
+  it('synchronizes CSS scope, customCss, theme background token, and component gap in schema and contract', () => {
+    const contract = XBrainCompiler.contract();
+    expect(contract.cssScope).toBeDefined();
+    expect(contract.cssScope.slideScopes).toEqual(['global', 'slide']);
+    expect(contract.brandRules).toBeDefined();
+    const docWithScopedCss = {
+      version: '1.0',
+      customCss: '.deck-shared { color: #425453; }',
+      slideCssScope: 'slide',
+      theme: { tokens: { primary: '#F97C00', teal: '#25AC9D', ink: '#425453', background: '#FFFFFF' } },
+      slides: [
+        {
+          id: 'scoped-slide',
+          type: 'composer',
+          cssScope: 'slide',
+          customCss: '.v1-text { font-weight: 700; }',
+          components: [{ type: 'stack', gap: 16, children: [{ type: 'text', text: 'Scoped' }] }],
+        },
+      ],
+    };
+    expect(validate(docWithScopedCss), JSON.stringify(validate.errors)).toBe(true);
+    expect(validate({ ...docWithScopedCss, slideCssScope: 'invalid-scope' })).toBe(false);
+  });
 });

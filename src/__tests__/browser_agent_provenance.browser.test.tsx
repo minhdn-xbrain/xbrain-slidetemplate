@@ -18,10 +18,17 @@ try{
   const staged=await a.setCandidate({baseRevision:created.revision,document:nestedDoc}),nestedRun=await a.render({revision:staged.revision}),nested=await a.inspect({runId:nestedRun.data.runId});return {inspected,blocked,nested};
  });
  const measured=result.inspected.data.findings.filter(x=>x.code==='layout.measured-overflow');assert.ok(measured.length,JSON.stringify(result.inspected.data.findings));
- assert.ok(measured.some(x=>x.granularity==='component'&&x.sourcePath==='/slides/0/components/0'&&x.selector&&x.bounds?.coordinateSpace==='slide-1920x1080'),JSON.stringify(measured));
+ assert.ok(measured.some(x=>x.granularity==='component'&&x.sourcePath==='/slides/0/components/0'&&x.dataPath==='/slides/0/components/0'&&x.element&&x.selector&&x.bounds?.coordinateSpace==='slide-1920x1080'),JSON.stringify(measured));
  const mapped=new Set(measured.filter(x=>x.granularity==='component').map(x=>x.sourcePath));assert.ok(mapped.size>=9,JSON.stringify([...mapped]));
  assert.equal(result.blocked.error.code,'QA_GATE_FAILED');assert.ok(result.blocked.error.details.gateReasons.some(x=>x.code==='layout.measured-overflow'));
- assert.ok(result.nested.data.findings.some(x=>x.code==='layout.measured-overflow'&&x.sourcePath==='/slides/0/components/0/children/0'),JSON.stringify(result.nested.data.findings));
+ assert.ok(result.nested.data.findings.some(x=>x.code==='layout.measured-overflow'&&x.sourcePath==='/slides/0/components/0/children/0'&&x.dataPath==='/slides/0/components/0/children/0'),JSON.stringify(result.nested.data.findings));
+ await page.locator('#v1-menu-ai-trigger').click();await page.getByRole('menuitem',{name:'AI Console'}).click();
+ await page.getByTestId('xb-agent-render').click();await page.locator('[data-testid="xb-agent-render"][data-state="success"]').waitFor();
+ const firstFinding=page.locator('[data-testid="xb-agent-findings"] button[data-v1-agent-action="finding"]').first();
+ await firstFinding.click();
+ await page.locator('[data-testid="xb-agent-highlight"]:not([hidden])').waitFor();
+ assert.equal(await firstFinding.getAttribute('aria-current'),'true');
+ assert.match(await page.getByTestId('xb-agent-highlight').getAttribute('data-label')||'',/layout\.(?:measured-)?overflow/);
  await context.close();console.log('Agent component provenance and bounds checks passed');
 }finally{await browser.close();}
 

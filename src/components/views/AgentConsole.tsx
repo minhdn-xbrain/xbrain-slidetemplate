@@ -28,8 +28,17 @@ export const AgentConsoleView: React.FC = () => {
           <span>
             Candidate: <strong data-testid="xb-agent-revision">none</strong>
           </span>
+          <span data-testid="xb-agent-candidate-status" data-state="empty" role="status">
+            Candidate state: empty
+          </span>
+          <span data-testid="xb-agent-studio-status" data-state="aligned" role="status">
+            Studio: <strong data-testid="xb-agent-studio-revision">none</strong> · aligned
+          </span>
           <span data-testid="xb-agent-qa-summary" role="status">
             QA: not measured
+          </span>
+          <span data-testid="xb-agent-brand-summary" data-state="unavailable" role="status">
+            Brand QA: pending
           </span>
         </div>
         <div className="v1-agent-toolbar mb-[14px]">
@@ -55,6 +64,12 @@ export const AgentConsoleView: React.FC = () => {
           <button type="button" data-v1-agent-action="inspect" data-testid="xb-agent-inspect">
             Inspect QA
           </button>
+          <button type="button" data-v1-agent-action="diff" data-testid="xb-agent-diff">
+            Diff vs Studio
+          </button>
+          <button type="button" data-v1-agent-action="rebase" data-testid="xb-agent-rebase">
+            Rebase on Studio
+          </button>
           <button type="button" data-v1-agent-action="propose" data-testid="xb-agent-propose-repair">
             Propose repair
           </button>
@@ -76,6 +91,13 @@ export const AgentConsoleView: React.FC = () => {
           </button>
           <button type="button" data-v1-agent-action="export-json" data-testid="xb-agent-export-json">
             Export JSON
+          </button>
+          <button
+            type="button"
+            data-v1-agent-action="export-images"
+            data-testid="xb-agent-export-images"
+          >
+            Export 1920×1080 PNGs
           </button>
           <button type="button" data-v1-agent-action="download" data-testid="xb-agent-download">
             Download artifact
@@ -108,7 +130,7 @@ export const AgentConsoleView: React.FC = () => {
               aria-label="Rendered slide preview"
             >
               <iframe title="Slide preview" />
-              <div className="v1-agent-highlight" aria-hidden="true" hidden />
+              <div className="v1-agent-highlight" data-testid="xb-agent-highlight" aria-hidden="true" hidden />
             </div>
             <p data-testid="xb-agent-preview-status">Visual review is performed externally.</p>
           </section>
@@ -137,7 +159,7 @@ export const AgentConsoleView: React.FC = () => {
                 <button type="button" data-v1-agent-action="load" data-testid="xb-agent-load-candidate">
                   Load candidate
                 </button>
-                <button type="button" data-v1-agent-action="sync">
+                <button type="button" data-v1-agent-action="sync" data-testid="xb-agent-sync-studio">
                   Copy Studio to candidate
                 </button>
                 <button type="button" data-v1-agent-action="reset" data-testid="xb-agent-reset">

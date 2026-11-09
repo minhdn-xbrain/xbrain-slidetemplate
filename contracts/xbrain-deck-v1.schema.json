@@ -44,6 +44,9 @@
             },
             "teal": {
               "type": "string"
+            },
+            "background": {
+              "type": "string"
             }
           },
           "additionalProperties": false
@@ -105,6 +108,13 @@
     },
     "chrome": {
       "$ref": "#/$defs/chrome"
+    },
+    "slideCssScope": {
+      "enum": [
+        "global",
+        "slide"
+      ],
+      "description": "Default CSS scoping mode for slide-level customCss/css"
     }
   },
   "additionalProperties": false,
@@ -1150,6 +1160,11 @@
             "string",
             "number"
           ]
+        },
+        "gap": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 120
         }
       },
       "additionalProperties": false,
@@ -3836,11 +3851,28 @@
           "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
         },
         "css": {
-          "$ref": "#/$defs/code",
-          "description": "CSS added with the slide."
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 50
+            }
+          ]
         },
         "chrome": {
           "$ref": "#/$defs/chrome"
+        },
+        "cssScope": {
+          "enum": [
+            "global",
+            "slide"
+          ],
+          "description": "Scope slide CSS to [data-slide-id] (\"slide\") or keep deck-wide (\"global\", default)"
         }
       },
       "additionalProperties": false,
@@ -5168,11 +5200,31 @@
           "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
         },
         "css": {
-          "$ref": "#/$defs/code",
-          "description": "CSS added with the slide."
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 50
+            }
+          ]
         },
         "chrome": {
           "$ref": "#/$defs/chrome"
+        },
+        "customCss": {
+          "type": "string"
+        },
+        "cssScope": {
+          "enum": [
+            "global",
+            "slide"
+          ],
+          "description": "Scope slide CSS to [data-slide-id] (\"slide\") or keep deck-wide (\"global\", default)"
         }
       },
       "additionalProperties": false,
@@ -5278,11 +5330,31 @@
           "description": "Name of a helper that wraps the output, e.g. \"dgPage\"."
         },
         "css": {
-          "$ref": "#/$defs/code",
-          "description": "CSS added with the slide."
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 50
+            }
+          ]
         },
         "chrome": {
           "$ref": "#/$defs/chrome"
+        },
+        "customCss": {
+          "type": "string"
+        },
+        "cssScope": {
+          "enum": [
+            "global",
+            "slide"
+          ],
+          "description": "Scope slide CSS to [data-slide-id] (\"slide\") or keep deck-wide (\"global\", default)"
         }
       },
       "additionalProperties": false,

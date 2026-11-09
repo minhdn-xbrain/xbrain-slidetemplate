@@ -105,4 +105,76 @@ describe('compiler on authored decks', () => {
     expect(first).toContain('id="xbrain-logo-primary"');
     expect(first).not.toContain('<script');
   });
+
+  it('scopes slide CSS when cssScope is slide and consolidates shared CSS in staticPage', () => {
+    const doc = {
+      version: '1.0',
+      customCss: '.deck-level-rule { letter-spacing: 0.02em; }',
+      layouts: {
+        customBox: {
+          group: 'General',
+          css: '.custom-box { padding: 12px; }',
+          template: '<div class="custom-box">${c.title}</div>',
+        },
+      },
+      slides: [
+        { id: 's-scoped', type: 'composer', title: 'Scoped', cssScope: 'slide', customCss: '.v1-text { color: #25AC9D; }', components: [{ type: 'text', text: 'A' }] },
+        { id: 's-custom-1', type: 'customBox', content: { title: 'One' } },
+        { id: 's-custom-2', type: 'customBox', content: { title: 'Two' } },
+      ],
+    };
+    const compiled = XBrainCompiler.compile(doc, { strict: true, trust: 'trusted' });
+    expect(compiled.slides[0].html).toContain('[data-slide-id="s-scoped"] .v1-text{color: #25AC9D;}');
+    expect(compiled.sharedCss).toContain('.deck-level-rule');
+    expect(compiled.sharedCss).toContain('.custom-box');
+    const html = XBrainCompiler.staticPage(compiled, { css: XBRAIN_EMBEDDED_CSS, sprite: XBRAIN_SVG_SPRITE });
+    expect(html.match(/data-xb-consolidated-css="true"/g)).toHaveLength(1);
+    expect(html).not.toContain('data-xb-shared-css=');
+  });
+
+  it('enforces XBrain brand QA checks for font, color, logo, contrast, and margin', () => {
+    const offBrand = {
+      version: '1.0',
+      theme: {
+        fontHeading: 'Comic Sans MS',
+        logo: 'unapproved-logo',
+        tokens: { primary: '#FF00FF', ink: '#EEEEEE', background: '#FFFFFF' },
+      },
+      slides: [
+        {
+          id: 'brand-slide',
+          type: 'composer',
+          title: 'Brand check',
+          layout: 'freeform',
+          headerLogo: 'custom-bad-logo',
+          components: [
+            {
+              type: 'text',
+              text: 'Too close to edge and low contrast',
+              position: { x: -24, y: -24, width: 300, height: 80 },
+              style: { color: '#F5F5F5', backgroundColor: '#FFFFFF', fontFamily: 'Papyrus' },
+            },
+          ],
+        },
+      ],
+    };
+    const qa = XBrainCompiler.qa(offBrand, { strict: true, trust: 'trusted' });
+    const diagCodes = codes(qa);
+    expect(diagCodes).toEqual(expect.arrayContaining([
+      'brand.font',
+      'brand.color',
+      'brand.logo',
+      'brand.contrast',
+      'brand.margin',
+    ]));
+    expect(qa.summary.brand).toBeDefined();
+    expect(qa.summary.brand.passed).toBe(false);
+    expect(qa.summary.brand.checks).toEqual({
+      font: false,
+      color: false,
+      logo: false,
+      contrast: false,
+      margin: false,
+    });
+  });
 });
