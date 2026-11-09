@@ -33,12 +33,13 @@ import { createDataResolver } from "../core/dataResolver";
 import { DeckModel } from "../core/deckModel";
 import {
   UNGROUPED_FILTER_KEY,
-  BUILTIN_GROUP_META,
+  GROUPED_VIEW_KEY,
   normalizeSlideGroup,
   formatGroupBadge,
   getGroupBadgeClass,
   getDeckGroupsForSlides,
   matchesGroupFilter,
+  groupSlidesByGroup,
 } from "../utils/slideGroup";
 import { EnhancedRenderers } from "../lib/enhancedRenderers";
 import {
@@ -1351,10 +1352,10 @@ function deckComposer(slide,index,isThumb){
  </div>`;
 }
 /* ----------------------- Preset compositions ------------------------ */
-LAYOUT_CATALOG.push({type:'composer',group:'E',name:'JSON Composer',desc:'Slide composed from arbitrary JSON components; supports nested layouts, dataRefs, raw HTML/SVG, charts and diagrams.'});
+LAYOUT_CATALOG.push({type:'composer',name:'JSON Composer',desc:'Slide composed from arbitrary JSON components; supports nested layouts, dataRefs, raw HTML/SVG, charts and diagrams.'});
 const DECK_DEMO_SLIDES=[];
 function deckAddExample(title,desc,components,variant='white',layout='auto'){
- DECK_DEMO_SLIDES.push({id:`v1-${String(DECK_DEMO_SLIDES.length+1).padStart(2,'0')}`,type:'composer',group:'E',layoutName:title,title,subtitle:desc,background:variant==='orange'?'#F97C00':variant==='dark'?'#425453':'#FFFFFF',variant,layout,content:{sectionTag:'JSON COMPOSER',kicker:'DATA-DRIVEN VISUAL',source:'SAMPLE DATA'},components});
+ DECK_DEMO_SLIDES.push({id:`v1-${String(DECK_DEMO_SLIDES.length+1).padStart(2,'0')}`,type:'composer',group:'Composer',layoutName:title,title,subtitle:desc,background:variant==='orange'?'#F97C00':variant==='dark'?'#425453':'#FFFFFF',variant,layout,content:{sectionTag:'JSON COMPOSER',kicker:'DATA-DRIVEN VISUAL',source:'SAMPLE DATA'},components});
 }
 // Honest presets: every sample visual carries the fields its variant reads (no implied relations or invented values).
 const deckN=(id,label,more={})=>({id,label,...more});
@@ -1569,7 +1570,8 @@ function deckAddVisual(id){let meta=DECK_VISUAL_LOOKUP[id];if(!meta)return;let t
   'mermaid-gitgraph':'gitGraph\n commit\n branch labs\n checkout labs\n commit\n checkout main\n merge labs'
  };
  let component=meta.family==='mermaid'?{type:'mermaid',source:mermaidSource[id]||'flowchart LR\n A[Discover] --> B[Practice] --> C[Validate]'}:{type:'diagram',variant:id,...deckPreset(id)};component.span=12;component.minHeight=450;
- const s={id:'visual-'+Date.now(),type:'composer',layoutName:title,group:'E',title,subtitle:'AI-editable diagram template · replace JSON content and datasets.',content:{sectionTag:'CUSTOM VISUAL',source:'ILLUSTRATIVE SAMPLE DATA'},components:[component]};DeckStore.change(()=>{slides.splice(currentSlideIndex+1,0,s);currentSlideIndex++;});deckCloseLibrary();switchAppMode('workspace');}
+ const inheritedGroup=normalizeSlideGroup(slides[currentSlideIndex]?.group);
+ const s={id:'visual-'+Date.now(),type:'composer',layoutName:title,...(inheritedGroup?{group:inheritedGroup}:{}),title,subtitle:'AI-editable diagram template · replace JSON content and datasets.',content:{sectionTag:'CUSTOM VISUAL',source:'ILLUSTRATIVE SAMPLE DATA'},components:[component]};DeckStore.change(()=>{slides.splice(currentSlideIndex+1,0,s);currentSlideIndex++;});deckCloseLibrary();switchAppMode('workspace');}
 function deckDocument(){return DeckModel.serialize(DECK_CONFIG, slides);}
 function deckApplyDocument(obj, {recordHistory=true, resetView=true, strictCustom=false}={}){
   // "layouts"/"helpers" in the document replace the current ones; a document without them keeps them
@@ -1641,17 +1643,17 @@ function deckRefreshCounts(){
  if (sideBar) {
    const allSideActive = currentSidebarFilter === 'ALL';
    const sideButtons = [
-     `<button data-click-action="filterSidebarSlides" data-click-arg="'ALL'" id="side-filter-ALL" class="flex-1 min-w-[44px] py-1 px-1.5 rounded text-[11px] font-heading ${allSideActive ? 'font-bold bg-[#F97C00] text-white' : 'font-semibold bg-[#242F2F] text-slate-300 hover:text-white'}">Tất cả</button>`
+     `<button type="button" data-click-action="filterSidebarSlides" data-click-arg="'ALL'" id="side-filter-ALL" class="v1-sidebar-chip shrink-0 py-1 px-2.5 rounded-md text-[11px] font-heading ${allSideActive ? 'active font-bold bg-[#F97C00] text-white' : 'font-semibold bg-[#242F2F] text-slate-300 hover:text-white'}">Tất cả (${slides.length})</button>`
    ];
    for (const g of groups) {
      const isActive = currentSidebarFilter === g;
-     const meta = BUILTIN_GROUP_META[g];
-     const label = g === UNGROUPED_FILTER_KEY ? 'Khác' : (meta ? meta.sideLabel : g);
-     const title = g === UNGROUPED_FILTER_KEY ? 'Slide không phân nhóm' : (meta ? meta.sideTitle : `Group: ${g}`);
+     const count = slides.filter(s => matchesGroupFilter(s, g)).length;
+     const label = g === UNGROUPED_FILTER_KEY ? `Chưa phân nhóm (${count})` : `${g} (${count})`;
+     const title = g === UNGROUPED_FILTER_KEY ? 'Slide chưa gán group' : `Nhóm: ${g} (${count} slide)`;
      const safeArg = escapeHtml(g.replace(/'/g, "\\'"));
      const safeId = escapeHtml(g);
      sideButtons.push(
-       `<button data-click-action="filterSidebarSlides" data-click-arg="'${safeArg}'" id="side-filter-${safeId}" class="flex-1 min-w-[40px] py-1 px-1.5 rounded text-[11px] font-heading ${isActive ? 'font-bold bg-[#F97C00] text-white' : 'font-semibold bg-[#242F2F] text-slate-300 hover:text-white'} truncate" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`
+       `<button type="button" data-click-action="filterSidebarSlides" data-click-arg="'${safeArg}'" id="side-filter-${safeId}" class="v1-sidebar-chip shrink-0 py-1 px-2.5 rounded-md text-[11px] font-heading ${isActive ? 'active font-bold bg-[#F97C00] text-white' : 'font-semibold bg-[#242F2F] text-slate-300 hover:text-white'}" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`
      );
    }
    sideBar.innerHTML = sideButtons.join('');
@@ -1666,12 +1668,9 @@ function deckRefreshCounts(){
    for (const g of groups) {
      const isActive = currentGalleryFilter === g;
      const count = slides.filter(s => matchesGroupFilter(s, g)).length;
-     const meta = BUILTIN_GROUP_META[g];
      const label = g === UNGROUPED_FILTER_KEY
        ? `Chưa phân nhóm (${count})`
-       : meta
-         ? (g === 'E' ? `${meta.galLabel} (${count})` : `${meta.galLabel} (${count})`)
-         : `${g} (${count})`;
+       : `${g} (${count})`;
      const safeArg = escapeHtml(g.replace(/'/g, "\\'"));
      const safeId = escapeHtml(g);
      galButtons.push(
@@ -1931,10 +1930,82 @@ const SLIDE_RENDERERS = createSlideRenderers({
        ========================================================================== */
     let currentSlideIndex = 0;
     let currentSidebarFilter = 'ALL';
+    let currentSidebarSearch = '';
     let currentGalleryFilter = 'ALL';
     let isInlineEditEnabled = true;
     let currentAppMode = 'workspace';
 
+    function toggleSidebarCollapsed() {
+      const studio = document.getElementById('studio-view');
+      const backdrop = document.getElementById('sidebar-mobile-backdrop');
+      if (!studio) return;
+      const isCompactViewport = typeof window !== 'undefined' && window.innerWidth <= 860;
+      if (isCompactViewport) {
+        const opening = !studio.classList.contains('v1-sidebar-mobile-open');
+        studio.classList.toggle('v1-sidebar-mobile-open', opening);
+        backdrop?.classList.toggle('hidden', !opening);
+      } else {
+        studio.classList.toggle('v1-sidebar-collapsed');
+      }
+      requestAnimationFrame(updateCanvasScale);
+    }
+
+    function closeMobileSidebar() {
+      const studio = document.getElementById('studio-view');
+      const backdrop = document.getElementById('sidebar-mobile-backdrop');
+      studio?.classList.remove('v1-sidebar-mobile-open');
+      backdrop?.classList.add('hidden');
+      requestAnimationFrame(updateCanvasScale);
+    }
+
+    function searchSidebarSlides(event) {
+      const val = event?.target?.value ?? document.getElementById('sidebar-search-input')?.value ?? '';
+      currentSidebarSearch = String(val).trim();
+      renderSidebarList();
+    }
+
+    function resetSidebarFilters() {
+      currentSidebarFilter = 'ALL';
+      currentSidebarSearch = '';
+      const inp = document.getElementById('sidebar-search-input') as HTMLInputElement | null;
+      if (inp) inp.value = '';
+      deckRefreshCounts();
+      renderSidebarList();
+      notifyEngine();
+    }
+
+    function sidebarQuickDuplicate(idx) {
+      const i = Number(idx);
+      if (!Number.isInteger(i) || !slides[i]) return;
+      const copy = JSON.parse(JSON.stringify(slides[i]));
+      copy.id = 'slide-' + Date.now();
+      DeckStore.change(() => {
+        slides.splice(i + 1, 0, copy);
+        currentSlideIndex = i + 1;
+      });
+      renderCurrentSlide();
+      xbToast(`Đã nhân bản Slide ${String(i + 1).padStart(2, '0')}`);
+    }
+
+    function sidebarQuickEdit(idx) {
+      const i = Number(idx);
+      if (!Number.isInteger(i) || !slides[i]) return;
+      currentSlideIndex = i;
+      renderCurrentSlide();
+      openContentEditorModal();
+    }
+
+    function sidebarQuickDelete(idx) {
+      const i = Number(idx);
+      if (!Number.isInteger(i) || !slides[i] || slides.length <= 1) return;
+      DeckStore.change(() => {
+        slides.splice(i, 1);
+        if (currentSlideIndex >= slides.length) currentSlideIndex = slides.length - 1;
+        else if (currentSlideIndex > i) currentSlideIndex--;
+      });
+      renderCurrentSlide();
+      xbToast(`Đã xoá Slide ${String(i + 1).padStart(2, '0')}`);
+    }
 
     function updateCanvasScale() {
       const workspace = document.getElementById('main-workspace');
@@ -2037,27 +2108,66 @@ const SLIDE_RENDERERS = createSlideRenderers({
       if (!container) return;
       syncSlideSelection();
 
-      container.innerHTML = slides.map((s, idx) => {
+      const query = currentSidebarSearch.toLowerCase();
+      let visibleCount = 0;
+
+      const itemsHtml = slides.map((s, idx) => {
         if (!matchesGroupFilter(s, currentSidebarFilter)) return '';
-        const isActive = idx === currentSlideIndex;
         const num = String(idx + 1).padStart(2, '0');
-        const headline = escapeHtml(s.content?.title || s.content?.titleLine1 || s.content?.headline || s.content?.sectionTag || s.layoutName);
+        const rawTitle = String(s.title || s.content?.title || s.content?.titleLine1 || s.content?.headline || s.content?.sectionTag || s.layoutName || s.type || '');
+        const layoutLabel = String(s.layoutName || s.type || 'Custom');
+        const groupLabel = String(s.group || '');
+        if (query) {
+          const haystack = `${num} ${ idx + 1 } ${rawTitle} ${layoutLabel} ${groupLabel} ${s.id || ''}`.toLowerCase();
+          if (!haystack.includes(query)) return '';
+        }
+        visibleCount++;
+        const isActive = idx === currentSlideIndex;
+        const headline = escapeHtml(rawTitle || layoutLabel);
         const shortBadge = formatGroupBadge(s.group, 'short');
         const groupColor = getGroupBadgeClass(s.group);
 
         return `
-          <div draggable="true" data-slide-index="${idx}" data-click-action="sidebarClick" data-click-arg="event" title="Kéo để di chuyển · giữ Ctrl khi thả để sao chép · Ctrl/Shift+click để chọn nhiều · chuột phải để xem thao tác" class="cursor-pointer rounded-xl p-3 transition-all border ${isActive ? 'bg-[#263333] border-[#F97C00] shadow-md' : 'bg-[#151C1C] border-[#263232] hover:border-[#3E5050]'}${!isActive && selectedSlideIds.has(s.id) ? ' v1-selected' : ''}${cutState?.ids.has(s.id) ? ' v1-cut' : ''}">
-            <div class="flex items-center justify-between mb-1">
-              <div class="flex items-center gap-2">
-                <span class="w-6 h-6 rounded-md ${isActive ? 'bg-[#F97C00] text-white' : 'bg-[#242F2F] text-slate-300'} font-heading font-extrabold text-[11px] flex items-center justify-center">${num}</span>
-                <span class="font-heading font-bold text-xs ${isActive ? 'text-white' : 'text-slate-300'} truncate max-w-[130px]">${escapeHtml(s.layoutName)}</span>
+          <div draggable="true" role="option" aria-selected="${isActive}" data-slide-index="${idx}" data-click-action="sidebarClick" data-click-arg="event" title="Kéo để di chuyển · giữ Ctrl khi thả để sao chép · Ctrl/Shift+click để chọn nhiều · chuột phải để xem thao tác" class="v1-sidebar-card group cursor-pointer rounded-xl p-2.5 transition-all border ${isActive ? 'v1-sidebar-card-active bg-[#263333] border-[#F97C00] shadow-md' : 'bg-[#151C1C] border-[#263232] hover:border-[#3E5050]'}${!isActive && selectedSlideIds.has(s.id) ? ' v1-selected' : ''}${cutState?.ids.has(s.id) ? ' v1-cut' : ''}">
+            <div class="flex items-start gap-2.5">
+              <span class="w-6 h-6 rounded-md shrink-0 mt-0.5 ${isActive ? 'bg-[#F97C00] text-white' : 'bg-[#242F2F] text-slate-300'} font-mono font-extrabold text-[11px] flex items-center justify-center">${num}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1.5">
+                  <p class="font-heading font-bold text-xs ${isActive ? 'text-white' : 'text-slate-200'} truncate">${headline}</p>
+                  <div class="v1-sidebar-card-actions flex items-center gap-0.5 shrink-0">
+                    <button type="button" data-click-action="sidebarQuickEdit" data-click-arg="${idx}" class="v1-sidebar-mini-btn" title="Sửa nội dung Slide ${num}">Sửa</button>
+                    <button type="button" data-click-action="sidebarQuickDuplicate" data-click-arg="${idx}" class="v1-sidebar-mini-btn" title="Nhân bản Slide ${num}">+Bản sao</button>
+                    ${slides.length > 1 ? `<button type="button" data-click-action="sidebarQuickDelete" data-click-arg="${idx}" class="v1-sidebar-mini-btn v1-danger" title="Xoá Slide ${num}">×</button>` : ''}
+                  </div>
+                </div>
+                <div class="flex items-center justify-between gap-1.5 mt-1">
+                  <span class="text-[10px] text-slate-400 truncate">${escapeHtml(layoutLabel)}</span>
+                  ${shortBadge ? `<span class="text-[9px] font-heading font-bold px-1.5 py-0.5 rounded max-w-[96px] truncate shrink-0 ${groupColor}">${escapeHtml(shortBadge)}</span>` : ''}
+                </div>
               </div>
-              ${shortBadge ? `<span class="text-[10px] font-heading font-bold px-1.5 py-0.5 rounded max-w-[84px] truncate ${groupColor}">${escapeHtml(shortBadge)}</span>` : ''}
             </div>
-            <p class="text-[11px] text-slate-400 truncate pl-8">${headline}</p>
           </div>
         `;
       }).join('');
+
+      const countBadge = document.getElementById('sidebar-visible-count');
+      if (countBadge) {
+        countBadge.textContent = visibleCount === slides.length ? String(slides.length) : `${visibleCount}/${slides.length}`;
+      }
+
+      if (visibleCount === 0) {
+        container.innerHTML = `
+          <div class="v1-sidebar-empty text-center py-6 px-3 rounded-xl border border-[#263232] bg-[#141B1B]">
+            <p class="text-xs font-heading font-bold text-slate-300 mb-1">Không tìm thấy slide phù hợp</p>
+            <p class="text-[11px] text-slate-400 mb-3">Thử từ khóa khác hoặc đặt lại bộ lọc nhóm.</p>
+            <button type="button" data-click-action="resetSidebarFilters" class="px-3 py-1.5 rounded-lg bg-[#263434] hover:bg-[#314242] text-[#FF991D] font-heading font-bold text-[11px] border border-[#384B4B]">
+              Hiện tất cả (${slides.length})
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = itemsHtml;
+      }
     }
 
     function selectSlide(idx) {
@@ -2098,6 +2208,38 @@ const SLIDE_RENDERERS = createSlideRenderers({
       notifyEngine();
     }
 
+    function renderGalleryCard(s, idx) {
+      const num = String(idx + 1).padStart(2, '0');
+      const catMeta = LAYOUT_CATALOG.find(l => l.type === s.type) || {};
+      const longBadge = formatGroupBadge(s.group, 'long');
+      const badgeClass = getGroupBadgeClass(s.group);
+      return `
+        <div draggable="true" data-slide-index="${idx}" data-click-action="galleryClick" data-click-arg="event" title="Kéo để sắp xếp · giữ Ctrl khi thả để sao chép · Ctrl/Shift+click để chọn nhiều" class="group cursor-pointer bg-[#1C2525] border border-[#2E3C3C] hover:border-[#F97C00] rounded-2xl overflow-hidden shadow-lg transition-all flex flex-col${selectedSlideIds.has(s.id) ? ' v1-selected' : ''}${cutState?.ids.has(s.id) ? ' v1-cut' : ''}">
+          <!-- Scaled 16:9 Live Preview Box -->
+          <div class="relative w-full pt-[56.25%] bg-black overflow-hidden">
+            <div class="gallery-thumb-scaler absolute top-0 left-0 origin-top-left pointer-events-none" style="width:1920px; height:1080px;">
+              ${renderSlideHTML(s, idx, true)}
+            </div>
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition-all flex items-center justify-center">
+              <span class="opacity-0 group-hover:opacity-100 transition-all px-4 py-2 rounded-full bg-[#F97C00] text-white font-heading font-bold text-xs shadow-lg">
+                Mở Slide ${num} Trong Studio →
+              </span>
+            </div>
+          </div>
+          <!-- Card Footer -->
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-heading font-extrabold text-[#FF991D]">Slide ${num} • ${escapeHtml(s.layoutName)}</span>
+                ${longBadge ? `<span class="text-[10px] font-heading font-bold uppercase px-2 py-0.5 rounded ${badgeClass}">${escapeHtml(longBadge)}</span>` : ''}
+              </div>
+              <p class="text-xs text-slate-300 line-clamp-2">${catMeta.desc || ''}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderGalleryGrid() {
       const grid = document.getElementById('gallery-grid-container');
       if (!grid) return;
@@ -2105,36 +2247,7 @@ const SLIDE_RENDERERS = createSlideRenderers({
 
       grid.innerHTML = slides.map((s, idx) => {
         if (!matchesGroupFilter(s, currentGalleryFilter)) return '';
-        const num = String(idx + 1).padStart(2, '0');
-        const catMeta = LAYOUT_CATALOG.find(l => l.type === s.type) || {};
-        const longBadge = formatGroupBadge(s.group, 'long');
-        const badgeClass = getGroupBadgeClass(s.group);
-        // Thumbnail scale: 440px wide / 1920px = 0.229166
-        return `
-          <div draggable="true" data-slide-index="${idx}" data-click-action="galleryClick" data-click-arg="event" title="Kéo để sắp xếp · giữ Ctrl khi thả để sao chép · Ctrl/Shift+click để chọn nhiều" class="group cursor-pointer bg-[#1C2525] border border-[#2E3C3C] hover:border-[#F97C00] rounded-2xl overflow-hidden shadow-lg transition-all flex flex-col${selectedSlideIds.has(s.id) ? ' v1-selected' : ''}${cutState?.ids.has(s.id) ? ' v1-cut' : ''}">
-            <!-- Scaled 16:9 Live Preview Box -->
-            <div class="relative w-full pt-[56.25%] bg-black overflow-hidden">
-              <div class="gallery-thumb-scaler absolute top-0 left-0 origin-top-left pointer-events-none" style="width:1920px; height:1080px;">
-                ${renderSlideHTML(s, idx, true)}
-              </div>
-              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition-all flex items-center justify-center">
-                <span class="opacity-0 group-hover:opacity-100 transition-all px-4 py-2 rounded-full bg-[#F97C00] text-white font-heading font-bold text-xs shadow-lg">
-                  Mở Slide ${num} Trong Studio →
-                </span>
-              </div>
-            </div>
-            <!-- Card Footer -->
-            <div class="p-4 flex-1 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-xs font-heading font-extrabold text-[#FF991D]">Slide ${num} • ${escapeHtml(s.layoutName)}</span>
-                  ${longBadge ? `<span class="text-[10px] font-heading font-bold uppercase px-2 py-0.5 rounded ${badgeClass}">${escapeHtml(longBadge)}</span>` : ''}
-                </div>
-                <p class="text-xs text-slate-300 line-clamp-2">${catMeta.desc || ''}</p>
-              </div>
-            </div>
-          </div>
-        `;
+        return renderGalleryCard(s, idx);
       }).join('');
 
       // Scale all gallery thumbnails accurately to fit their responsive card width
@@ -2383,6 +2496,21 @@ const SLIDE_RENDERERS = createSlideRenderers({
     function openContentEditorModal() {
       const form=document.getElementById('content-editor-fields');form.innerHTML='';
       const current=slides[currentSlideIndex];
+      const groupWrap=document.createElement('label');
+      groupWrap.className='flex flex-col gap-1 text-sm md:col-span-2 pb-2 border-b border-[#2D3B3B]';
+      const groupCaption=document.createElement('span');
+      groupCaption.textContent='group (Nhóm slide — tùy chọn, nhập chuỗi bất kỳ hoặc để trống)';
+      groupCaption.className='text-[#7FD7BB] font-bold';
+      groupWrap.appendChild(groupCaption);
+      const groupInput=document.createElement('input');
+      groupInput.type='text';
+      groupInput.id='content-editor-slide-group';
+      groupInput.placeholder='Ví dụ: Mở đầu, Chiến lược, Số liệu, Q4... (để trống nếu không phân nhóm)';
+      groupInput.value=typeof current.group==='string'?current.group:'';
+      groupInput.className='bg-[#111717] border border-[#3B4A4A] p-3 rounded-lg text-white text-sm w-full';
+      groupWrap.appendChild(groupInput);
+      form.appendChild(groupWrap);
+
       const editableScope=current.type==='composer'?xbResolveComposerRoot(current):current.content;
       for(const item of walkContent(editableScope)) {
         const label=document.createElement('label');label.className='flex flex-col gap-1 text-sm';
@@ -2410,7 +2538,17 @@ const SLIDE_RENDERERS = createSlideRenderers({
         }
         el.removeAttribute('aria-invalid');updates.push({target,key,value});
       }
-      DeckStore.change(()=>{for(const {target,key,value} of updates)target[key]=value;});
+      const groupInput=document.getElementById('content-editor-slide-group');
+      const nextGroup=groupInput?normalizeSlideGroup(groupInput.value):normalizeSlideGroup(current.group);
+      const prevGroup=normalizeSlideGroup(current.group);
+      const groupChanged=nextGroup!==prevGroup;
+      DeckStore.change(()=>{
+        for(const {target,key,value} of updates)target[key]=value;
+        if(groupChanged){
+          if(nextGroup)current.group=nextGroup;
+          else delete current.group;
+        }
+      });
       closeContentEditorModal();renderCurrentSlide();
     }
 
@@ -2533,6 +2671,15 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         exportPrintPDF: exportPrintPDF,
         filterGallery: filterGallery,
         filterSidebarSlides: filterSidebarSlides,
+        searchSidebarSlides: searchSidebarSlides,
+        resetSidebarFilters: resetSidebarFilters,
+        toggleSidebarCollapsed: toggleSidebarCollapsed,
+        closeMobileSidebar: closeMobileSidebar,
+        sidebarOpenAddSlide: openAddSlideModal,
+        sidebarOpenContentEditor: openContentEditorModal,
+        sidebarQuickDuplicate: sidebarQuickDuplicate,
+        sidebarQuickEdit: sidebarQuickEdit,
+        sidebarQuickDelete: sidebarQuickDelete,
         galleryClick: galleryClick,
         sidebarClick: sidebarClick,
         importDeckJSON: importDeckJSON,
@@ -2636,7 +2783,13 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
     function sidebarClick(e) {
       const idx = xbItemIndex(e); if (idx < 0 || !slides[idx]) return;
       document.getElementById(SLIDE_PANELS.list)?.focus({ preventScroll: true });
-      if (applyClickSelection(e, idx)) { selectSlide(idx); return; }
+      if (applyClickSelection(e, idx)) {
+        selectSlide(idx);
+        if (!e.ctrlKey && !e.metaKey && !e.shiftKey && document.getElementById('studio-view')?.classList.contains('v1-sidebar-mobile-open')) {
+          closeMobileSidebar();
+        }
+        return;
+      }
       // Ctrl+click removed a slide from the selection: keep showing a slide that is still selected.
       if (!selectedSlideIds.has(slides[currentSlideIndex]?.id)) currentSlideIndex = slides.findIndex(s => selectedSlideIds.has(s.id));
       renderCurrentSlide();
@@ -4568,13 +4721,36 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
 
     /* Agent Console: a DOM adapter for the public facade, never a second engine. */
     const AgentConsole=(()=>{
-      const api=XBAgent.facade;let root,lastRunId=null,lastArtifactId=null,lastProposalId=null,selected=0,visibleSlides=80,previewBase=null,studioBase=null,bound=false,findings=[],activeFindingId=null;
+      const api=XBAgent.facade;let root,lastRunId=null,lastArtifactId=null,lastProposalId=null,selected=0,visibleSlides=80,previewBase=null,studioBase=null,bound=false,findings=[],activeFindingId=null,findingFilter='all',treeSearch='',cachedCandidateSlides=[];
       const node=name=>root?.querySelector('[data-testid="'+name+'"]');
       const text=(name,value)=>{const el=node(name);if(el)el.textContent=value;};
       function show(result){text('xb-agent-response-json',JSON.stringify(result,null,2));}
       function clearPreview(){const box=node('xb-agent-preview');if(!box)return;box.querySelector('iframe').removeAttribute('srcdoc');delete box.dataset.runId;delete box.dataset.slideId;box.dataset.state='empty';text('xb-agent-preview-status','No rendered preview.');highlight(null);}
       function sizePreview(){const box=node('xb-agent-preview');if(!box)return;const frame=box.querySelector('iframe');if(frame&&box.clientWidth>0)frame.style.transform='scale('+(box.clientWidth/1920)+')';}
       async function refreshLogs(){const log=await api.getLogs({limit:200}),filter=node('xb-agent-log-filter')?.value||'all';if(log.ok)text('xb-agent-execution-log',log.data.events.filter(e=>filter==='all'||e.status===filter).map(e=>`${e.eventId} · ${e.operation} · ${e.status}${e.code?' · '+e.code:''}`).join('\n'));}
+      function applyTreeFilter(){
+        const tree=node('xb-agent-deck-tree');if(!tree)return;
+        const q=treeSearch.trim().toLowerCase();
+        tree.querySelectorAll('li').forEach(li=>{
+          const btn=li.querySelector('button');
+          if(!btn||!q){li.hidden=false;return;}
+          const hay=`${btn.textContent||''} ${btn.dataset.slideId||''} ${btn.dataset.slideType||''} ${btn.dataset.slideGroup||''}`.toLowerCase();
+          li.hidden=!hay.includes(q);
+        });
+      }
+      function applyFindingsFilter(){
+        const box=node('xb-agent-findings');if(!box)return;
+        root?.querySelectorAll('[data-v1-agent-action="filter-findings"]').forEach(btn=>{
+          btn.setAttribute('aria-pressed',String((btn.dataset.filter||'all')===findingFilter));
+        });
+        box.querySelectorAll('button[data-finding-id]').forEach(btn=>{
+          const sev=btn.dataset.severity||'';
+          const code=btn.dataset.code||'';
+          if(findingFilter==='all')btn.hidden=false;
+          else if(findingFilter==='brand')btn.hidden=!code.startsWith('brand.');
+          else btn.hidden=sev!==findingFilter;
+        });
+      }
       function highlight(finding){
         const overlay=root?.querySelector('.v1-agent-highlight');if(!overlay)return;
         const b=finding?.bounds;
@@ -4599,6 +4775,29 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         if(!lastRunId)return;const result=await api.getPreview({runId:lastRunId,slide:selected}),box=node('xb-agent-preview');
         if(result.ok&&box){const frame=box.querySelector('iframe');frame.srcdoc=result.data.html;box.dataset.runId=lastRunId;box.dataset.slideId=result.data.slideId;box.dataset.state=result.data.fresh?'ready':'stale';text('xb-agent-preview-status',result.data.fresh?'Visual review is performed externally.':'Preview is stale; render again.');sizePreview();}
       }
+      function updateNextStepHint(st,runData){
+        const banner=node('xb-agent-next-step');
+        if(!banner)return;
+        let action='sync',msg='Nhấn "Sync from Studio" hoặc "Load candidate JSON" để nạp bộ slide vào vùng nháp Candidate.';
+        if(!st.hasCandidate){
+          action='sync';
+          msg='Chưa có Candidate. Nhấn "Sync from Studio" hoặc "Load candidate JSON" để bắt đầu.';
+        }else if(st.studioStatus==='diverged'){
+          action='rebase';
+          msg='Studio đã thay đổi từ khi tạo Candidate. Nhấn "Diff vs Studio" để đối chiếu hoặc "Rebase candidate" để đồng bộ mốc revision.';
+        }else if(!runData||!runData.fresh){
+          action='render';
+          msg='Candidate chưa đo QA ở nội dung hiện tại. Nhấn "Render preview" để đo lường DOM 1920×1080 và kiểm tra Brand QA.';
+        }else if(runData.qa&&!runData.qa.passed){
+          action='propose';
+          msg=`Phát hiện ${runData.qa.errors} lỗi chặn xuất bản. Click vào lỗi ở cột QA inspector để định vị phần tử, sau đó dùng "Propose repair" hoặc "Apply patch".`;
+        }else{
+          action='commit';
+          msg=`Candidate đạt chuẩn Strict QA (${runData.qa.checkedSlides}/${runData.qa.totalSlides} slides). Sẵn sàng "Commit to Studio" hoặc "Export HTML / 1920x1080 PNGs".`;
+        }
+        banner.dataset.recommendedAction=action;
+        text('xb-agent-next-text',msg);
+      }
       async function refresh(){
         const state=await api.getState();if(!state.ok)return;
         const st=state.data;
@@ -4611,14 +4810,30 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           studioBadge.innerHTML=`Studio: <strong data-testid="xb-agent-studio-revision">${st.studioRevision||'none'}</strong> · ${st.studioStatus||'aligned'}`;
         }
         const tree=node('xb-agent-deck-tree');tree.replaceChildren();
-        if(st.hasCandidate){const result=await api.getDeck({source:'candidate'});if(result.ok){const slides=result.data.document.slides||[];if(selected>=slides.length)selected=0;
+        cachedCandidateSlides=[];
+        if(st.hasCandidate){const result=await api.getDeck({source:'candidate'});if(result.ok){const slides=result.data.document.slides||[];cachedCandidateSlides=slides;if(selected>=slides.length)selected=0;
+          text('xb-agent-slide-count',`${slides.length} slide${slides.length===1?'':'s'}`);
+          const activeSlide=slides[selected];
+          if(activeSlide){
+            const sId=String(activeSlide.id||'slide-'+(selected+1));
+            const sTitle=String(activeSlide.title||activeSlide.content?.title||sId);
+            text('xb-agent-active-slide-label',`Slide ${String(selected+1).padStart(2,'0')}/${String(slides.length).padStart(2,'0')} · ${sId} (${activeSlide.type||'composer'}) — ${sTitle}`);
+          }else{
+            text('xb-agent-active-slide-label','Chưa có slide');
+          }
           visibleSlides=Math.max(visibleSlides,selected+1);slides.slice(0,visibleSlides).forEach((slide,index)=>{const id=String(slide?.id||'slide-'+(index+1)),li=document.createElement('li'),button=document.createElement('button');
-            li.setAttribute('role','none');button.type='button';button.setAttribute('role','treeitem');button.dataset.v1AgentAction='select';button.dataset.index=String(index);button.dataset.slideId=id;button.dataset.testid='xb-agent-slide-'+id;button.setAttribute('aria-selected',String(index===selected));button.textContent=String(index+1).padStart(2,'0')+' · '+String(slide?.title||slide?.content?.title||id);li.append(button);tree.append(li);});node('xb-agent-more-slides').hidden=slides.length<=visibleSlides;}}
-        else node('xb-agent-more-slides').hidden=true;
+            li.setAttribute('role','none');button.type='button';button.setAttribute('role','treeitem');button.dataset.v1AgentAction='select';button.dataset.index=String(index);button.dataset.slideId=id;button.dataset.slideType=String(slide?.type||'composer');button.dataset.slideGroup=String(slide?.group||'');button.dataset.testid='xb-agent-slide-'+id;button.setAttribute('aria-selected',String(index===selected));button.textContent=String(index+1).padStart(2,'0')+' · '+String(slide?.title||slide?.content?.title||id)+(slide?.group?' ['+slide.group+']':'');li.append(button);tree.append(li);});node('xb-agent-more-slides').hidden=slides.length<=visibleSlides;applyTreeFilter();}}
+        else{
+          node('xb-agent-more-slides').hidden=true;
+          text('xb-agent-slide-count','0 slides');
+          text('xb-agent-active-slide-label','Chưa nạp Candidate');
+        }
         const brandBadge=node('xb-agent-brand-summary');
+        let latestRunData=null;
         if(lastRunId){
           const run=await api.getRun({runId:lastRunId});
           if(run.ok){
+            latestRunData=run.data;
             const q=run.data.qa;
             text('xb-agent-qa-summary',`QA: ${q.passed?'passed':run.data.fresh?'issues':'stale'} · ${q.checkedSlides}/${q.totalSlides} measured · ${q.errors} errors · ${q.warnings} warnings`);
             node('xb-agent-qa-summary').dataset.state=q.passed?'passed':run.data.fresh?'issues':'stale';
@@ -4632,15 +4847,21 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           text('xb-agent-qa-summary','QA: not measured');node('xb-agent-qa-summary').dataset.state='unavailable';
           if(brandBadge){brandBadge.dataset.state='unavailable';brandBadge.textContent='Brand QA: pending';}
         }
+        updateNextStepHint(st,latestRunData);
       }
       function showFindings(result){
         if(!result.ok)return;const box=node('xb-agent-findings');box.replaceChildren();findings=result.data.findings||[];
+        const errCount=findings.filter(f=>f.severity==='error').length;
+        const warnCount=findings.filter(f=>f.severity==='warning').length;
+        text('xb-agent-findings-count',findings.length?`${findings.length} findings (${errCount} errors, ${warnCount} warnings)`:'0 findings (Clean)');
         if(!findings.length){box.textContent='No findings.';return;}
         for(const finding of findings){
           const item=document.createElement('button');
           item.type='button';
           item.dataset.v1AgentAction='finding';
           item.dataset.findingId=finding.findingId;
+          item.dataset.severity=finding.severity||'info';
+          item.dataset.code=finding.code||'';
           item.dataset.dataPath=finding.dataPath||finding.sourcePath||'/';
           item.dataset.sourcePath=finding.sourcePath||'/';
           item.dataset.element=finding.element||finding.selector||'';
@@ -4650,10 +4871,57 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
           item.textContent=`${finding.blocking?'BLOCKING · ':''}${finding.severity} · ${finding.code} · ${loc}${elem} — ${finding.message}`;
           box.append(item);
         }
+        applyFindingsFilter();
       }
       async function act(action,button){
         if(action==='close'){root.hidden=true;document.getElementById('app-shell').inert=false;document.getElementById('v1-menu-ai-trigger').focus();return;}
         if(action==='select'){selected=Number(button.dataset.index);highlight(null);await refresh();await showPreview();return;}
+        if(action==='prev-slide'){if(cachedCandidateSlides.length){selected=(selected-1+cachedCandidateSlides.length)%cachedCandidateSlides.length;highlight(null);await refresh();await showPreview();}return;}
+        if(action==='next-slide'){if(cachedCandidateSlides.length){selected=(selected+1)%cachedCandidateSlides.length;highlight(null);await refresh();await showPreview();}return;}
+        if(action==='clear-highlight'){highlight(null);return;}
+        if(action==='filter-findings'){findingFilter=button.dataset.filter||'all';applyFindingsFilter();return;}
+        if(action==='scope-selected'){
+          const s=cachedCandidateSlides[selected];
+          const slideId=String(s?.id||'slide-'+(selected+1));
+          const scopeEl=node('xb-agent-scope');
+          if(scopeEl)scopeEl.value=JSON.stringify({slideId,sourcePath:`/slides/${selected}`},null,2);
+          return;
+        }
+        if(action==='scope-finding'){
+          const finding=findings.find(f=>f.findingId===activeFindingId)||findings[0];
+          if(!finding)return;
+          const pathStr=finding.sourcePath||finding.dataPath||`/slides/${selected}`;
+          const match=/^\/slides\/(\d+)/.exec(pathStr);
+          const idx=match?Number(match[1]):selected;
+          const s=cachedCandidateSlides[idx];
+          const slideId=String(finding.slideId||s?.id||'slide-'+(idx+1));
+          const scopeEl=node('xb-agent-scope');
+          if(scopeEl)scopeEl.value=JSON.stringify({slideId,sourcePath:pathStr},null,2);
+          return;
+        }
+        if(action==='fill-from-studio'){
+          const deckEl=node('xb-agent-deck-input');
+          if(deckEl)deckEl.value=JSON.stringify(deckDocument(),null,2);
+          return;
+        }
+        if(action==='template-patch'){
+          const patchEl=node('xb-agent-patch-input');
+          const s=cachedCandidateSlides[selected];
+          const hasTopTitle=s&&Object.prototype.hasOwnProperty.call(s,'title');
+          const targetPath=hasTopTitle?`/slides/${selected}/title`:`/slides/${selected}/content/title`;
+          const curVal=String(s?.title||s?.content?.title||'Updated slide title');
+          if(patchEl)patchEl.value=JSON.stringify([{op:'replace',path:targetPath,value:curVal}],null,2);
+          return;
+        }
+        if(action==='format-json'){
+          for(const testId of ['xb-agent-deck-input','xb-agent-patch-input','xb-agent-scope']){
+            const el=node(testId);
+            if(el&&el.value.trim()){
+              try{el.value=JSON.stringify(JSON.parse(el.value),null,2);}catch(_){}
+            }
+          }
+          return;
+        }
         if(action==='finding'){const finding=findings.find(f=>f.findingId===button.dataset.findingId),match=/^\/slides\/(\d+)/.exec(finding?.dataPath||finding?.sourcePath||'');if(match){selected=Number(match[1]);await refresh();await showPreview();}highlight(finding);return;}
         if(action==='more'){visibleSlides+=80;await refresh();return;}
         if(action==='copy-response'){try{await navigator.clipboard.writeText(node('xb-agent-response-json').textContent);}catch(_){const range=document.createRange();range.selectNodeContents(node('xb-agent-response-json'));const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);}return;}
@@ -4695,6 +4963,7 @@ Lưu ý: vẫn nên kiểm tra trực quan trên máy chiếu.`);
         bind(){if(bound)return;bound=true;root=document.getElementById('v1-agent-console');
           root.addEventListener('click',event=>{const button=event.target.closest('[data-v1-agent-action]');if(button&&root.contains(button))act(button.dataset.v1AgentAction,button);});
           root.addEventListener('change',event=>{if(event.target===node('xb-agent-log-filter'))refreshLogs();});
+          root.addEventListener('input',event=>{if(event.target===node('xb-agent-tree-search')){treeSearch=event.target.value||'';applyTreeFilter();}});
           window.addEventListener('resize',()=>{if(!root.hidden)sizePreview();});api.subscribe(()=>refreshLogs());
           api.ready().then(()=>{const ready=node('xb-agent-ready');ready.dataset.state='ready';ready.textContent='Ready';});
         },

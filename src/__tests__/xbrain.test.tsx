@@ -23,7 +23,9 @@ import {
   getGroupBadgeClass,
   getDeckGroupsForSlides,
   matchesGroupFilter,
+  groupSlidesByGroup,
   UNGROUPED_FILTER_KEY,
+  GROUPED_VIEW_KEY,
 } from '../utils/slideGroup';
 import { DeckModel } from '../core/deckModel';
 import { BRAND_PHOTOS, XBRAIN_LOGOS, XBRAIN_EMBEDDED_CSS, XBRAIN_SVG_SPRITE } from '../lib/xbrainAssets';
@@ -76,21 +78,33 @@ describe('XBrain Presentation Engine, JSON Schema Contract & React Suite', () =>
     expect(diagResult.diagnostics[0].code).toBe('test.code');
 
     expect(normalizeSlideGroup('  Intro  ')).toBe('Intro');
-    expect(normalizeSlideGroup('', 'A')).toBeUndefined();
-    expect(normalizeSlideGroup(undefined, 'B')).toBe('B');
-    expect(formatGroupBadge('A', 'short')).toBe('Grp A');
+    expect(normalizeSlideGroup('', 'Fallback')).toBeUndefined();
+    expect(normalizeSlideGroup(undefined, 'Fallback')).toBe('Fallback');
+    expect(normalizeSlideGroup(undefined)).toBeUndefined();
+    expect(formatGroupBadge('A', 'short')).toBe('A');
     expect(formatGroupBadge('Intro', 'long')).toBe('Intro');
-    expect(getGroupBadgeClass('A')).toContain('text-[#FF991D]');
+    expect(formatGroupBadge(undefined)).toBe('');
+    expect(getGroupBadgeClass('Intro')).toBeTruthy();
     expect(getGroupBadgeClass('CustomGroup')).toBeTruthy();
 
-    const groups = getDeckGroupsForSlides([
+    const sampleSlides = [
       { id: '1', group: 'Intro' },
-      { id: '2', group: 'A' },
+      { id: '2', group: 'Chiến lược Q4' },
       { id: '3' },
-    ]);
-    expect(groups).toEqual(['A', 'Intro', UNGROUPED_FILTER_KEY]);
+      { id: '4', group: 'Intro' },
+    ];
+    const groups = getDeckGroupsForSlides(sampleSlides);
+    expect(groups).toEqual(['Intro', 'Chiến lược Q4', UNGROUPED_FILTER_KEY]);
     expect(matchesGroupFilter({ group: 'Intro' }, 'Intro')).toBe(true);
+    expect(matchesGroupFilter({ group: 'Intro' }, GROUPED_VIEW_KEY)).toBe(true);
     expect(matchesGroupFilter({}, UNGROUPED_FILTER_KEY)).toBe(true);
+
+    const sections = groupSlidesByGroup(sampleSlides);
+    expect(sections.map(s => ({ key: s.key, count: s.entries.length }))).toEqual([
+      { key: 'Intro', count: 2 },
+      { key: 'Chiến lược Q4', count: 1 },
+      { key: UNGROUPED_FILTER_KEY, count: 1 },
+    ]);
   });
 
   it('parses CSV, TSV, YAML, JSON and applies data transforms in DataResolver', () => {
@@ -337,7 +351,7 @@ describe('XBrain Presentation Engine, JSON Schema Contract & React Suite', () =>
     const { result } = renderHook(() => useXBrainEngine());
     expect(result.current.slides.length).toBe(107);
     expect(result.current.currentSlideIndex).toBe(0);
-    expect(result.current.groups).toEqual(['A', 'B', 'C', 'D', 'E']);
+    expect(result.current.groups).toEqual(['Overview', 'Narrative', 'Metrics & Plan', 'Diagrams', 'Composer']);
 
     act(() => {
       result.current.selectSlide(4);
@@ -350,16 +364,38 @@ describe('XBrain Presentation Engine, JSON Schema Contract & React Suite', () =>
     });
     expect(result.current.currentAppMode).toBe('gallery');
     expect(appShell).toHaveAttribute('data-app-mode', 'gallery');
+    expect(container.querySelector('#gal-filter-GROUPED')).toBeNull();
 
     act(() => {
+      result.current.filterGallery('Overview');
+    });
+    expect(result.current.currentGalleryFilter).toBe('Overview');
+    expect(container.querySelectorAll('#gallery-grid-container [data-slide-index]').length).toBe(4);
+
+    act(() => {
+      result.current.filterGallery('ALL');
       result.current.switchAppMode('workspace');
       result.current.selectSlide(0);
     });
     expect(result.current.currentAppMode).toBe('workspace');
     expect(result.current.currentSlideIndex).toBe(0);
+
+    // Verify enhanced Sidebar search, visible count badge, and collapsible toggle
+    const searchInput = container.querySelector('#sidebar-search-input') as HTMLInputElement;
+    expect(searchInput).toBeInTheDocument();
+    expect(container.querySelector('#sidebar-visible-count')?.textContent).toBe('107');
+
+    // Verify AI Console dual-audience elements (next-step guidance, slide search, scope helpers)
+    const consoleRoot = container.querySelector('#v1-agent-console');
+    expect(consoleRoot).toBeInTheDocument();
+    expect(consoleRoot?.querySelector('[data-testid="xb-agent-next-step"]')).toBeInTheDocument();
+    expect(consoleRoot?.querySelector('[data-testid="xb-agent-tree-search"]')).toBeInTheDocument();
+    expect(consoleRoot?.querySelector('[data-v1-agent-action="scope-selected"]')).toBeInTheDocument();
+    expect(consoleRoot?.querySelector('[data-v1-agent-action="scope-finding"]')).toBeInTheDocument();
+    expect(consoleRoot?.querySelector('[data-v1-agent-action="fill-from-studio"]')).toBeInTheDocument();
   });
 
-  it('loads embedded JPG, PNG, CSS, and SVG assets from public/assets/ and normalizes DeckModel', () => {
+  it('loads embedded JPG, PNG, CSS, and SVG assets from public/assets/ and normalizes DeckModel with optional group', () => {
     expect(BRAND_PHOTOS.lab1).toMatch(/^data:image\/jpeg;base64,/);
     expect(BRAND_PHOTOS.presenter).toMatch(/^data:image\/jpeg;base64,/);
     expect(BRAND_PHOTOS.lab2).toMatch(/^data:image\/jpeg;base64,/);
@@ -370,11 +406,18 @@ describe('XBrain Presentation Engine, JSON Schema Contract & React Suite', () =>
     expect(XBRAIN_SVG_SPRITE).toContain('data:image/png;base64,');
 
     const normalized = DeckModel.normalize(
-      { version: '1.0', slides: [{ id: 's1', type: 'cover', group: 'Custom', content: { title: 'Deck' } }] },
+      {
+        version: '1.0',
+        slides: [
+          { id: 's1', type: 'cover', group: 'Mở đầu tùy chọn', content: { title: 'Deck' } },
+          { id: 's2', type: 'cover', content: { title: 'Ungrouped Cover' } },
+        ],
+      },
       LAYOUT_CATALOG,
       { version: '1.0' }
     );
-    expect(normalized.slides[0].group).toBe('Custom');
+    expect(normalized.slides[0].group).toBe('Mở đầu tùy chọn');
+    expect(normalized.slides[1].group).toBeUndefined();
   });
 });
 

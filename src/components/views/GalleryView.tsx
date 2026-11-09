@@ -14,7 +14,7 @@ export const GalleryView: React.FC = () => {
             </div>
             <h2 className="text-3xl font-heading font-extrabold text-white">Tổng quan bài trình chiếu</h2>
             <p className="text-slate-400 text-sm mt-1">
-              Chọn một slide để mở trong Soạn thảo (1920×1080), chỉnh sửa nội dung hoặc trình chiếu.
+              Hiển thị tất cả hoặc lọc linh hoạt theo nhóm (group tùy chọn). Chọn một slide để mở trong Soạn thảo (1920×1080).
             </p>
           </div>
           <div id="gallery-filter-bar" className="flex flex-wrap items-center gap-2">
@@ -24,47 +24,7 @@ export const GalleryView: React.FC = () => {
               id="gal-filter-ALL"
               className="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#F97C00] text-white"
             >
-              Tất cả (89)
-            </button>
-            <button
-              data-click-action="filterGallery"
-              data-click-arg="'A'"
-              id="gal-filter-A"
-              className="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white"
-            >
-              Group A — Structure (4)
-            </button>
-            <button
-              data-click-action="filterGallery"
-              data-click-arg="'B'"
-              id="gal-filter-B"
-              className="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white"
-            >
-              Group B — Content (7)
-            </button>
-            <button
-              data-click-action="filterGallery"
-              data-click-arg="'C'"
-              id="gal-filter-C"
-              className="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white"
-            >
-              Group C — Business & Data (6)
-            </button>
-            <button
-              data-click-action="filterGallery"
-              data-click-arg="'D'"
-              id="gal-filter-D"
-              className="px-4 py-2 rounded-lg text-xs font-heading font-bold bg-[#222C2C] text-slate-300 hover:text-white"
-            >
-              Group D — Diagrams (30)
-            </button>
-            <button
-              data-click-action="filterGallery"
-              data-click-arg="'E'"
-              id="gal-filter-E"
-              className="px-4 py-2 rounded-lg text-xs font-heading font-semibold bg-[#222C2C] text-slate-300 hover:text-white"
-            >
-              E · Composer
+              Tất cả
             </button>
           </div>
         </div>

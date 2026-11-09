@@ -7,6 +7,19 @@ export const Workspace: React.FC = () => {
       id="main-workspace"
       className="flex-1 relative flex flex-col items-center justify-center bg-[#121717] overflow-hidden p-6"
     >
+      {/* Floating Sidebar Reopen / Mobile Drawer Trigger */}
+      <button
+        type="button"
+        id="sidebar-expand-trigger"
+        data-click-action="toggleSidebarCollapsed"
+        className="v1-sidebar-expand-btn"
+        title="Mở danh sách slide"
+        aria-label="Mở danh sách slide"
+      >
+        <Icon name="grid" className="w-4 h-4 text-[#FF991D]" />
+        <span>Danh sách Slide</span>
+      </button>
+
       {/* Responsive Wrapper that holds the 1920x1080 logical canvas */}
       <div id="canvas-scale-wrapper" className="relative flex items-center justify-center">
         <div id="active-slide-viewport" className="slide-viewport edit-mode-active" />
@@ -35,10 +48,8 @@ export const Workspace: React.FC = () => {
           </span>
           <span
             id="active-group-badge"
-            className="text-[10px] font-heading font-bold uppercase px-2 py-0.5 rounded bg-[#25AC9D]/20 text-[#7FD7BB]"
-          >
-            Group A
-          </span>
+            className="hidden text-[10px] font-heading font-bold uppercase px-2 py-0.5 rounded bg-[#25AC9D]/20 text-[#7FD7BB]"
+          />
         </div>
 
         <button
